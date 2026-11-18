@@ -1,0 +1,49 @@
+/* All three sheets use real desktop and handset captures of the same project. */
+.h-picks :is(a, button):focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 2px;
+}
+.h-interfaces {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+.h-interfaces .h-wide-screen {
+  width: 100%;
+  height: 100%;
+}
+.h-interfaces .h-pocket-screen {
+  position: absolute;
+  right: 3.6%;
+  bottom: -5%;
+  height: 83%;
+  width: auto;
+  max-width: 24%;
+  object-fit: cover;
+  object-position: top center;
+  border: 2px solid #2d302d;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 4px 13px #10110e55;
+}
+.h-sheet-systelecom .h-wide-screen { object-position: top center; }
+.h-sheet-systelecom .h-sheet-top { background: #444746; }
+@media (max-width: 500px) {
+  .h-picks :is(button, a) { min-height: 44px; }
+  .h-exhibit-toolbar { flex-wrap: wrap; }
+  .h-interfaces .h-pocket-screen { border-width: 1px; border-radius: 3px 3px 0 0; }
+}
+@media (pointer: coarse) {
+  .h-picks :is(button, a) { min-height: 44px; }
+}
+
+.h-switch-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.h-exhibit[data-switching] .h-sheet { transition: none !important; will-change: transform; }
+.h-papers img { -webkit-user-drag: none; }
+.h-papers { cursor: grab; user-select: none; -webkit-user-select: none; }
+.h-papers a { cursor: pointer; }
+.h-exhibit[data-dragging] .h-papers { cursor: grabbing; }
+.h-exhibit[data-dragging] .h-sheet { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .h-exhibit[data-switching] .h-sheet { will-change: auto; }
+}

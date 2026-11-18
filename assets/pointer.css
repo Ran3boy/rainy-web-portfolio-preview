@@ -1,0 +1,67 @@
+/* Native hit-testing remains authoritative; the copper bead is a separate layer. */
+.rw-pointer {
+  --rw-pointer-scale-x: 1;
+  --rw-pointer-scale-y: 1;
+  --rw-pointer-angle: 0deg;
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: 1000;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  pointer-events: none !important;
+  contain: layout style;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 110ms ease-out, visibility 110ms;
+}
+.rw-pointer.is-active { opacity: .92; visibility: visible; }
+.rw-pointer-core {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #efbc91;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 25%, #f8d6b6 0, #d7996d 29%, #a6603c 74%);
+  box-shadow: 0 2px 6px #110c0859;
+  transform: rotate(var(--rw-pointer-angle)) scale(var(--rw-pointer-scale-x), var(--rw-pointer-scale-y));
+}
+.rw-pointer::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 1px solid #c8936d80;
+  border-radius: 50%;
+  opacity: 0;
+  scale: .7;
+  transition: scale 170ms ease-out, opacity 170ms ease-out;
+}
+.rw-pointer[data-mode='link']::after { opacity: .7; scale: 1; }
+.rw-pointer-axis {
+  position: absolute;
+  inset: 0 -9px;
+  opacity: 0;
+  scale: .8;
+  transition: opacity 140ms ease-out, scale 170ms ease-out;
+}
+.rw-pointer-axis::before, .rw-pointer-axis::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  width: 6px;
+  height: 6px;
+  border: solid #f1c7a5;
+  border-width: 1.5px 1.5px 0 0;
+}
+.rw-pointer-axis::before { left: 1px; transform: rotate(-135deg); }
+.rw-pointer-axis::after { right: 1px; transform: rotate(45deg); }
+.rw-pointer[data-mode='drag'] .rw-pointer-axis { opacity: .95; scale: 1; }
+.rw-pointer[data-mode='drag'] .rw-pointer-core {
+  clip-path: polygon(16% 0, 84% 0, 100% 34%, 100% 66%, 84% 100%, 16% 100%, 0 66%, 0 34%);
+  border-radius: 3px;
+}
+.rw-pointer[data-mode='drag'][data-pressed='true'] .rw-pointer-axis { scale: .88; }
+.rw-pointer[data-pressed='true'] .rw-pointer-core { filter: brightness(1.12); }
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .rw-pointer { display: none !important; }
+}

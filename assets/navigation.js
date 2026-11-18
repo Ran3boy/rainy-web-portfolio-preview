@@ -1,0 +1,106 @@
+(() => {
+  const mobile = document.querySelector(".mobile-nav-2");
+  const services = document.querySelector(".nav-services-2");
+  const disclosures = [mobile, services].filter(Boolean);
+  for (const el of disclosures) {
+    el.addEventListener("toggle", () => {
+      if (el.open)
+        for (const other of disclosures) if (other !== el) other.open = false;
+    });
+  }
+  document.addEventListener("click", (e) => {
+    for (const el of disclosures)
+      if (el.open && !el.contains(e.target)) el.open = false;
+  });
+  document.addEventListener("focusin", (e) => {
+    for (const el of disclosures)
+      if (el.open && !el.contains(e.target)) el.open = false;
+  });
+  matchMedia("(min-width: 821px)").addEventListener("change", () =>
+    disclosures.forEach((el) => (el.open = false)),
+  );
+
+  const dialog = document.getElementById("rw-finder");
+  const trigger = document.querySelector(".finder-open-2");
+  if (!dialog || typeof dialog.showModal !== "function") return;
+  document.documentElement.classList.add("has-nav-js");
+  const input = dialog.querySelector("input");
+  const status = dialog.querySelector("[role=status]");
+  const groups = [...dialog.querySelectorAll(".finder-group-2")];
+  const normalize = (value) =>
+    value
+      .toLocaleLowerCase("ru")
+      .replaceAll("ё", "е")
+      .replace(/[\s.-]+/g, "");
+  function filter() {
+    const term = normalize(input.value);
+    let total = 0;
+    for (const group of groups) {
+      const items = [...group.querySelectorAll("a")];
+      for (const item of items) {
+        item.hidden = !normalize(item.dataset.terms).includes(term);
+        if (!item.hidden) total++;
+      }
+      group.hidden = items.every((a) => a.hidden);
+    }
+    status.textContent = total
+      ? "Найдено страниц: " + total
+      : "Совпадений нет. Попробуйте другое название.";
+  }
+  let opener;
+  function open() {
+    if (dialog.open || document.querySelector("dialog[open]")) return;
+    opener = document.activeElement;
+    if (
+      !opener ||
+      opener === document.body ||
+      disclosures.some((el) => el.contains(opener))
+    )
+      opener = trigger;
+    disclosures.forEach((el) => (el.open = false));
+    input.value = "";
+    filter();
+    dialog.showModal();
+    input.focus();
+  }
+  trigger.addEventListener("click", open);
+  input.addEventListener("input", filter);
+  dialog
+    .querySelector("button")
+    .addEventListener("click", () => dialog.close());
+  dialog.addEventListener("close", () => {
+    if (opener?.isConnected) opener.focus({ preventScroll: true });
+  });
+  dialog.addEventListener("click", (e) => {
+    if (e.target !== dialog) return;
+    const r = dialog.getBoundingClientRect();
+    if (
+      e.clientX < r.left ||
+      e.clientX > r.right ||
+      e.clientY < r.top ||
+      e.clientY > r.bottom
+    )
+      dialog.close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (dialog.open) {
+        e.preventDefault();
+        dialog.close();
+        return;
+      }
+      for (const el of disclosures)
+        if (el.open) {
+          e.preventDefault();
+          el.open = false;
+          el.querySelector("summary").focus();
+          break;
+        }
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k" && !e.altKey) {
+      e.preventDefault();
+      if (dialog.open) dialog.close();
+      else open();
+    }
+  });
+})();

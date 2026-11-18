@@ -1,0 +1,14 @@
+/* Common type and disclosure controls for the pricing enquiry and FAQ. */
+.hq-estimate h2,.hq-faq h2 { margin:0; font-weight:500; line-height:1; letter-spacing:-.058em; }
+.hq-questions p a { color:#f2c6a8; text-underline-offset:.23em; text-decoration-thickness:1px; }
+.hq-questions p a:hover { color:white; }
+.hq-faq { background:#17191a; color:#f4f2ea; border-block:1px solid #363735; }
+.hq-questions { border-bottom:1px solid #484945; }
+.hq-questions details { border-top:1px solid #484945; }
+.hq-questions summary { list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:20px; padding:clamp(14px,1.35vw,22px) 2px; font-size:clamp(17px,1.42vw,22px); line-height:1.26; letter-spacing:-.022em; }
+.hq-questions summary::-webkit-details-marker { display:none; }
+.hq-questions summary span { flex:none; position:relative; width:17px; height:17px; color:#dfae8b; }
+.hq-questions summary span:before,.hq-questions summary span:after { content:""; position:absolute; top:8px; width:15px; height:1.5px; background:currentColor; }
+.hq-questions summary span:after { transform:rotate(90deg); }
+.hq-questions details[open] summary span:after { transform:rotate(0); }
+.hq-questions details p { max-width:64ch; margin:-3px 32px 21px 2px; color:#c9cac2; font-size:clamp(15px,1.12vw,18px); line-height:1.52; }

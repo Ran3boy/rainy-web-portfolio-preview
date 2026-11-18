@@ -1,0 +1,144 @@
+.sd-section {
+  background: var(--surface);
+  color: var(--text);
+  border-block: 1px solid var(--line);
+  padding-block: clamp(44px, 4.65vw, 76px);
+  scroll-margin-top: 12px;
+}
+.sd-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .59fr) minmax(0, 1.41fr);
+  gap: clamp(28px, 5vw, 88px);
+  align-items: start;
+}
+.sd-intro h2 {
+  font-size: clamp(44px, 4.8vw, 76px);
+  font-weight: 500;
+  line-height: .99;
+  letter-spacing: -.065em;
+}
+.sd-intro p {
+  max-width: 28ch;
+  margin-block: 17px 18px;
+  color: var(--muted);
+  font-size: clamp(15px, 1.18vw, 18px);
+  line-height: 1.5;
+  letter-spacing: -.017em;
+}
+.sd-intro a, .sd-ctas a {
+  display: inline-flex;
+  align-items: center;
+  column-gap: .48em;
+  min-height: 42px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  text-underline-offset: .25em;
+}
+.sd-intro a { color: var(--text); }
+.sd-intro a span, .sd-ctas a span { color: var(--copper); }
+.sd-entry {
+  position: relative;
+  border-top: 1px solid #424444;
+  transition: background .22s var(--ease);
+}
+.sd-entry:last-child { border-bottom: 1px solid #424444; }
+.sd-entry:is(.sd-active, [open]) {
+  background: var(--surface-soft);
+}
+.sd-entry:is(.sd-active, [open])::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: clamp(45px, 15%, 120px);
+  height: 2px;
+  background: var(--copper);
+}
+.sd-trigger {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(130px,.72fr) 20px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 64px;
+  border: 0;
+  padding: 10px clamp(12px, 1.45vw, 26px);
+  background: transparent;
+  text-align: left;
+  list-style: none;
+}
+.sd-trigger::-webkit-details-marker { display: none; }
+.sd-label {
+  font-size: clamp(19px, 1.62vw, 26px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -.043em;
+}
+.sd-note {
+  color: var(--muted);
+  font-size: clamp(12px, .94vw, 14px);
+  font-weight: 400;
+  line-height: 1.35;
+}
+.sd-arrow {
+  position: relative;
+  justify-self: end;
+  width: 16px;
+  height: 16px;
+  color: var(--copper);
+}
+.sd-arrow::before, .sd-arrow::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - 1px);
+  width: 100%;
+  height: 1.5px;
+  background: currentColor;
+}
+.sd-arrow::after { transform: rotate(90deg); transition: transform .23s var(--ease); }
+.sd-entry:is(.sd-active, [open]) .sd-arrow::after { transform: rotate(0); }
+.sd-copy { padding: 0 clamp(12px, 1.45vw, 26px) 14px; }
+.sd-copy > p {
+  max-width: 65ch;
+  color: #c7c9c4;
+  font-size: clamp(15px, 1.04vw, 17px);
+  line-height: 1.5;
+}
+.sd-ctas { display: flex; flex-wrap: wrap; gap: 0 clamp(13px, 1.6vw, 26px); margin-top: 8px; }
+.sd-ctas a { color: #c7c9c4; font-size: 13px; }
+.sd-ctas .sd-detail { color: var(--text); }
+.sd-list[data-enhanced] .sd-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .28s var(--ease);
+}
+.sd-list[data-enhanced] .sd-active .sd-body { grid-template-rows: 1fr; }
+.sd-clip { min-height: 0; overflow: hidden; }
+.sd-trigger:focus-visible { outline-offset: -4px; }
+.sd-intro a:focus-visible, .sd-ctas a:focus-visible { outline-offset: 0; }
+@media (hover: hover) {
+  .sd-entry:not(.sd-active):not([open]) .sd-trigger:hover { background: #ffffff07; }
+  .sd-intro a:hover, .sd-ctas a:hover { color: var(--text); text-decoration: underline; }
+}
+@media (max-width: 1000px) {
+  .sd-layout { grid-template-columns: minmax(0, .52fr) minmax(0, 1.48fr); gap: 24px; }
+  .sd-trigger { grid-template-columns: 1fr 20px; gap: 2px 8px; padding-block: 10px; }
+  .sd-note { grid-column: 1; }
+  .sd-arrow { grid-column: 2; grid-row: 1 / span 2; }
+}
+@media (max-width: 650px) {
+  .sd-layout { display: block; }
+  .sd-intro { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; margin-bottom: 23px; }
+  .sd-intro p { grid-column: 1 / -1; grid-row: 2; margin: 12px 0 0; max-width: 42ch; }
+  .sd-intro a { grid-column: 2; grid-row: 1; align-self: end; min-height: 40px; font-size: 13px; }
+  .sd-trigger { min-height: 62px; }
+  .sd-label { font-size: 20px; }
+  .sd-ctas { gap: 0 15px; }
+  .sd-copy { padding-bottom: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sd-section *, .sd-section *::after { transition: none !important; }
+}
+
+.sd-entry.sd-settle .sd-body { transition: none; }
