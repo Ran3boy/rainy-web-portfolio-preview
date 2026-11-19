@@ -2,12 +2,9 @@
   --rw-pointer-ready: 1;
   display: none;
   position: fixed;
-  inset: 0 auto auto 0;
+  inset: 0;
   z-index: 1000;
-  width: 25px;
-  height: 25px;
-  margin: -12.5px 0 0 -12.5px;
-  contain: layout style;
+  overflow: clip;
 }
 .rw-pointer, .rw-pointer * { pointer-events: none !important; }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
@@ -16,7 +13,10 @@
 }
 .rw-pointer-body {
   position: absolute;
-  inset: 0;
+  left: -12.5px;
+  top: -12.5px;
+  width: 25px;
+  height: 25px;
   display: grid;
   place-items: center;
 }
@@ -24,8 +24,8 @@
   position: absolute;
   width: 7px;
   height: 7px;
-  left: calc(50% - 3.5px);
-  top: calc(50% - 3.5px);
+  left: -3.5px;
+  top: -3.5px;
   filter: drop-shadow(0 0 1px #302219);
   opacity: 0;
 }
@@ -37,20 +37,27 @@
   background: #f3ddc6;
   clip-path: polygon(0 39%,39% 39%,39% 0,61% 0,61% 39%,100% 39%,100% 61%,61% 61%,61% 100%,39% 100%,39% 61%,0 61%);
 }
-.rw-pointer-mark, .rw-pointer-wake {
+.rw-pointer-mark {
   grid-area: 1 / 1;
   width: 25px;
   height: 25px;
   transform-origin: center;
-}
-.rw-pointer-mark {
   position: relative;
   display: block;
   scale: 1;
   filter: drop-shadow(0 1px 1px #171310a6);
   mask-image: radial-gradient(circle at center, transparent 1.3px, black 2.1px);
 }
-.rw-pointer-wake { background: #e5a071; mask: url(shared/rainy-mark.svg) center / contain no-repeat; opacity: 0; }
+.rw-pointer-wake {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  fill: #e5a071;
+  opacity: 0;
+}
 .rw-pointer-body::after {
   content: '';
   position: absolute;

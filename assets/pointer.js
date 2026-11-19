@@ -9,8 +9,11 @@
   mark.alt = '';
   mark.draggable = false;
   mark.src = new URL('shared/rainy-mark.svg', document.currentScript.src).href;
-  const wakeInk = document.createElement('span');
-  wakeInk.className = 'rw-pointer-wake';
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const wakeInk = document.createElementNS(svgNS, 'svg');
+  wakeInk.setAttribute('class', 'rw-pointer-wake');
+  const ribbon = document.createElementNS(svgNS, 'path');
+  wakeInk.append(ribbon);
   const body = document.createElement('span');
   body.className = 'rw-pointer-body';
   const sight = document.createElement('span');
@@ -34,77 +37,81 @@
     choice +
     '), textarea, select, option, [contenteditable]:not([contenteditable="false"]), iframe, dialog[open]';
   const interactive =
-    'a[href],button:not(:disabled),summary,[role="button"],[role="tab"],' +
-    choice +
-    ',label:has(' +
-    choice +
-    ')';
-  const limit = (n, max) => Math.max(-max, Math.min(max, n));
-  const springs = [];
-  function spring(stiffness, damping, tolerance) {
-    const s = { x: 0, v: 0, goal: 0, stiffness, damping, tolerance };
-    springs.push(s);
-    return s;
-  }
-
-  // Two components describe the stretch tensor in screen space. Turning a corner
-  // bends the existing outline continuously instead of snapping its stretch axis.
-  const shapeX = spring(690, 24, 0.001),
-    shapeY = spring(690, 24, 0.001);
-  const twist = spring(610, 22, 0.05),
-    pressure = spring(860, 34, 0.001);
-  // These coordinates are in viewport space. A new mouse event moves the spring's
-  // destination, never the mass itself, except to bound very large jumps.
-  const bodyX = spring(1020, 23, 0.08), bodyY = spring(1020, 23, 0.08);
-  // The button can return stored energy without softening everyday tracking.
-  const recoilX = spring(615, 16, 0.08), recoilY = spring(615, 16, 0.08);
-  const materials = {
-    button: { strike: 1370, release: 1590, squash: 0.35 },
-    link:   { strike: 560, release: 470, squash: 0.17 },
-    card:   { strike: 940, release: 1030, squash: 0.26 },
-    drag:   { strike: 700, release: 530, squash: 0.2 }
+    'a[href],button:not(:disabled),summary,[role="button"],[role="tab"],' + choice + ',label:has(' + choice + ')';
+  // All integration and trail sampling use the same clock. DOM events supply
+  // timestamped positions, never impulses or visual-body coordinates.
+  const stepMs = 1000 / 240;
+  const dt = stepMs / 1000;
+  const inputFollow = 1 - Math.exp(-dt / 0.017);
+  const velocityFollow = 1 - Math.exp(-dt / 0.022);
+  const bodyX = { x: 0, v: 0 },
+    bodyY = { x: 0, v: 0 };
+  const recoilX = { x: 0, v: 0 },
+    recoilY = { x: 0, v: 0 };
+  const shapeX = { x: 0, v: 0 },
+    shapeY = { x: 0, v: 0 };
+  const twist = { x: 0, v: 0 },
+    pressure = { x: 0, v: 0 };
+  const axes = [bodyX, bodyY, recoilX, recoilY, shapeX, shapeY, twist, pressure];
+  const surfaces = {
+    button: { excursion: 42, compression: 0.46 },
+    card: { excursion: 52, compression: 0.35 },
+    drag: { excursion: 29, compression: 0.28 },
+    link: { excursion: 19, compression: 0.23 }
   };
-  const tailX = spring(570, 25, 0.04),
-    tailY = spring(570, 25, 0.04);
+  const samples = [],
+    history = [];
   let ready = false,
     active = false,
     pressed = false,
     dragging = false;
-  let hit = null,
+  let point = null,
+    hit = null,
     mode = 'free',
-    point = null,
-    frame = 0,
+    surface = 'free';
+  let frame = 0,
     refresh = 0,
-    lastFrame = 0;
-  let dx = 1,
-    dy = 0,
-    force = 0,
-    motionAt = 0,
-    near = null;
-  let contact = null, lastImpact = -Infinity, surface = 'free';
+    clock = 0,
+    lastPaint = 0;
+  let guideX = 0,
+    guideY = 0,
+    guideVX = 0,
+    guideVY = 0;
+  let contact = null,
+    lastImpact = -Infinity,
+    trailInk = 0;
 
   function restInk() {
-    body.style.removeProperty('transform');
-    sight.style.removeProperty('opacity');
     mark.style.removeProperty('transform');
-    mark.style.removeProperty('scale');
-    wakeInk.style.removeProperty('opacity');
-    wakeInk.style.removeProperty('transform');
+    mark.style.scale = pressed ? '.74' : '';
+    sight.style.opacity = '0';
+    wakeInk.style.opacity = '0';
+    ribbon.removeAttribute('d');
+    history.length = 0;
+    trailInk = 0;
+  }
+
+  function resetPhysics(x, y, now) {
+    for (const axis of axes) axis.x = axis.v = 0;
+    bodyX.x = guideX = x;
+    bodyY.x = guideY = y;
+    guideVX = guideVY = 0;
+    clock = lastPaint = now;
+    samples.length = 0;
+    samples.push({ x, y, at: now });
+    contact = null;
+    lastImpact = -Infinity;
+    restInk();
+    body.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
   }
 
   function hide() {
     active = pressed = dragging = false;
-    hit = point = near = null;
+    hit = point = contact = null;
     mode = surface = 'free';
-    contact = null;
-    lastImpact = -Infinity;
-    force = motionAt = 0;
-    dx = 1;
-    dy = 0;
     cancelAnimationFrame(frame);
     cancelAnimationFrame(refresh);
     frame = refresh = 0;
-    for (const s of springs) s.x = s.v = s.goal = 0;
     pointer.classList.remove('is-active');
     root.classList.remove('rw-pointer-on');
     for (const key of ['mode', 'surface', 'running', 'pressed']) delete pointer.dataset[key];
@@ -113,88 +120,213 @@
 
   function start() {
     if (frame || !active) return;
-    lastFrame = performance.now();
+    lastPaint = clock = performance.now() - stepMs;
     pointer.dataset.running = 'true';
     frame = requestAnimationFrame(animate);
   }
 
-  function paint() {
-    const angle = (twist.x * Math.PI) / 180,
-      c = Math.cos(angle),
-      s = Math.sin(angle);
-    const xx = 1 + shapeX.x,
-      yy = 1 - shapeX.x * 0.78,
-      xy = shapeY.x * 0.89;
-    const offsetX = bodyX.x - point.x + recoilX.x, offsetY = bodyY.x - point.y + recoilY.x;
-    body.style.transform = `translate3d(${offsetX}px,${offsetY}px,0)`;
-    sight.style.opacity = String(Math.min(1, Math.max(0, (Math.hypot(offsetX, offsetY) - 5) / 8)));
-    const matrix = [
-      xx * c + xy * s,
-      xy * c + yy * s,
-      xy * c - xx * s,
-      yy * c - xy * s,
-      0, 0
-    ];
-    mark.style.transform = `matrix(${matrix.join(',')})`;
-    mark.style.scale = String(1 + pressure.x);
-    const length = Math.hypot(tailX.x, tailY.x);
-    wakeInk.style.opacity = String(Math.min(0.84, Math.max(0, (length - 1.8) / 20)));
-    if (length > 1) {
-      const angle = Math.atan2(tailY.x, tailX.x);
-      const offset = `translate(${tailX.x * 1.08}px, ${tailY.x * 1.08}px)`;
-      const stretch = `rotate(${angle}rad) scale(${1 + length / 28}, .67) rotate(${-angle}rad)`;
-      wakeInk.style.transform = `${offset} ${stretch}`;
+  function spring(axis, goal, frequency, damping, acceleration = 0) {
+    axis.v += ((goal - axis.x) * frequency * frequency - damping * axis.v + acceleration) * dt;
+    axis.x += axis.v * dt;
+  }
+
+  // Interpolate coalesced input positions at simulation time. Low-rate devices
+  // and high-refresh screens drive the same low-pass guide and moving mass.
+  function advanceGuide(time) {
+    while (samples.length > 1 && samples[1].at <= time) samples.shift();
+    const a = samples[0],
+      b = samples[1] || a;
+    const mix = b === a ? 0 : Math.max(0, Math.min(1, (time - a.at) / (b.at - a.at)));
+    const nextX = a.x + (b.x - a.x) * mix,
+      nextY = a.y + (b.y - a.y) * mix;
+    const sx = (nextX - guideX) * inputFollow,
+      sy = (nextY - guideY) * inputFollow;
+    guideX += sx;
+    guideY += sy;
+    guideVX += (sx / dt - guideVX) * velocityFollow;
+    guideVY += (sy / dt - guideVY) * velocityFollow;
+  }
+
+  function integrate(time) {
+    advanceGuide(time - 7);
+    let load = 0,
+      pulse = 0,
+      nx = 0,
+      ny = 0;
+    if (contact) {
+      const face = contact.face,
+        polarity = contact.entering ? 1 : -1;
+      nx = face.nx;
+      ny = face.ny;
+      const gap = (bodyX.x - face.x) * nx + (bodyY.x - face.y) * ny;
+      const normalSpeed = Math.abs(bodyX.v * nx + bodyY.v * ny);
+      if (!contact.loaded && time >= contact.at && polarity * gap <= 12) {
+        contact.loaded = time;
+        const energy = normalSpeed / (normalSpeed + 560);
+        const room = nx < 0 ? face.x : nx > 0 ? innerWidth - face.x : ny < 0 ? face.y : innerHeight - face.y;
+        const available = Math.max(0, room - 16);
+        const spanGain = Math.min(1, face.span / 65);
+        contact.travel = Math.min(available, contact.profile.excursion * (0.68 + 0.32 * spanGain + 0.53 * energy));
+        contact.squash = contact.profile.compression * (0.76 + 0.35 * energy);
+        lastImpact = time;
+      }
+      if (contact.loaded) {
+        const age = (time - contact.loaded) / 1000;
+        const compressionTime = contact.entering ? 0.042 : 0.052;
+        if (age < compressionTime) {
+          load = Math.sin((Math.PI * age) / compressionTime) * contact.squash;
+        } else {
+          // Deliver the stored energy over a short stroke. Velocity is
+          // continuous at impact, release, and during a reversal mid-stroke.
+          const phase = (age - compressionTime) / 0.072;
+          if (phase < 1) pulse = Math.sin(Math.PI * phase) * contact.travel * 710;
+          else contact = null;
+        }
+      } else if (time - contact.at > 190) contact = null;
     }
+    const dx = guideX - bodyX.x,
+      dy = guideY - bodyY.x;
+    const distance = Math.hypot(dx, dy);
+    // The pursuit progressively stiffens on a long sweep without teleporting
+    // the body. Feed-forward keeps steady travel close to the real pointer.
+    const frequency = 25 + (12 * distance) / (distance + 180);
+    const damping = frequency * 1.32;
+    const pull = load * (contact?.entering ? 17 : -22);
+    spring(bodyX, guideX + nx * pull, frequency, damping, damping * 0.44 * guideVX);
+    spring(bodyY, guideY + ny * pull, frequency, damping, damping * 0.44 * guideVY);
+    spring(recoilX, 0, 22, 14, nx * pulse);
+    spring(recoilY, 0, 22, 14, ny * pulse);
+
+    const vx = bodyX.v + recoilX.v,
+      vy = bodyY.v + recoilY.v,
+      speed = Math.hypot(vx, vy);
+    const ux = speed ? vx / speed : 0,
+      uy = speed ? vy / speed : 0;
+    const drive = (speed * speed) / (speed * speed + 590 * 590);
+    const stretch = drive * (mode === 'card' ? 0.29 : 0.39);
+    spring(shapeX, (ux * ux - uy * uy) * stretch - (nx * nx - ny * ny) * load, 39, 34);
+    spring(shapeY, 2 * ux * uy * stretch, 39, 34);
+    spring(twist, (ux * 0.86 - uy * 0.64) * drive * 22, 27, 19);
+    spring(pressure, pressed ? -0.26 : 0, 28, 32);
+
+    const ink = Math.max(0, speed - 145);
+    const opacity = (0.9 * ink * ink) / (ink * ink + 310 * 310);
+    trailInk += (opacity - trailInk) * (1 - Math.exp(-dt / (opacity > trailInk ? 0.024 : 0.065)));
+    const last = history.at(-1);
+    if (!last || time - last.at >= 8) history.push({ x: bodyX.x + recoilX.x, y: bodyY.x + recoilY.x, at: time });
+    while (history.length && time - history[0].at > 165) history.shift();
+  }
+
+  function pointText(p) {
+    return p.x.toFixed(1) + ' ' + p.y.toFixed(1);
+  }
+
+  function drawTrail(x, y) {
+    if (trailInk < 0.018) {
+      wakeInk.style.opacity = '0';
+      if (ribbon.hasAttribute('d')) ribbon.removeAttribute('d');
+      return;
+    }
+    const spine = [{ x: 0, y: 0, s: 0 }];
+    const maxLength = Math.max(95, Math.min(160, innerWidth * 0.121)) * (0.3 + (0.7 * trailInk) / 0.9);
+    for (let i = history.length - 1; i >= 0; i--) {
+      const last = spine.at(-1),
+        dx = history[i].x - x - last.x,
+        dy = history[i].y - y - last.y;
+      const d = Math.hypot(dx, dy);
+      if (d < 0.9) continue;
+      const take = Math.min(d, maxLength - last.s);
+      spine.push({ x: last.x + (dx * take) / d, y: last.y + (dy * take) / d, s: last.s + take });
+      if (take < d || last.s + take >= maxLength - 0.1) break;
+    }
+    const length = spine.at(-1).s;
+    if (length < 4) {
+      wakeInk.style.opacity = '0';
+      return;
+    }
+    // At a true hairpin the oldest leg doubles back under the newest. Pinch
+    // the width at the turn and let the old leg fade as the new stroke grows.
+    let fold = null;
+    for (let i = 1; i < spine.length - 1; i++) {
+      const a = spine[i - 1],
+        b = spine[i],
+        c = spine[i + 1];
+      const cosine = ((b.x - a.x) * (c.x - b.x) + (b.y - a.y) * (c.y - b.y)) / ((b.s - a.s) * (c.s - b.s));
+      if (cosine < -0.5) {
+        fold = b.s;
+        break;
+      }
+    }
+    const left = [],
+      right = [];
+    for (let i = 0; i < spine.length; i++) {
+      const p = spine[i],
+        a = spine[Math.max(0, i - 1)],
+        b = spine[Math.min(spine.length - 1, i + 1)];
+      const dx = b.x - a.x,
+        dy = b.y - a.y,
+        norm = Math.hypot(dx, dy) || 1;
+      let width = (3.6 + 3.5 * trailInk) * Math.pow(1 - p.s / length, 0.95);
+      if (fold !== null) {
+        width = Math.min(width, 0.35 + Math.abs(p.s - fold) * 0.35);
+        if (p.s > fold) width *= Math.exp(-fold / 6);
+      }
+      const nx = (-dy / norm) * width,
+        ny = (dx / norm) * width;
+      left.push({ x: p.x + nx, y: p.y + ny });
+      right.push({ x: p.x - nx, y: p.y - ny });
+    }
+    const outline = left.concat(right.reverse());
+    let path = 'M' + pointText(outline[0]);
+    for (let i = 1; i < outline.length - 1; i++) {
+      const p = outline[i],
+        q = outline[i + 1];
+      path += 'Q' + pointText(p) + ' ' + pointText({ x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 });
+    }
+    ribbon.setAttribute('d', path + 'L' + pointText(outline.at(-1)) + 'Z');
+    wakeInk.style.opacity = String(trailInk);
+  }
+
+  function paint() {
+    const x = bodyX.x + recoilX.x,
+      y = bodyY.x + recoilY.x;
+    body.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+    const offset = Math.hypot(x - point.x, y - point.y);
+    sight.style.opacity = String(Math.min(1, Math.max(0, (offset - 7) / 12)));
+    const radians = (twist.x * Math.PI) / 180,
+      c = Math.cos(radians),
+      s = Math.sin(radians);
+    const xx = 1 + shapeX.x,
+      yy = 1 - shapeX.x * 0.79,
+      xy = shapeY.x * 0.89;
+    mark.style.transform =
+      'matrix(' + [xx * c + xy * s, xy * c + yy * s, xy * c - xx * s, yy * c - xy * s, 0, 0].join(',') + ')';
+    mark.style.scale = String(1 + pressure.x);
+    drawTrail(x, y);
   }
 
   function animate(now) {
     frame = 0;
     if (!active) return;
-    const elapsed = Math.min((now - lastFrame) / 1000, 0.042);
-    lastFrame = now;
-    // Pointer events can arrive below the display rate. Sustain only one frame,
-    // then let stored energy decay without keeping an idle animation alive.
-    const age = now - motionAt;
-    const drive = age > 185 ? 0 : force * Math.exp(-Math.max(0, age - 20) / 24);
-    const squeeze = mode === 'card' ? 0.27 : 0.39;
-    shapeX.goal = (dx * dx - dy * dy) * drive * squeeze;
-    shapeY.goal = 2 * dx * dy * drive * squeeze;
-    bodyX.goal = point.x;
-    bodyY.goal = point.y;
-    if (near) {
-      const push = drive * near.strength;
-      shapeX.goal -= (near.nx * near.nx - near.ny * near.ny) * push * 0.24;
-      bodyX.goal -= near.nx * push * 7;
-      bodyY.goal -= near.ny * push * 7;
+    // A resumed tab or a long blocked frame gets a fresh origin and an empty
+    // trail. Catching up stale motion would draw a streak across the viewport.
+    if (now - lastPaint > 150) resetPhysics(point.x, point.y, now);
+    lastPaint = now;
+    while (clock + stepMs <= now) {
+      clock += stepMs;
+      integrate(clock);
     }
-    twist.goal = (dx * 0.87 - dy * 0.65) * drive * (mode === 'card' ? 18 : 29);
-    pressure.goal = pressed ? -0.26 : 0;
-    // The copper silhouette points along the body's real path, including the
-    // instant it is travelling opposite the mouse during a reversal.
-    const vx = bodyX.v + recoilX.v, vy = bodyY.v + recoilY.v;
-    const speed = Math.hypot(vx, vy);
-    const wakeLength = Math.min(34, Math.max(0, (speed - 245) * 0.039));
-    tailX.goal = speed ? -vx / speed * wakeLength : 0;
-    tailY.goal = speed ? -vy / speed * wakeLength : 0;
-    if (contact) resolveContact(now);
-    const steps = Math.max(1, Math.ceil(elapsed / 0.006)),
-      dt = elapsed / steps;
-    let moving = drive > 0.001 || !!contact;
-    for (const value of springs) {
-      for (let i = 0; i < steps; i++) {
-        value.v += ((value.goal - value.x) * value.stiffness - value.damping * value.v) * dt;
-        value.x += value.v * dt;
-      }
-      if (Math.abs(value.x - value.goal) > value.tolerance || Math.abs(value.v) > value.tolerance * 20)
-        moving = true;
-      else {
-        value.x = value.goal;
-        value.v = 0;
-      }
-    }
-    if (!moving) {
-      restInk();
-      if (pressed) mark.style.scale = String(1 + pressure.goal);
+    const settled =
+      !contact &&
+      now - point.at > 165 &&
+      trailInk < 0.003 &&
+      Math.hypot(bodyX.x - point.x, bodyY.x - point.y, recoilX.x, recoilY.x) < 0.11 &&
+      Math.hypot(bodyX.v, bodyY.v, recoilX.v, recoilY.v) < 2 &&
+      Math.abs(twist.x) < 0.11 &&
+      Math.abs(pressure.x - (pressed ? -0.26 : 0)) < 0.002;
+    if (settled) {
+      resetPhysics(point.x, point.y, now);
+      pressure.x = pressed ? -0.26 : 0;
       delete pointer.dataset.running;
       return;
     }
@@ -223,80 +355,40 @@
   function edge(node, x, y, from = null) {
     const r = node.getBoundingClientRect();
     const faces = [
-      { x:r.left, y:r.top, nx:-1, ny:0 },
-      { x:r.right, y:r.top, nx:1, ny:0 },
-      { x:r.left, y:r.top, nx:0, ny:-1 },
-      { x:r.left, y:r.bottom, nx:0, ny:1 }
+      { x: r.left, y: r.top, nx: -1, ny: 0 },
+      { x: r.right, y: r.top, nx: 1, ny: 0 },
+      { x: r.left, y: r.top, nx: 0, ny: -1 },
+      { x: r.left, y: r.bottom, nx: 0, ny: 1 }
     ];
-    const signed = (face, px, py) => (px-face.x)*face.nx + (py-face.y)*face.ny;
-    let nearest = faces[0], distance = -Infinity;
+    const signed = (face, px, py) => (px - face.x) * face.nx + (py - face.y) * face.ny;
+    let nearest = faces[0],
+      distance = -Infinity;
     for (const face of faces) {
-      const end = signed(face,x,y);
-      if (end > distance) { distance=end; nearest=face; }
+      face.span = Math.min(r.width, r.height);
+      const end = signed(face, x, y);
+      if (end > distance) {
+        distance = end;
+        nearest = face;
+      }
       if (!from) continue;
-      const start = signed(face,from.x,from.y);
+      const start = signed(face, from.x, from.y);
       if (start * end > 0 || start === end) continue;
       const t = start / (start - end);
-      const ix = from.x + (x-from.x)*t, iy = from.y + (y-from.y)*t;
-      if (ix >= r.left-.1 && ix <= r.right+.1 && iy >= r.top-.1 && iy <= r.bottom+.1) return face;
+      const ix = from.x + (x - from.x) * t,
+        iy = from.y + (y - from.y) * t;
+      if (ix >= r.left - 0.1 && ix <= r.right + 0.1 && iy >= r.top - 0.1 && iy <= r.bottom + 0.1) return face;
     }
-    nearest.strength = Math.max(0, 1 - Math.abs(distance)/24);
     return nearest;
   }
 
   function materialFor(node, mode) {
     if (mode !== 'link') return mode;
-    return node.matches('button,summary,input,label,[role=button],.btn,.nav-telegram-2,.sd-detail') ? 'button' : 'link';
+    return node.matches('button,summary,input,label,[role=button],.btn,.nav-telegram-2,.sd-detail')
+      ? 'button'
+      : 'link';
   }
 
-  function resolveContact(now) {
-    const { face, profile, entering, at } = contact;
-    const { nx, ny } = face;
-    const gap = (bodyX.x-face.x)*nx + (bodyY.x-face.y)*ny;
-    if (now - at > 170) {
-      contact = null;
-      return;
-    }
-    // An inward-moving mark hits the exterior with its leading shoulder.
-    // A departing mark releases as the body itself crosses the edge.
-    if (!contact.loadedAt && (entering ? gap > 10 : gap < -7)) return;
-    const normalVelocity = bodyX.v*nx + bodyY.v*ny;
-    if (!entering && profile === materials.button) {
-      const axis = nx * nx - ny * ny;
-      if (!contact.loadedAt) {
-        contact.loadedAt = now;
-        // Catch the shoulder at the edge; its motion along the edge continues.
-        const catchSpeed = Math.max(0, normalVelocity) * 0.7;
-        bodyX.v -= nx * catchSpeed;
-        bodyY.v -= ny * catchSpeed;
-        shapeX.v -= axis * 5;
-      }
-      const distanceOutside = (point.x - face.x) * nx + (point.y - face.y) * ny;
-      if (now - contact.loadedAt < 42 && distanceOutside < 28) {
-        const draw = Math.max(0, Math.min(12, distanceOutside + 3));
-        bodyX.goal -= nx * draw;
-        bodyY.goal -= ny * draw;
-        shapeX.goal -= axis * profile.squash;
-        return;
-      }
-      const impulse = profile.release * (0.61 + force * 0.09);
-      recoilX.v = limit(recoilX.v + nx * impulse, 1200);
-      recoilY.v = limit(recoilY.v + ny * impulse, 1200);
-      shapeX.v += axis * 8;
-      contact = null;
-      lastImpact = now;
-      return;
-    }
-    contact = null;
-    lastImpact = now;
-    const kick = (entering ? profile.strike : profile.release) * (.87 + force*.19);
-    bodyX.v += nx*(kick-normalVelocity);
-    bodyY.v += ny*(kick-normalVelocity);
-    shapeX.x -= (nx*nx - ny*ny)*profile.squash;
-    twist.v += (nx-ny)*90;
-  }
-
-  function classify(el, x, y, buttons = 0, lookAhead = false) {
+  function classify(el, x, y, buttons = 0, moving = false) {
     const selection = getSelection();
     if (
       !ready ||
@@ -305,104 +397,76 @@
       !(el instanceof Element) ||
       el.closest(native) ||
       document.activeElement?.matches(editable) ||
-      (selection &&
-        !selection.isCollapsed &&
-        (selection.containsNode(el, true) || (buttons === 1 && !dragging)))
+      (selection && !selection.isCollapsed && (selection.containsNode(el, true) || (buttons === 1 && !dragging)))
     ) {
       if (active) hide();
       return false;
     }
     const next = dragging ? { node: hit, mode: 'drag' } : targetAt(el, x, y);
     if (next.node !== hit) {
-      const previousHit = hit, previousSurface = surface;
+      const previousHit = hit,
+        previousSurface = surface;
       hit = next.node;
       surface = materialFor(hit, next.mode);
-      contact = null;
-      // Scrolling beneath a resting mouse only changes the affordance. A
-      // physical boundary crossing is required to strike or release the body.
-      if (lookAhead && point && (hit || previousHit)) {
-        const face = edge(hit || previousHit, x, y, point);
+      if (moving && point) {
+        const node = hit || previousHit;
         const at = performance.now();
-        const proximity = Math.hypot(x-point.x,y-point.y);
-        if (at-lastImpact >= 95 && proximity < 110) {
-          contact = { face, at, entering: !!hit, profile: materials[hit ? surface : previousSurface] };
-          start();
+        if (node && at - lastImpact > 67) {
+          contact = {
+            face: edge(node, x, y, point),
+            profile: surfaces[hit ? surface : previousSurface],
+            at,
+            entering: !!hit,
+            loaded: 0
+          };
         }
-      }
+      } else contact = null;
     }
     mode = next.mode;
     if (pointer.dataset.mode !== mode) pointer.dataset.mode = mode;
     if (pointer.dataset.surface !== surface) pointer.dataset.surface = surface;
-    near = null;
-    if (lookAhead && !hit && force > 0.025) {
-      const px = x + dx * 24,
-        py = y + dy * 24;
-      const candidate = targetAt(document.elementFromPoint(px, py), px, py).node;
-      if (candidate) near = edge(candidate, x, y);
-    }
     return true;
+  }
+
+  function recordInput(x, y, at) {
+    const last = samples.at(-1);
+    if (last && at < last.at) return;
+    if (last && at === last.at) {
+      last.x = x;
+      last.y = y;
+      return;
+    }
+    // Start a new stroke where the previous one stopped. An old, stationary
+    // sample together with a fresh event does not describe a long, slow glide.
+    if (last && at - last.at > 60) samples.push({ x: last.x, y: last.y, at: at - 8 });
+    samples.push({ x, y, at });
   }
 
   function move(event) {
     const x = event.clientX,
       y = event.clientY,
-      now = performance.now();
-    if (
-      event.pointerType !== 'mouse' ||
-      x < 0 ||
-      y < 0 ||
-      x >= root.clientWidth ||
-      y >= root.clientHeight
-    ) {
+      at = event.timeStamp;
+    if (event.pointerType !== 'mouse' || x < 0 || y < 0 || x >= root.clientWidth || y >= root.clientHeight) {
       if (active) hide();
       return;
     }
-    const distance = point ? Math.hypot(x - point.x, y - point.y) : 0;
-    if (distance > 0.1) {
-      const ux = (x - point.x) / distance,
-        uy = (y - point.y) / distance;
-      const nextForce = Math.min(1, distance / Math.max(8, Math.min(64, now - point.time)) / 1.75);
-      const reversal = -(ux * dx + uy * dy);
-      if (now - motionAt < 120 && reversal > 0.4) {
-        const kick = Math.min(force, nextForce) * reversal;
-        // Carry only momentum already travelling into the turn. A slow
-        // correction or a reversal during a rebound should add almost none.
-        const forward = Math.max(0, bodyX.v * dx + bodyY.v * dy);
-        const carry = Math.min(470, forward * 0.46) * kick;
-        bodyX.v += dx * carry;
-        bodyY.v += dy * carry;
-        shapeX.v -= (dx * dx - dy * dy) * kick * 6;
-        shapeY.v -= 2 * dx * dy * kick * 6;
-        twist.v += (dx - dy) * kick * 165;
-      }
-      dx = ux;
-      dy = uy;
-      force = nextForce;
-      motionAt = now;
-    }
-    if (!classify(event.target, x, y, event.buttons, distance > 0.1)) return;
+    const moved = !point || x !== point.x || y !== point.y;
+    if (!classify(event.target, x, y, event.buttons, moved)) return;
     if (!active) {
-      bodyX.x = x;
-      bodyY.x = y;
-    } else {
-      // A discontinuity (e.g. re-entering from a second monitor) cannot leave
-      // the mark stranded. Continuous pointer paths retain their own momentum.
-      const ox = bodyX.x-x, oy = bodyY.x-y;
-      const lag = Math.hypot(ox,oy);
-      if (lag > 58) {
-        bodyX.x = x + ox*58/lag;
-        bodyY.x = y + oy*58/lag;
-      }
-    }
-    point = { x, y, time: now };
-    if (active && distance > .1) paint();
-    pointer.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
-    if (!active) {
+      resetPhysics(x, y, at);
       active = true;
       pointer.classList.add('is-active');
       root.classList.add('rw-pointer-on');
+    } else if (moved) {
+      const coalesced = event.getCoalescedEvents?.() || [];
+      for (const sample of coalesced) recordInput(sample.clientX, sample.clientY, sample.timeStamp);
+      recordInput(x, y, at);
     }
-    if (distance > 0.1) start();
+    point = { x, y, at };
+    // The sight alone follows the hardware immediately. The body and ribbon
+    // are painted independently on the next animation frame.
+    sight.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+    if (moved) start();
   }
 
   function recheck() {
@@ -418,24 +482,16 @@
       hide();
       return;
     }
-    if (
-      !event.isPrimary ||
-      event.button !== 0 ||
-      !active ||
-      !classify(event.target, event.clientX, event.clientY)
-    )
+    if (!event.isPrimary || event.button !== 0 || !active || !classify(event.target, event.clientX, event.clientY))
       return;
     pressed = true;
     dragging = mode === 'drag';
     pointer.dataset.pressed = 'true';
-    pressure.v -= 3.3;
     start();
   }
 
   function release() {
     if (!pressed) return;
-    pressure.v += dragging ? 4.5 : 3.5;
-    if (dragging) twist.v += dx * 90;
     pressed = dragging = false;
     delete pointer.dataset.pressed;
     start();
