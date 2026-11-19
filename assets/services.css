@@ -104,27 +104,26 @@
   --x: 7%;
   --y: 8%;
   --tilt: -11deg;
-  --run-x: 109%;
-  --run-y: 92%;
+  --run-x: 116%; --run-y: 135%;
+  --bow-x: -81%; --bow-y: -13%;
   --bank: 29deg;
   --lag: 0ms;
-  /* The edge cuts off the flight inside the sheet. A small portion of each
-     resting object hangs over its corner, leaving the evidence legible. */
+  /* Compact layouts keep the marks inside their existing marginal space. */
   clip-path: polygon(-13% -35%,112% -35%,112% 18%,20% 18%,9% 28%,-13% 28%);
 }
 .sd-tool[data-tool="opencart"] { --size: clamp(48px,16.4cqw,106px); }
 .sd-tool[data-tool="wordpress"] {
   --size: clamp(44px,12.4cqw,79px);
-  --x: 92%; --y: 88%; --tilt: 10deg; --run-x: -114%; --run-y: -115%; --bank: -41deg; --lag: 115ms;
+  --x: 92%; --y: 88%; --tilt: 10deg; --run-x: -154%; --run-y: -94%; --bow-x: 46%; --bow-y: -67%; --bank: -33deg; --lag: 130ms;
   clip-path: polygon(-12% 82%,80% 82%,92% 64%,113% 64%,113% 133%,-12% 133%);
 }
 .sd-tool[data-tool="topvisor"] {
-  --x: 92%; --y: 9%; --tilt: 9deg; --run-x: -113%; --run-y: 118%; --bank: -38deg;
+  --x: 92%; --y: 9%; --tilt: 9deg; --run-x: 109%; --run-y: 143%; --bow-x: 60%; --bow-y: -46%; --bank: 31deg;
   clip-path: polygon(-12% -35%,113% -35%,113% 31%,89% 31%,79% 18%,-12% 18%);
 }
 .sd-tool[data-tool="metrica"] {
   --size: clamp(45px,12.3cqw,80px);
-  --x: 8%; --y: 87%; --tilt: -9deg; --run-x: 118%; --run-y: -110%; --bank: 35deg; --lag: 120ms;
+  --x: 8%; --y: 87%; --tilt: -9deg; --run-x: -106%; --run-y: -141%; --bow-x: -67%; --bow-y: 46%; --bank: -28deg; --lag: 159ms;
   clip-path: polygon(-12% 66%,10% 66%,20% 82%,112% 82%,112% 133%,-12% 133%);
 }
 .sd-tool-flight {
@@ -160,53 +159,77 @@
 [data-tool="wordpress"] .sd-tool-caption { inset: auto 17% 3.1% auto; text-align: right; }
 [data-tool="topvisor"] .sd-tool-caption { inset: 3.8% 18% auto auto; text-align: right; }
 [data-tool="metrica"] .sd-tool-caption { inset: auto auto 3.1% 18%; }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .sd-tool-rack[data-waiting] { opacity: 0; }
-  /* Separate horizontal and vertical easing curves produce a bending path.
-     CSS transitions retarget from the current pose on a rapid reversal. */
-  .sd-tools {
-    visibility: hidden;
-    transition: visibility 0s 360ms;
+/* Wide scenes can afford asymmetric landings above, below and beside the
+   exhibit. The cutout matches the centered 81%-wide, 2.55:1 artwork. */
+@container (min-width: 510px) {
+  .sd-tools .sd-tool {
+    --art-top: calc(50% - 15.88cqw);
+    --art-bottom: calc(50% + 15.88cqw);
+    clip-path: polygon(evenodd, -14% -42%, 114% -42%, 114% 142%, -14% 142%, -14% -42%,
+      9.5% var(--art-top), 9.5% var(--art-bottom), 90.5% var(--art-bottom), 90.5% var(--art-top), 9.5% var(--art-top));
   }
+  .sd-tool[data-tool="opencart"] { --x: 22%; --y: -1.5%; }
+  .sd-tool[data-tool="wordpress"] { --x: 99%; --y: 71%; }
+  .sd-tool[data-tool="topvisor"] { --x: 73%; --y: -2.5%; }
+  .sd-tool[data-tool="metrica"] {
+    --x: 0%; --y: 72%;
+    --run-x: 152%; --run-y: -112%; --bow-x: -26%; --bow-y: 72%;
+  }
+  [data-tool="opencart"] .sd-tool-caption { inset: 2.4% auto auto 34%; }
+  [data-tool="wordpress"] .sd-tool-caption { inset: auto 8% 3% auto; }
+  [data-tool="topvisor"] .sd-tool-caption { inset: 2% 38% auto auto; }
+  [data-tool="metrica"] .sd-tool-caption { inset: auto auto 3.1% 6.5%; }
+}
+
+/* Tight panels use the inward side of each approach, including while hidden. */
+@container (max-width: 509.99px) {
+  .sd-tool[data-tool="topvisor"] { --run-x: -123%; --bow-x: -32%; }
+  .sd-tool[data-tool="metrica"] { --run-x: 125%; --bow-x: 32%; }
+}
+
+@property --sd-flight {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .sd-section { overflow-x: clip; }
+  .sd-stage:not(:has(#svc-trigger-development:checked, #svc-trigger-seo:checked)) .sd-tool-rack { transition: opacity 240ms ease-in; }
+  .sd-tool-rack[data-waiting] { opacity: 0; }
+  .sd-tools { transition: visibility 0s 370ms; }
   .sd-tool-flight {
+    /* Both directions use the same continuous curve. The transverse bend
+       vanishes at either endpoint and peaks in the middle of the flight. */
+    --remaining: calc(1 - var(--sd-flight));
+    --bend: sin(calc(var(--sd-flight) * 180deg));
     opacity: 0;
-    transform: translateX(var(--run-x));
-    transition: transform 330ms cubic-bezier(.4,0,.75,.55), opacity 110ms linear 205ms;
+    transform: translate(
+      calc(var(--remaining) * var(--run-x) + var(--bend) * var(--bow-x)),
+      calc(var(--remaining) * var(--run-y) + var(--bend) * var(--bow-y))
+    );
+    transition: --sd-flight 365ms cubic-bezier(.43,.02,.68,.65), opacity 160ms ease-in 155ms;
   }
   .sd-tool-symbol {
-    transform: perspective(380px) translateY(var(--run-y)) rotateX(48deg) rotate(var(--bank)) scale(.68);
-    transition: transform 355ms cubic-bezier(.54,0,.8,.6);
+    transform: perspective(420px) rotateX(45deg) rotate(var(--bank)) scale(.71);
+    transition: transform 350ms cubic-bezier(.42,0,.73,.63);
   }
   .sd-tool-caption { opacity: 0; transition: opacity 105ms linear; }
-  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"],
-  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] {
+  .sd-stage:has(#svc-trigger-development:checked) .sd-tool-rack:not([data-waiting]) [data-tools="development"],
+  .sd-stage:has(#svc-trigger-seo:checked) .sd-tool-rack:not([data-waiting]) [data-tools="seo"] {
     visibility: visible;
     transition-delay: 0s;
-    --entry: 80ms;
+    .sd-tool-flight {
+      --sd-flight: 1;
+      opacity: 1;
+      transition: --sd-flight 730ms cubic-bezier(.25,.70,.22,1.16) calc(46ms + var(--lag)), opacity 165ms ease-out calc(46ms + var(--lag));
+    }
+    .sd-tool-symbol {
+      transform: perspective(420px) rotateX(0deg) rotate(var(--tilt)) scale(1);
+      transition: transform 655ms cubic-bezier(.26,.75,.27,1.12) calc(46ms + var(--lag));
+    }
+    .sd-tool-caption { opacity: 1; transition: opacity 160ms ease-out calc(335ms + var(--lag)); }
   }
-  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"] .sd-tool-flight,
-  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] .sd-tool-flight {
-    opacity: 1;
-    transform: translateX(0);
-    transition: transform 700ms cubic-bezier(.18,.75,.15,1.12) calc(var(--entry) + var(--lag)), opacity 180ms ease-out calc(var(--entry) + var(--lag));
-  }
-  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"] .sd-tool-symbol,
-  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] .sd-tool-symbol {
-    transform: perspective(380px) rotate(var(--tilt));
-    transition: transform 555ms cubic-bezier(.16,1.1,.22,1) calc(var(--entry) + var(--lag));
-  }
-  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"] .sd-tool-caption,
-  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] .sd-tool-caption {
-    opacity: 1;
-    transition: opacity 180ms ease-out calc(255ms + var(--lag));
-  }
-  /* The first pair performs the same flight when its media is first in view. */
-  @keyframes sd-flight-x { from { opacity: 0; transform: translateX(var(--run-x)); } to { opacity: 1; transform: translateX(0); } }
-  @keyframes sd-flight-y { from { transform: perspective(380px) translateY(var(--run-y)) rotateX(48deg) rotate(var(--bank)) scale(.68); } to { transform: perspective(380px) rotate(var(--tilt)); } }
-  .sd-tool-rack[data-intro="development"] [data-tools="development"] .sd-tool-flight,
-  .sd-tool-rack[data-intro="seo"] [data-tools="seo"] .sd-tool-flight { animation: sd-flight-x 700ms cubic-bezier(.18,.75,.15,1.12) var(--lag) backwards; }
-  .sd-tool-rack[data-intro="development"] [data-tools="development"] .sd-tool-symbol,
-  .sd-tool-rack[data-intro="seo"] [data-tools="seo"] .sd-tool-symbol { animation: sd-flight-y 555ms cubic-bezier(.16,1.1,.22,1) var(--lag) backwards; }
 }
 .sd-panel {
   grid-area: 1 / 1;

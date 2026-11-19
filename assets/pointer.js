@@ -56,6 +56,8 @@
   // These coordinates are in viewport space. A new mouse event moves the spring's
   // destination, never the mass itself, except to bound very large jumps.
   const bodyX = spring(1020, 23, 0.08), bodyY = spring(1020, 23, 0.08);
+  // The button can return stored energy without softening everyday tracking.
+  const recoilX = spring(615, 16, 0.08), recoilY = spring(615, 16, 0.08);
   const materials = {
     button: { strike: 1370, release: 1590, squash: 0.35 },
     link:   { strike: 560, release: 470, squash: 0.17 },
@@ -123,7 +125,7 @@
     const xx = 1 + shapeX.x,
       yy = 1 - shapeX.x * 0.78,
       xy = shapeY.x * 0.89;
-    const offsetX = bodyX.x - point.x, offsetY = bodyY.x - point.y;
+    const offsetX = bodyX.x - point.x + recoilX.x, offsetY = bodyY.x - point.y + recoilY.x;
     body.style.transform = `translate3d(${offsetX}px,${offsetY}px,0)`;
     sight.style.opacity = String(Math.min(1, Math.max(0, (Math.hypot(offsetX, offsetY) - 5) / 8)));
     const matrix = [
@@ -169,14 +171,15 @@
     pressure.goal = pressed ? -0.26 : 0;
     // The copper silhouette points along the body's real path, including the
     // instant it is travelling opposite the mouse during a reversal.
-    const speed = Math.hypot(bodyX.v, bodyY.v);
+    const vx = bodyX.v + recoilX.v, vy = bodyY.v + recoilY.v;
+    const speed = Math.hypot(vx, vy);
     const wakeLength = Math.min(34, Math.max(0, (speed - 245) * 0.039));
-    tailX.goal = speed ? -bodyX.v / speed * wakeLength : 0;
-    tailY.goal = speed ? -bodyY.v / speed * wakeLength : 0;
+    tailX.goal = speed ? -vx / speed * wakeLength : 0;
+    tailY.goal = speed ? -vy / speed * wakeLength : 0;
     if (contact) resolveContact(now);
     const steps = Math.max(1, Math.ceil(elapsed / 0.006)),
       dt = elapsed / steps;
-    let moving = drive > 0.001;
+    let moving = drive > 0.001 || !!contact;
     for (const value of springs) {
       for (let i = 0; i < steps; i++) {
         value.v += ((value.goal - value.x) * value.stiffness - value.damping * value.v) * dt;
@@ -256,10 +259,36 @@
     }
     // An inward-moving mark hits the exterior with its leading shoulder.
     // A departing mark releases as the body itself crosses the edge.
-    if (entering ? gap > 10 : gap < -7) return;
+    if (!contact.loadedAt && (entering ? gap > 10 : gap < -7)) return;
+    const normalVelocity = bodyX.v*nx + bodyY.v*ny;
+    if (!entering && profile === materials.button) {
+      const axis = nx * nx - ny * ny;
+      if (!contact.loadedAt) {
+        contact.loadedAt = now;
+        // Catch the shoulder at the edge; its motion along the edge continues.
+        const catchSpeed = Math.max(0, normalVelocity) * 0.7;
+        bodyX.v -= nx * catchSpeed;
+        bodyY.v -= ny * catchSpeed;
+        shapeX.v -= axis * 5;
+      }
+      const distanceOutside = (point.x - face.x) * nx + (point.y - face.y) * ny;
+      if (now - contact.loadedAt < 42 && distanceOutside < 28) {
+        const draw = Math.max(0, Math.min(12, distanceOutside + 3));
+        bodyX.goal -= nx * draw;
+        bodyY.goal -= ny * draw;
+        shapeX.goal -= axis * profile.squash;
+        return;
+      }
+      const impulse = profile.release * (0.61 + force * 0.09);
+      recoilX.v = limit(recoilX.v + nx * impulse, 1200);
+      recoilY.v = limit(recoilY.v + ny * impulse, 1200);
+      shapeX.v += axis * 8;
+      contact = null;
+      lastImpact = now;
+      return;
+    }
     contact = null;
     lastImpact = now;
-    const normalVelocity = bodyX.v*nx + bodyY.v*ny;
     const kick = (entering ? profile.strike : profile.release) * (.87 + force*.19);
     bodyX.v += nx*(kick-normalVelocity);
     bodyY.v += ny*(kick-normalVelocity);
@@ -336,9 +365,12 @@
       const reversal = -(ux * dx + uy * dy);
       if (now - motionAt < 120 && reversal > 0.4) {
         const kick = Math.min(force, nextForce) * reversal;
-        // Preserve momentum in the old direction through a hard turn.
-        bodyX.v = limit(bodyX.v + dx * kick * 420, 1900);
-        bodyY.v = limit(bodyY.v + dy * kick * 420, 1900);
+        // Carry only momentum already travelling into the turn. A slow
+        // correction or a reversal during a rebound should add almost none.
+        const forward = Math.max(0, bodyX.v * dx + bodyY.v * dy);
+        const carry = Math.min(470, forward * 0.46) * kick;
+        bodyX.v += dx * carry;
+        bodyY.v += dy * carry;
         shapeX.v -= (dx * dx - dy * dy) * kick * 6;
         shapeY.v -= 2 * dx * dy * kick * 6;
         twist.v += (dx - dy) * kick * 165;

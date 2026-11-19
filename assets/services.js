@@ -10,13 +10,11 @@
       if (entry.intersectionRatio < .72) return;
       observer.disconnect();
       delete rack.dataset.waiting;
-      rack.dataset.intro = group.querySelector(":checked").value;
     }, { threshold: .72 });
     observer.observe(rack);
     group.addEventListener("change", () => {
       observer.disconnect();
       delete rack.dataset.waiting;
-      delete rack.dataset.intro;
     }, { once: true });
   }
 
