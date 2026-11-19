@@ -1,82 +1,145 @@
 .hq-estimate {
-  --quote-ink: #eeeee8;
-  --quote-muted: #c2beb4;
-  --quote-line: #655f54;
-  --quote-accent: #f3b892;
-  background: #242421;
-  color: var(--quote-ink);
-  padding-block: clamp(46px, 5.6vw, 88px);
+  --quote-ink: #2a2825;
+  --quote-muted: #61574e;
+  --quote-line: #c2b6a8;
+  --quote-accent: #e7a87c;
+  color: #f0efe9;
+  background: #232322;
+  padding-block: clamp(48px, 6.5vw, 104px);
 }
-.quote-heading {
-  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0,.75fr);
-  gap: 32px; align-items: end; margin-bottom: clamp(32px, 4vw, 64px);
+.quote-form {
+  display: grid;
+  grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
+  gap: clamp(32px, 6.2vw, 94px);
+  align-items: start;
 }
-.quote-heading h2 { font-size: clamp(42px,5.4vw,82px); line-height: .98; letter-spacing: -.065em; }
-.quote-heading p { justify-self: end; max-width: 35ch; font-size: clamp(16px,1.34vw,20px); line-height: 1.42; margin: 0 0 .2em; color: var(--quote-muted); }
-.quote-sr {
-  position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden;
-  clip-path: inset(50%); white-space: nowrap; border: 0;
+.quote-picker h2 {
+  max-width: 11ch;
+  text-wrap: balance;
+  font-size: clamp(40px, 4.9vw, 75px);
 }
-.quote-matrix { padding: 0; margin: 0; min-width: 0; border: 0; display: grid; grid-template-columns: minmax(122px,.65fr) repeat(3,minmax(0,1fr)); }
-.quote-stub,.quote-format { display: grid; grid-row: 1 / span 5; grid-template-rows: subgrid; min-width: 0; }
-.quote-stub > span, .quote-format dl > div { border-top: 1px solid var(--quote-line); }
-.quote-stub > span { padding: 17px 15px 15px 0; font-size: 14px; line-height: 1.35; color: #d3cec3; }
-.quote-stub > span:first-child { align-content: end; color: var(--quote-muted); }
-.quote-format dl { display: contents; }
-.quote-format dl > div { padding: 17px clamp(12px,1.8vw,29px); }
-.quote-format dt { position: absolute; clip-path: inset(50%); width: 1px; height: 1px; overflow: hidden; }
-.quote-format dd { margin: 0; max-width: 38ch; font-size: clamp(15px,1.12vw,18px); line-height: 1.45; }
+.quote-formats { min-inline-size: 0; margin: clamp(35px, 5vw, 76px) 0 0; padding: 0; border: 0; }
+.quote-formats legend { padding: 0; margin-bottom: 14px; color: #c9bfb4; font-size: 15px; }
 .quote-choice {
-  position: relative; display: flex; gap: 8px; min-height: 76px; align-items: center; justify-content: space-between;
-  padding: 15px clamp(12px,1.8vw,29px); border-top: 1px solid var(--quote-line);
-  font-size: clamp(21px,2vw,32px); font-weight: 500; letter-spacing: -.055em; line-height: 1.13; cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 54px;
+  padding: .62em 0;
+  border-top: 1px solid #59554f;
+  color: #dfdacf;
+  font-size: clamp(22px, 2.1vw, 32px);
+  letter-spacing: -.045em;
+  line-height: 1.14;
+  cursor: pointer;
 }
-.quote-choice small, .quote-detail-heading { display:none; }
-.quote-choice input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: inherit; }
-.quote-choice i { font: normal 19px/1 system-ui,sans-serif; color: var(--quote-accent); opacity: 0; }
-.quote-choice:has(:checked) { border-top: 2px solid var(--quote-accent); padding-top: 14px; color: var(--quote-accent); background: #35312c; }
+.quote-format:last-child { border-bottom: 1px solid #59554f; }
+.quote-choice input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
+.quote-choice i { opacity: 0; font: normal .94em/1 Arial, sans-serif; }
+.quote-choice:has(:checked) { color: var(--quote-accent); }
 .quote-choice:has(:checked) i { opacity: 1; }
-.quote-choice:has(:focus-visible) { outline: 2px solid #ffd2b3; outline-offset: -4px; }
+.quote-choice:has(:focus-visible) { outline: 2px solid var(--quote-accent); outline-offset: 4px; }
+.quote-sheet {
+  min-width: 0;
+  padding: clamp(26px, 3.5vw, 54px);
+  color: var(--quote-ink);
+  background: #e9e2d6;
+}
+.quote-briefs, .quote-request > div { display: grid; }
+.quote-brief, .quote-request p { grid-area: 1 / 1; visibility: hidden; }
+.quote-brief { align-self: start; }
+.quote-form:has([value="new"]:checked) :is([data-format="new"], [data-request-for="new"]),
+.quote-form:has([value="current"]:checked) :is([data-format="current"], [data-request-for="current"]),
+.quote-form:has([value="seo"]:checked) :is([data-format="seo"], [data-request-for="seo"]) { visibility: visible; }
+.quote-caption, .quote-request b { color: var(--quote-muted); font-size: 14px; font-weight: 500; }
+.quote-deliverable {
+  margin: 12px 0 16px;
+  max-width: 23ch;
+  font-size: clamp(34px, 3.65vw, 60px);
+  font-weight: 500;
+  letter-spacing: -.057em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+.quote-scope { max-width: 52ch; font-size: clamp(16px, 1.24vw, 19px); line-height: 1.46; }
+.quote-conditions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 2.3vw, 36px);
+  margin: clamp(24px, 2.55vw, 42px) 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--quote-line);
+}
+.quote-conditions dt { margin-bottom: 5px; font-size: 15px; font-weight: 700; }
+.quote-conditions dd, .quote-request p { margin: 0; font-size: clamp(15px, 1.1vw, 17px); line-height: 1.44; }
 .quote-foot {
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 18px 26px;
-  border-top: 1px solid #a28972; padding-top: 22px;
+  margin-top: clamp(24px, 2.4vw, 38px);
+  padding-top: 19px;
+  border-top: 1px solid var(--quote-line);
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px 28px;
 }
-.quote-request { display: grid; grid-template-columns: minmax(122px,calc((100vw - 112px)/3.65*.65)) minmax(0,46ch); gap: 0; align-items: baseline; }
-.quote-request b { font-size: 14px; font-weight: 500; color: var(--quote-accent); }
-.quote-request p { display:none; margin:0; font-size: clamp(16px,1.22vw,19px); line-height:1.42; }
-.quote-form:has([value="new"]:checked) [data-request-for="new"],
-.quote-form:has([value="current"]:checked) [data-request-for="current"],
-.quote-form:has([value="seo"]:checked) [data-request-for="seo"] { display:block; }
+.quote-request { max-width: 42ch; }
+.quote-request b { display: block; margin-bottom: 5px; }
 .quote-contact {
-  padding: 13px 20px; border: 1px solid transparent; border-radius: 2px; background: #e8ba96; color: #281f19;
-  font: inherit; font-weight: 500; cursor:pointer; display:inline-flex; align-items:center; gap: 20px; min-height:48px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 12px 16px;
+  min-height: 48px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: var(--quote-ink);
+  color: #fff9ed;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
 }
-@media (hover:hover) { .quote-choice:hover { background:#34332e; } .quote-contact:hover { background:#f4cca9; } }
-@media (prefers-reduced-motion:no-preference) { .quote-choice,.quote-contact { transition:color 170ms, background-color 170ms; } }
-@media (max-width: 950px) {
-  .quote-heading { grid-template-columns: 1.1fr 1fr; }
-  .quote-matrix { grid-template-columns: repeat(3,minmax(0,1fr)); gap:0 16px; }
-  .quote-stub { display:none; }
-  .quote-format dt { position:static; clip-path:none; width:auto; height:auto; color:var(--quote-muted); font-size:13px; margin-bottom:4px; }
-  .quote-format dl > div { padding:12px 0 14px; }
-  .quote-choice { min-height:68px; padding-inline: 6px; font-size:21px; }
-  .quote-request { grid-template-columns:minmax(0,42ch); gap:4px; }
+.quote-sheet .quote-contact:focus-visible { outline: 3px solid #704021; outline-offset: 3px; }
+@media (hover: hover) {
+  .quote-choice:hover { color: #ffd4ae; }
+  .quote-contact:hover { background: #594332; }
 }
-@media (max-width: 660px) {
-  .quote-heading { grid-template-columns:1fr; gap:14px; margin-bottom:26px; }
-  .quote-heading p { justify-self:start; }
-  .quote-matrix { display:flex; flex-direction:column; }
-  .quote-format { display:contents; }
-  .quote-choice small { display:block; margin-top:4px; color:var(--quote-muted); font-size:14px; font-weight:400; letter-spacing:normal; }
-  .quote-choice:has(:checked) small { color:#e6d0be; }
-  .quote-format:has(:checked) .quote-detail-heading { order:1; display:block; margin:22px 0 10px; color:var(--quote-accent); font-size:20px; font-weight:500; letter-spacing:-.025em; }
-  .quote-format dl { order:2; }
-  .quote-format:not(:has(:checked)) dl { display:none; }
-  .quote-choice { min-height:58px; font-size:26px; padding:12px 10px; }
-  .quote-choice:has(:checked) { padding-top:11px; }
-  .quote-format dl { display:block; margin:0; }
-  .quote-format dl > div { padding:10px 0; display:grid; grid-template-columns:minmax(0,.7fr) minmax(0,1.5fr); gap:10px; }
-  .quote-format dt { margin:0; font-size:13px; line-height:1.45; }
-  .quote-format dd { font-size:15px; }
-  .quote-foot { padding-top:18px; }
+@media (prefers-reduced-motion: no-preference) {
+  .quote-choice, .quote-contact { transition: color 150ms, background-color 150ms; }
+  .quote-choice i { transition: opacity 150ms; }
+}
+@media (max-width: 1020px) {
+  .quote-form { grid-template-columns: minmax(0, .64fr) minmax(0, 1.36fr); gap: 30px; }
+  .quote-foot { align-items: start; flex-direction: column; }
+}
+@media (max-width: 900px) {
+  .quote-choice i { transform: rotate(90deg); }
+}
+@media (min-width: 731px) and (max-width: 900px) {
+  .quote-form { grid-template-columns: 1fr; gap: 24px; }
+  .quote-picker h2 { max-width: none; }
+  .quote-formats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+  .quote-formats legend { margin-bottom: 10px; }
+  .quote-format:last-child { border-bottom: 0; }
+  .quote-choice { font-size: 20px; min-height: 50px; }
+  .quote-foot { flex-direction: row; align-items: end; }
+}
+@media (max-width: 730px) {
+  .quote-form { grid-template-columns: 1fr; gap: 20px; }
+  .quote-picker h2 { max-width: 14ch; }
+  .quote-formats { margin-top: 24px; }
+  .quote-formats legend { margin-bottom: 8px; }
+  .quote-choice { min-height: 46px; padding: 10px 0; font-size: 22px; }
+  .quote-sheet { padding: clamp(20px, 4.5vw, 32px); }
+  .quote-conditions { gap: 17px; }
+}
+@media (max-width: 520px) {
+  .quote-conditions { grid-template-columns: 1fr; }
+}
+@media (forced-colors: active) {
+  .quote-choice:has(:checked) { color: Highlight; }
+  .quote-choice:has(:focus-visible), .quote-sheet .quote-contact:focus-visible { outline-color: Highlight; }
+  .quote-sheet { border: 1px solid CanvasText; }
 }
