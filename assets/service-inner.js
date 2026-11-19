@@ -13,7 +13,7 @@ const returning = performance.getEntriesByType("navigation")[0]?.type === "back_
 
 function rememberDeparture(event) {
   const link = event.target.closest?.("main a[href]");
-  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (!link || link.hasAttribute("data-enquire") || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   if (link.target === "_blank" || link.hasAttribute("download") || link.origin !== location.origin || link.pathname === location.pathname) return;
   const openOffers = [...document.querySelectorAll("main details[open][id]")].map(item => item.id);
   const details = link.closest("details");

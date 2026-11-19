@@ -1,0 +1,75 @@
+/* Same-page enquiries, reading links and source documents have different jobs. */
+.nav-message {
+  width: 18px; height: 14px; flex: none; position: relative;
+  border: 1.7px solid currentColor; border-radius: 4px 4px 4px 1px;
+}
+.nav-message::after {
+  content: ""; position: absolute; width: 7px; height: 1.5px;
+  top: 4px; left: 3.5px; background: currentColor;
+}
+.rw-contact-intro { padding-block: clamp(22px,3vw,48px) clamp(20px,3vw,40px); }
+.rw-contact-intro h1 { margin-top: clamp(22px,3vw,46px); }
+.rw-contact-intro h1 + p { margin-top: 14px; }
+
+:is(.ww-heading, .journal-head) > a,
+.rw-inner :is(.rw-link, .rw-end-link, .dc-link, .se-link, .sp-text-link, .sh-link, .sh-case-link, .sh-inline, .sh-order),
+.sv-page .sh-catalogue-nav a, .sd-order-links a,
+.ed-related a, .sv-page .sh-proof .sh-source { text-decoration: none; }
+.sd-action { border-bottom: 0; }
+.rw-inner .sh-order { align-items: center; min-height: 44px; gap: .6em; }
+.rw-inner .sh-order .sh-link-arrow {
+  display: inline-grid; place-items: center; width: 1.55em; height: 1.55em;
+  border: 1px solid color-mix(in srgb,currentColor 50%,transparent); border-radius: 50%;
+}
+.sv-page .sh-inline:not(:has([aria-hidden="true"]))::after,
+.sd-order-links a:not(:has([aria-hidden="true"]))::after,
+.ed-prose section :is(p,li,dd) a::after, .hq-questions p a::after {
+  content: ""; display: inline-block; width: .34em; height: .34em;
+  margin: 0 .14em .18em .18em; border: solid currentColor; border-width: 1.5px 1.5px 0 0;
+  transform: rotate(45deg);
+}
+.ed-prose section a[href^="https:"]::after {
+  width: .62em; height: .62em; margin: 0 .08em .14em .16em; border: 0;
+  background: currentColor; transform: none;
+  clip-path: polygon(18% 7%, 93% 7%, 93% 82%, 78% 82%, 78% 32%, 18% 92%, 8% 82%, 68% 22%, 18% 22%);
+}
+.ed-prose section :is(p,li,dd) a, .hq-questions p a {
+  color: #efc8b0; font-weight: 600; text-decoration: none;
+}
+.ed-contents a { border-inline-start: 2px solid transparent; padding-inline-start: .45em; }
+.ed-contents a:is(:hover,:focus-visible) { border-color: currentColor; text-decoration: none; }
+.journal-story .journal-topic { display: flex; align-items: center; justify-content: space-between; gap: .7em; }
+.journal-read-arrow { color: inherit; font-size: 1rem; line-height: 1; }
+.journal-story:is(:hover,:active,:focus-visible) :is(h2,h3),
+.ca-entry:hover h3, .ca-record:hover h3, .dc-next a:hover strong { text-decoration: none; }
+.dc-print .dc-expand, .se-exhibit:is(:hover,:focus-within) figcaption { text-decoration: none; }
+.sv-page .sh-proof .sh-source, .ww-sources a {
+  display: inline-flex; align-items: center; gap: .5em; max-width: 100%;
+  border: 1px solid color-mix(in srgb,currentColor 35%,transparent);
+  border-radius: 3px; padding: .32em .6em; line-height: 1.25; text-decoration: none;
+}
+.ww-sources a { min-height: 36px; }
+.sv-page .sh-proof .sh-source { min-height: 38px; }
+.se-actions .rw-report-link:hover > span:first-child { text-decoration: none; }
+@media (hover:hover) {
+  .ed-prose section :is(p,li,dd) a:hover, .hq-questions p a:hover {
+    color: #fff2e8; background: #382d25; border-radius: 2px;
+  }
+  .sv-page .sh-proof .sh-source:hover, .ww-sources a:hover { border-color: currentColor; }
+  .rw-inner .sh-order:hover .sh-link-arrow { border-color: currentColor; }
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+  .journal-read-arrow, :is(.journal-head, .ww-heading) > a > [aria-hidden], :is(.dc-link,.se-link,.sp-text-link,.ed-related a) > [aria-hidden] {
+    display: inline-block; transition: transform 160ms ease-out;
+  }
+  .journal-story:hover .journal-read-arrow, :is(.journal-head, .ww-heading) > a:hover > [aria-hidden], :is(.dc-link,.se-link,.sp-text-link,.ed-related a):hover > [aria-hidden] {
+    transform: translateX(2px);
+  }
+}
+:is(.rw-inner, .journal-home, .ed-directory, .ed-article, .ww-wall, .site-foot-2, .site-header-2) a[href]:focus-visible {
+  outline: 2px solid currentColor; outline-offset: 3px;
+}
+@media (forced-colors:active) {
+  a[href]:focus-visible { outline: 2px solid Highlight; }
+  .ed-prose section :is(p,li,dd) a, .hq-questions p a { text-decoration: underline; }
+}

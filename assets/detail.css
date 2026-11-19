@@ -589,96 +589,6 @@
 .rw-about > p:not(.rw-category) {
   margin: 24px 0 18px;
 }
-.rw-contact-ledger {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  border-top: 1px solid var(--rw-rule);
-  padding-top: 26px;
-  margin-top: clamp(28px, 4.5vw, 70px);
-}
-.rw-contact-ledger h2 {
-  font-size: 1rem;
-  color: var(--muted);
-  font-weight: 520;
-  letter-spacing: 0;
-}
-.rw-contact-big {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  max-width: 100%;
-  color: var(--text);
-  font-size: clamp(1.5rem, 3.65vw, 3.6rem);
-  line-height: 1.14;
-  letter-spacing: -0.05em;
-  margin-top: 8px;
-}
-.rw-contact-big:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.09em;
-}
-.rw-channels {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 28px;
-}
-.rw-channels a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid var(--rw-rule);
-  padding: 9px 13px;
-  border-radius: 100px;
-  color: var(--text);
-  font-size: 0.9rem;
-}
-.rw-channels a:hover {
-  border-color: currentColor;
-}
-.rw-channels img {
-  height: 24px;
-  width: 24px;
-}
-.rw-composer {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-content: start;
-  gap: 7px;
-}
-.rw-composer label {
-  font-weight: 570;
-}
-.rw-composer label:not(:first-child) {
-  margin-top: 16px;
-}
-.rw-composer :is(input, textarea, select) {
-  width: 100%;
-  border: 1px solid #89837b;
-  border-radius: 12px;
-  background: #fbf8f2;
-  color: #262421;
-  padding: 13px;
-  line-height: 1.4;
-}
-.rw-composer textarea {
-  resize: vertical;
-  min-height: 6.4em;
-}
-.rw-composer input::placeholder,
-.rw-composer textarea::placeholder {
-  color: #655f59;
-}
-.rw-composer small {
-  font-size: 0.88rem;
-}
-.rw-composer .rw-button {
-  margin-top: 14px;
-  background: #292722;
-  color: #f9f4ec;
-  border: 1px solid #292722;
-}
 @media (max-width: 800px) {
   .rw-service-cover,
   .rw-case-title {
@@ -769,22 +679,6 @@
   }
   .rw-measure span {
     font-size: 0.82rem;
-  }
-  .rw-contact-ledger {
-    grid-template-columns: 1fr;
-  }
-  .rw-contact-ledger h2 {
-    font-size: 0.95rem;
-  }
-  .rw-contact-big {
-    font-size: clamp(1.55rem, 7vw, 2.4rem);
-  }
-  .rw-channels {
-    gap: 8px;
-  }
-  .rw-channels a {
-    font-size: 0.86rem;
-    padding: 8px 10px;
   }
   .rw-card-title h3,
   .rw-stat-link h3 {
@@ -906,11 +800,6 @@
 .rw-pf-disclosure .rw-link {
   font-size: 0.88rem;
   margin-top: 12px;
-}
-.rw-enquiry .rw-directory > div > .rw-link {
-  margin-top: 17px;
-  text-decoration: underline;
-  text-underline-offset: 0.22em;
 }
 
 /* The work index and project spreads retain each site's own proportions. */

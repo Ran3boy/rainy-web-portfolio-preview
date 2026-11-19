@@ -1,5 +1,5 @@
-/* Questions open within their own column. The contact action sets the final scale. */
-.hq-faq { background:#1b1d1f; border-bottom:0; padding:clamp(40px,4vw,66px) 0; }
+/* Questions expand within their own column. */
+.hq-faq { background:#1b1d1f; border-bottom:0; padding:clamp(38px,3.8vw,60px) 0 clamp(34px,3.2vw,52px); }
 .hq-faq h2 { font-size:clamp(31px,3.15vw,53px); margin:0 0 clamp(24px,2.9vw,43px); }
 .hq-questions { display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,5vw,75px); border:0; }
 .hq-questions details:last-child { border-bottom:1px solid #484945; }
@@ -7,63 +7,11 @@
 .hq-questions details p { max-width:50ch; }
 .hq-questions summary span { transition:transform .22s var(--ease); }
 .hq-questions details[open] summary span { transform:rotate(180deg); }
-.h-direct { isolation:isolate; background:#1b1d1f; padding:clamp(30px,3.6vw,59px) 0 clamp(38px,4.5vw,72px); }
-.h-direct::after { display:none; }
-.contact-top,.contact-bottom { display:flex; justify-content:space-between; gap:20px; align-items:baseline; }
-.contact-top h2 { font-size:clamp(23px,2.4vw,36px); letter-spacing:-.045em; max-width:none; }
-.contact-top p,.contact-bottom a { font-size:clamp(14px,1.16vw,18px); line-height:1.5; }
-.contact-top p { color:#bdbfb8; }
-.contact-top p a,.contact-bottom a { text-underline-offset:.23em; }
-.contact-telegram {
-  display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 0 clamp(19px,2.5vw,36px);
-  border-bottom:1px solid #8d6e59; color:#e1b295; text-decoration:none;
-  font-size:clamp(76px,10vw,163px); line-height:1.04; letter-spacing:-.073em; font-weight:500;
-}
-.contact-telegram i { display:grid; place-items:center; font-family:Arial,sans-serif; font-style:normal; font-size:.52em; font-weight:400; letter-spacing:0; width:1.32em; height:1.32em; border:1px solid #a88369; border-radius:50%; transition:transform .24s var(--ease),background .22s,color .22s; }
-.contact-bottom { padding-top:16px; }
-.contact-bottom .h-phone { color:#eeeee6; font-variant-numeric:tabular-nums; }
-@media(hover:hover) {
-  .contact-telegram:hover i { transform:rotate(45deg); background:#ddb192; color:#262522; }
-  .contact-bottom a:hover { color:#fff; }
-}
 @media(max-width:650px) {
-  .hq-questions { grid-template-columns: minmax(0,1fr); gap: 0; }
+  .hq-faq { padding-block:34px; }
+  .hq-questions { grid-template-columns:minmax(0,1fr); gap:0; }
   .hq-questions>div:first-child details:last-child { border-bottom:0; }
-  .contact-top { flex-direction:column; gap:6px; }
-  .contact-telegram { font-size:clamp(60px,15vw,95px); }
-  .contact-top p { font-size:14px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .hq-questions summary span,.contact-telegram i { transition:none!important; }
-  .contact-telegram:hover i { transform:none; }
-}
-
-/* One scroll-bound detail connects the FAQ to the contact action without delaying either. */
-.contact-telegram { position:relative; }
-@supports (animation-timeline:view()) {
-  @media(prefers-reduced-motion:no-preference) {
-    .contact-telegram { view-timeline-name:--contact-action; view-timeline-axis:block; }
-    .contact-telegram::after {
-      content:""; position:absolute; inset:auto 0 -1px; height:2px;
-      pointer-events:none; background:#dbac89; transform-origin:left center;
-      animation:contact-rule linear both; animation-timeline:--contact-action; animation-range:entry 0% entry 100%;
-    }
-    @keyframes contact-rule { from { transform:scaleX(.07); } to { transform:scaleX(1); } }
-  }
-}
-.hq-faq { padding-block: clamp(38px, 3.8vw, 60px) clamp(34px, 3.2vw, 52px); }
-.h-direct { padding-top: clamp(30px, 3.7vw, 58px); background: var(--bg); }
-.contact-bottom a { display: inline-flex; align-items: center; min-height: 44px; }
-.h-direct h2 { max-width: none; margin: 0; }
-.contact-telegram { font-size: clamp(48px, 7.7vw, 126px); padding-top: 14px; }
-.contact-handle { margin-left: 5px; color: var(--text); }
-
-
-@media(max-width:650px) {
-  .hq-faq { padding-block: 34px; }
-  .h-direct { padding-block: 30px; }
-  .h-direct .contact-top { flex-direction: row; flex-wrap: wrap; gap: 2px 15px; }
-  .h-direct .contact-top p { font-size: 13px; }
-  .contact-telegram { font-size: clamp(33px, 8.7vw, 57px); letter-spacing: -.055em; padding-block: 15px 18px; }
-  .contact-telegram i { font-size: .6em; }
+  .hq-questions summary span { transition:none; }
 }

@@ -5,7 +5,7 @@
   wall.addEventListener("click", event => {
     if (event.defaultPrevented || event.button || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
     const link = event.target.closest("a[href]");
-    if (link && link.origin === location.origin && !link.target && link.pathname !== location.pathname && !link.hasAttribute("data-view-title")) {
+    if (link && !link.hasAttribute("data-enquire") && link.origin === location.origin && !link.target && link.pathname !== location.pathname && !link.hasAttribute("data-view-title")) {
       history.replaceState({ ...history.state, workReturn: link.getAttribute("href") }, "");
     }
   });

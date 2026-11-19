@@ -83,6 +83,7 @@
       dialog.close();
   });
   document.addEventListener("keydown", (e) => {
+    if (!dialog.open && document.querySelector("dialog[open]")) return;
     if (e.key === "Escape") {
       if (dialog.open) {
         e.preventDefault();

@@ -1,0 +1,29 @@
+/* Product marks share an optical field with the original service illustrations.
+   The adjacent real text carries the accessible name. */
+.rw-tool {
+  --rw-mark-size: 1.12em;
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: .34em;
+  vertical-align: baseline;
+  color: inherit;
+}
+.rw-tool .rw-tool-icon {
+  flex: none;
+  display: block;
+  box-sizing: border-box;
+  width: var(--rw-mark-size);
+  height: var(--rw-mark-size);
+  padding: .06em;
+  border-radius: .16em;
+  object-fit: contain;
+  background: #f6f5ed;
+  box-shadow: none;
+  margin: 0;
+}
+.rw-tool-card { --rw-mark-size: 1.1em; gap: .4em; }
+.rw-tool-display { --rw-mark-size: 38px; gap: .6em; }
+.sd-platforms .rw-tool { flex-direction: column; gap: 7px; color: #e1e2da; font-size: .85rem; font-weight: 550; }
+.sd-platforms .rw-tool .rw-tool-icon { padding: 2px; }
+.sd-interface .rw-tool-icon, .sd-surface:hover .sd-interface .rw-tool-icon { transition: none; transform: none; }
