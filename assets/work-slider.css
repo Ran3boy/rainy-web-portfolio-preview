@@ -27,7 +27,7 @@
   font-weight: 500;
   text-decoration: none;
 }
-.ws-index { white-space: nowrap; }
+.ws-heading .ws-index { white-space: nowrap; font-size:16px; }
 .ws-index span, .ws-case span { color: var(--copper); }
 
 .ws-stage {
@@ -234,10 +234,10 @@
 .ws-type { grid-area:1/1; }
 .ws-info h3,.ws-slide[data-slide=systelecom] h3 { grid-area:2/1; font-size:clamp(30px,3.15vw,51px); margin:0; letter-spacing:-.046em; }
 .ws-copy { grid-area:1/2/4/3; margin:0; max-width:49ch; font-size:clamp(15px,1.14vw,18px); }
-.ws-info .ws-case { grid-area:3/1; justify-self:start; align-self:start; padding:4px 1px; min-height:36px; border:0; text-decoration:underline; text-decoration-color:#7b7168; text-underline-offset:.24em; border-radius:0; }
+.ws-info .ws-case { grid-area:3/1; justify-self:start; align-self:start; padding:4px 1px; min-height:44px; font-size:16px; border:0; text-decoration:underline; text-decoration-color:#7b7168; text-underline-offset:.24em; border-radius:0; }
 .ws-controls { grid-area:controls; display:flex; flex-direction:row-reverse; align-items:center; justify-content:flex-end; gap:12px; }
 .ws-step { display:flex; gap:6px; flex:none; }
-.ws-step button { display:grid; place-items:center; width:42px; height:42px; padding:0; border:1px solid #64635d; border-radius:50%; color:var(--text); background:transparent; font:400 23px/1 Onest,sans-serif; }
+.ws-step button { display:grid; place-items:center; width:44px; height:44px; padding:0; border:1px solid #64635d; border-radius:50%; color:var(--text); background:transparent; font:400 23px/1 Onest,sans-serif; }
 .ws-controls .ws-gesture-cue { font-size:12px; max-width:19ch; margin:0; }
 .ws-sr { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 .ws-select :focus-visible { outline-offset:-3px; }
@@ -263,7 +263,7 @@
   .ws-region { display:flex; flex-direction:column; align-items:stretch; gap:14px; }
   .ws-region .ws-heading { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
   .ws-heading h2 { max-width:none; font-size:clamp(30px,7vw,43px); }
-  .ws-heading .ws-index { font-size:13px; margin-top:0; min-height:36px; }
+  .ws-heading .ws-index { font-size:16px; margin-top:0; min-height:44px; }
   .ws-select {
     display:flex;
     width:100%;

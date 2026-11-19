@@ -1,51 +1,5 @@
-/* Full-width service index. The active edge and inset copy share the title axis. */
-.sd-section {
-  --indent:clamp(20px,3vw,46px);
-  background:#181a1b; border-block:0; padding:clamp(48px,4.9vw,76px) 0;
-}
-.sd-layout { display:block; }
-.sd-intro { display:grid; grid-template-columns:1.1fr 1fr auto; align-items:end; gap:clamp(16px,4vw,72px); margin-bottom:28px; }
-.sd-intro h2,.ed-spread-head h2 { font-size:clamp(43px,4.7vw,76px); line-height:.96; }
-.sd-intro p { margin:0; max-width:40ch; font-size:clamp(15px,1.12vw,17px); }
-.sd-intro a,.ed-index-link,.ws-index { align-self:end; font-size:14px; }
-.sd-entry { border-color:#444545; transition:background .2s var(--ease); }
-.sd-entry:is(.sd-active,[open]) { background:#242627; }
-.sd-entry:is(.sd-active,[open])::before {
-  inset:16px auto 16px 0; width:3px; height:auto; background:#d99d78;
-}
-.sd-trigger {
-  grid-template-columns: minmax(0,1.14fr) minmax(120px,.8fr) auto;
-  min-height:clamp(63px,5.5vw,82px); padding:10px var(--indent); gap:20px;
-}
-.sd-label { font-size:clamp(23px,2.35vw,38px); letter-spacing:-.052em; }
-.sd-note { font-size:clamp(13px,1vw,16px); }
-.sd-arrow { display:grid; place-items:center; width:31px; height:31px; border-radius:50%; border:1px solid #62605b; }
-.sd-arrow::before,.sd-arrow::after { width:11px; height:1px; top:calc(50% - .5px); left:calc(50% - 5.5px); }
-.sd-entry:is(.sd-active,[open]) .sd-arrow { background:#dfb297; color:#282321; border-color:transparent; }
-.sd-copy { padding:0 var(--indent) 16px; display:grid; grid-template-columns:minmax(0,1.14fr) minmax(130px,.8fr) 31px; align-items:center; gap:20px; }
-.sd-description p { max-width:61ch; color:#d2d3cb; font-size:clamp(15px,1.14vw,18px); line-height:1.48; }
-.sd-ctas { align-self:end; align-items:center; margin:6px 0 0; gap:0 21px; }
-.sd-ctas a { min-height:36px; }
-.sd-ctas .sd-detail { text-decoration:underline; text-decoration-color:#79766e; }
-.sd-proof { display:flex; align-items:center; justify-self:start; gap:12px; min-height:46px; text-decoration:none; font-size:14px; }
-.sd-proof img { width:72px; height:42px; object-fit:cover; border:1px solid #575953; }
-.sd-proof span span { color:var(--copper); }
-.sd-proof:hover { text-decoration:underline; text-underline-offset:.2em; }
-.sd-list[data-enhanced] .sd-description,.sd-list[data-enhanced] .sd-proof { translate:0 -4px; transition:translate .24s var(--ease); }
-.sd-list[data-enhanced] .sd-active :is(.sd-description,.sd-proof) { translate:0; }
-@media(max-width:900px) {
-  .sd-copy .sd-proof { font-size:13px; }
-  .sd-copy .sd-proof img { width:48px; height:29px; }
-}
-@media(prefers-reduced-motion:reduce) {
-  .sd-list[data-enhanced] :is(.sd-description,.sd-proof) { translate:none; transition:none; }
-}
-@media(hover:hover) and (prefers-reduced-motion:no-preference) {
-  .sd-label,.sd-arrow { transition:transform .26s var(--ease), background .22s; }
-  .sd-trigger:hover .sd-label { transform:translateX(5px); }
-  .sd-trigger:hover .sd-arrow { transform:rotate(90deg); }
-  .sd-active .sd-trigger:hover .sd-arrow { transform:none; }
-}
+.ed-spread-head h2 { font-size:clamp(43px,4.7vw,76px); line-height:.96; }
+.ed-index-link,.ws-index { align-self:end; font-size:14px; }
 
 /* A recessed, centred estimate with two directly comparable enquiry types. */
 .hq-estimate { background:#141516; color:#efeee8; padding-block:0 clamp(48px,5.8vw,90px); }
@@ -72,7 +26,7 @@
 .estimate-panels>div { text-align:center; }
 .estimate-panels h3 { font-size:20px; margin:0 0 8px; }
 .estimate-panels p { max-width:57ch; margin:auto; font-size:clamp(15px,1.18vw,18px); color:#dfded5; line-height:1.5; }
-.estimate-panels a { display:inline-flex; align-items:baseline; gap:8px; padding:8px 0; margin-top:5px; text-decoration-thickness:1px; text-underline-offset:.26em; color:#ebba99; font-size:15px; }
+.estimate-enquiry { display:inline-flex; align-items:baseline; gap:8px; padding:8px 0; margin-top:5px; text-decoration-thickness:1px; text-underline-offset:.26em; color:#ebba99; font-size:15px; }
 .estimate-brief[data-enhanced] .estimate-panels { gap:0; }
 .estimate-brief[data-enhanced] .estimate-panels>div { grid-area:1/1; opacity:0; visibility:hidden; transform:translateY(4px); transition:transform .23s var(--ease),opacity .18s; pointer-events:none; }
 .estimate-brief[data-enhanced] .estimate-panels>.is-selected { visibility:visible; transform:none; opacity:1; pointer-events:auto; }
@@ -91,7 +45,6 @@
 .ed-home .ed-feature h3 { grid-row:2; align-self:center; font-size:clamp(38px,4.2vw,73px); line-height:1.01; }
 .ed-home .ed-cover-foot { grid-row:3; display:block; border-top:0; padding:0 0 clamp(22px,2.5vw,39px); }
 .ed-home .ed-summary { max-width:38ch; }
-.ed-home .ed-read { margin-top:15px; }
 .ed-cover-art { display:none; }
 .ed-home .ed-cover-art { display:block; grid-column:2; grid-row:1/4; position:relative; overflow:hidden; min-height:320px; background:#3b312a; }
 .ed-cover-art img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
@@ -132,24 +85,12 @@
 .contact-bottom .h-phone { color:#eeeee6; font-variant-numeric:tabular-nums; }
 @media(hover:hover) {
   .contact-telegram:hover i { transform:rotate(45deg); background:#ddb192; color:#262522; }
-  .contact-bottom a:hover,.estimate-panels a:hover { color:#fff; }
+  .contact-bottom a:hover,.estimate-enquiry:hover { color:#fff; }
 }
 @media(max-width:900px) {
-  .sd-trigger { grid-template-columns:minmax(0,1.25fr) minmax(95px,.8fr) auto; }
-  .sd-trigger .sd-note,.sd-trigger .sd-arrow { grid-column:auto; grid-row:auto; }
-  .sd-copy { grid-template-columns:1fr; gap:4px; }
   .ed-home .ed-cover-art { min-height:260px; }
 }
 @media(max-width:650px) {
-  .sd-section { padding-block:40px; }
-  .sd-intro { grid-template-columns:1fr auto; gap:12px; margin-bottom:18px; }
-  .sd-intro p { grid-area:2/1/auto/3; margin:0; }
-  .sd-intro a { grid-area:1/2; }
-  .sd-trigger { grid-template-columns:1fr auto; gap:3px 12px; padding:12px 14px; }
-  .sd-trigger .sd-note { grid-column:1; }
-  .sd-trigger .sd-arrow { grid-column:2; grid-row:1/3; }
-  .sd-copy { padding:0 14px 13px; }
-  .sd-label { font-size:clamp(21px,5.6vw,29px); }
   .estimate-shell { padding:30px 15px; }
   .estimate-shell::before,.estimate-shell::after { display:none; }
   .estimate-heading h2 { max-width:15ch; }

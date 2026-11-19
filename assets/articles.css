@@ -41,8 +41,7 @@
 }
 .ed-home a:hover .ed-arrow,
 .ed-directory a:hover .ed-arrow,
-.ed-page a:hover .ed-arrow,
-.ed-feature:hover .ed-read .ed-arrow {
+.ed-page a:hover .ed-arrow {
   transform: translate(2px, -2px);
 }
 .ed-index-link:hover,
@@ -104,10 +103,10 @@
   line-height: .99;
   letter-spacing: -.06em;
 }
-.ed-feature :is(h2,h3) a span {
+.ed-feature :is(h2,h3) > span {
   display: block;
 }
-.ed-feature :is(h2,h3) a span:last-child {
+.ed-feature :is(h2,h3) > span:last-child {
   color: #ddb395;
 }
 .ed-cover-foot {
@@ -118,28 +117,15 @@
 .ed-cover-foot .ed-summary {
   max-width: 36ch;
 }
-.ed-cover-foot .ed-read {
-  flex-shrink: 0;
-}
-.ed-feature :is(h2,h3) a,
+.ed-feature,
 .ed-brief :is(h2,h3) a {
   text-decoration: none;
 }
-.ed-feature :is(h2,h3) a::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  border-radius: 12px;
-}
-.ed-feature :is(h2,h3) a:focus-visible {
-  outline: 0;
-}
-.ed-feature :is(h2,h3) a:focus-visible::after {
+.ed-feature:focus-visible {
   outline: 3px solid var(--copper);
   outline-offset: 4px;
 }
-.ed-feature:hover :is(h2,h3) a,
+.ed-feature:is(:hover,:focus-visible) :is(h2,h3),
 .ed-brief a:hover {
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -150,13 +136,6 @@
   color: #bbbbb6;
   font-size: clamp(15px, 1.12vw, 18px);
   line-height: 1.46;
-}
-.ed-read {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  font-weight: 500;
 }
 .ed-briefs {
   display: grid;
@@ -503,7 +482,7 @@
     transition: none;
   }
   .ed-home a:hover .ed-arrow, .ed-directory a:hover .ed-arrow,
-  .ed-page a:hover .ed-arrow, .ed-feature:hover .ed-read .ed-arrow {
+  .ed-page a:hover .ed-arrow {
     transform: none;
   }
 }

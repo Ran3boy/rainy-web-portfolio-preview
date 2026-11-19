@@ -1,67 +1,65 @@
-/* Native hit-testing remains authoritative; the copper bead is a separate layer. */
+/* Only an initialized, visible mark takes over the native pointer. */
 .rw-pointer {
-  --rw-pointer-scale-x: 1;
-  --rw-pointer-scale-y: 1;
-  --rw-pointer-angle: 0deg;
+  --rw-pointer-ready: 1;
+  display: none;
   position: fixed;
   inset: 0 auto auto 0;
   z-index: 1000;
-  width: 16px;
-  height: 16px;
-  margin: -8px 0 0 -8px;
+  width: 23px;
+  height: 23px;
+  margin: -11.5px 0 0 -11.5px;
   pointer-events: none !important;
   contain: layout style;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 110ms ease-out, visibility 110ms;
 }
-.rw-pointer.is-active { opacity: .92; visibility: visible; }
-.rw-pointer-core {
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  html.rw-pointer-on,
+  html.rw-pointer-on * { cursor: none !important; }
+  .rw-pointer.is-active { display: block; }
+}
+.rw-pointer-mark {
   display: block;
   width: 100%;
   height: 100%;
-  border: 1px solid #efbc91;
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 25%, #f8d6b6 0, #d7996d 29%, #a6603c 74%);
-  box-shadow: 0 2px 6px #110c0859;
-  transform: rotate(var(--rw-pointer-angle)) scale(var(--rw-pointer-scale-x), var(--rw-pointer-scale-y));
+  transform-origin: center;
+  scale: 1;
+  transition: scale 120ms cubic-bezier(.2,.8,.3,1);
+  filter: drop-shadow(0 1px 1px #171310a6);
+  /* The tiny transparent sight remains centered as the four lobes twist. */
+  mask-image: radial-gradient(circle at center, transparent 1.6px, black 2.2px);
 }
 .rw-pointer::after {
   content: '';
   position: absolute;
-  inset: -5px;
-  border: 1px solid #c8936d80;
-  border-radius: 50%;
+  inset: auto 5px -3px;
+  height: 2px;
+  border-radius: 1px;
+  background: #f3f3f1;
+  box-shadow: 0 0 0 1px #24211d;
   opacity: 0;
-  scale: .7;
-  transition: scale 170ms ease-out, opacity 170ms ease-out;
+  transform: scaleX(.3);
+  transition: transform 130ms ease-out, opacity 100ms ease-out;
 }
-.rw-pointer[data-mode='link']::after { opacity: .7; scale: 1; }
+.rw-pointer[data-mode='link']::after { opacity: 1; transform: scaleX(1); }
+.rw-pointer[data-mode='link'] .rw-pointer-mark { scale: 1.08; }
+.rw-pointer[data-pressed] .rw-pointer-mark { scale: .79; }
 .rw-pointer-axis {
   position: absolute;
   inset: 0 -9px;
   opacity: 0;
-  scale: .8;
-  transition: opacity 140ms ease-out, scale 170ms ease-out;
+  transform: scaleX(.64);
+  transition: transform 140ms cubic-bezier(.24,.86,.24,1), opacity 100ms ease-out;
 }
 .rw-pointer-axis::before, .rw-pointer-axis::after {
   content: '';
   position: absolute;
-  top: 5px;
-  width: 6px;
-  height: 6px;
-  border: solid #f1c7a5;
-  border-width: 1.5px 1.5px 0 0;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  border: solid #f3f3f1;
+  border-width: 2px 2px 0 0;
+  filter: drop-shadow(0 0 1px #151411) drop-shadow(0 0 1px #151411);
 }
 .rw-pointer-axis::before { left: 1px; transform: rotate(-135deg); }
 .rw-pointer-axis::after { right: 1px; transform: rotate(45deg); }
-.rw-pointer[data-mode='drag'] .rw-pointer-axis { opacity: .95; scale: 1; }
-.rw-pointer[data-mode='drag'] .rw-pointer-core {
-  clip-path: polygon(16% 0, 84% 0, 100% 34%, 100% 66%, 84% 100%, 16% 100%, 0 66%, 0 34%);
-  border-radius: 3px;
-}
-.rw-pointer[data-mode='drag'][data-pressed='true'] .rw-pointer-axis { scale: .88; }
-.rw-pointer[data-pressed='true'] .rw-pointer-core { filter: brightness(1.12); }
-@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
-  .rw-pointer { display: none !important; }
-}
+.rw-pointer[data-mode='drag'] .rw-pointer-axis { opacity: 1; transform: scaleX(1); }
+.rw-pointer[data-mode='drag'][data-pressed] .rw-pointer-axis { transform: scaleX(.73); }

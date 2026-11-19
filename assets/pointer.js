@@ -1,239 +1,200 @@
 (() => {
   if (document.querySelector('.rw-pointer')) return;
-  const fine = matchMedia('(hover: hover) and (pointer: fine)');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const surfaceSelector = '[data-pointer-surface], .h-papers, .ws-stage';
-  const interactiveSelector = 'a, button, summary, [role="button"]';
-  const entrySelector = 'input, textarea, select, [contenteditable]:not([contenteditable="false"]), iframe';
-  const bead = document.createElement('div');
-  bead.className = 'rw-pointer';
-  bead.setAttribute('aria-hidden', 'true');
-  bead.innerHTML = '<span class="rw-pointer-core"></span><span class="rw-pointer-axis"></span>';
-  document.body.append(bead);
+  const pointer = document.createElement('div');
+  pointer.className = 'rw-pointer';
+  pointer.hidden = true;
+  pointer.setAttribute('aria-hidden', 'true');
+  const mark = new Image(23, 23);
+  mark.alt = '';
+  mark.className = 'rw-pointer-mark';
+  mark.draggable = false;
+  mark.src = new URL('shared/rainy-mark.svg', document.currentScript.src).href;
+  const axis = document.createElement('span');
+  axis.className = 'rw-pointer-axis';
+  pointer.append(mark, axis);
+  document.body.append(pointer);
 
-  let surfaces = [];
-  let heroImages = [];
-  let geometryRevision = 0;
-  let contacts = 0;
-  let geometryDirty = true;
+  const root = document.documentElement;
+  const capable = matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none)');
+  const clickableInput = 'input:is([type="radio"],[type="checkbox"],[type="button"],[type="submit"],[type="reset"],[type="image"])';
+  const textField = 'textarea, [contenteditable]:not([contenteditable="false"]), input:not([type]), input:is([type="text"],[type="email"],[type="search"],[type="password"],[type="tel"],[type="url"],[type="number"])';
+  const nativeField = 'input:not(' + clickableInput + '), textarea, select, option, [contenteditable]:not([contenteditable="false"]), iframe';
+  const interactive = 'a[href], button, summary, [role="button"], [role="tab"], ' + clickableInput + ', label:has(' + clickableInput + ')';
+  let ready = false;
+  let active = false;
+  let press = false;
+  let drag = false;
+  let mode = '';
+  let position = null;
   let frame = 0;
-  let lastTime = 0;
-  let mousePresent = false;
-  let blocked = false;
-  let x = 0;
-  let y = 0;
-  let vx = 0;
-  let vy = 0;
-  let targetX = 0;
-  let targetY = 0;
-  let contactUntil = 0;
-  let lastMouseX = 0;
-  let lastMouseY = 0;
-  let lastMouseTime = 0;
-  let pressed = false;
-  let lastTarget = null;
-
-  const allowed = () => fine.matches && !reduced.matches && !document.hidden && !document.documentElement.classList.contains('rw-media-open');
-  const selectedText = () => {
-    const selection = getSelection();
-    return Boolean(selection && !selection.isCollapsed);
-  };
-
-  function stop() {
-    if (frame) cancelAnimationFrame(frame);
-    frame = 0;
-    lastTime = 0;
-    bead.removeAttribute('data-running');
-  }
+  let refresh = 0;
+  let lastFrame = 0;
+  let lastMotion = 0;
+  let tilt = 0, angularVelocity = 0, targetTilt = 0;
+  let strain = 0, strainVelocity = 0, targetStrain = 0;
+  let direction = 0;
 
   function hide() {
-    stop();
-    bead.classList.remove('is-active');
-    vx = vy = 0;
-  }
-
-  function measure() {
-    surfaces = [...document.querySelectorAll(surfaceSelector)]
-      .filter(element => !element.closest('[inert]'))
-      .map(element => ({ element, rect: element.getBoundingClientRect() }))
-      .filter(({ rect }) => rect.width > 32 && rect.height > 32 && rect.bottom > 0 && rect.top < innerHeight);
-    heroImages = [...document.querySelectorAll('[data-exhibit-id][data-depth="0"] .h-interfaces')]
-      .map(element => ({ element, rect: element.getBoundingClientRect() }));
-    geometryDirty = false;
-    bead.dataset.geometryRevision = String(++geometryRevision);
-  }
-
-  // Resolve a one-way rim crossing against cached, measured surface geometry.
-  // The visual bead rebounds once and then passes through; native clicks are untouched.
-  function contact(fromX, fromY, toX, toY, now) {
-    if (now < contactUntil) return;
-    for (const { element, rect } of surfaces) {
-      const minX = rect.left - 8;
-      const maxX = rect.right + 8;
-      const minY = rect.top - 8;
-      const maxY = rect.bottom + 8;
-      let nx = 0;
-      let ny = 0;
-      let amount = 0;
-      if (fromX < minX && toX >= minX && toY > minY && toY < maxY) {
-        nx = -1; amount = Math.abs(vx); x = minX - 1;
-      } else if (fromX > maxX && toX <= maxX && toY > minY && toY < maxY) {
-        nx = 1; amount = Math.abs(vx); x = maxX + 1;
-      } else if (fromY < minY && toY >= minY && toX > minX && toX < maxX) {
-        ny = -1; amount = Math.abs(vy); y = minY - 1;
-      } else if (fromY > maxY && toY <= maxY && toX > minX && toX < maxX) {
-        ny = 1; amount = Math.abs(vy); y = maxY + 1;
-      }
-      if (!nx && !ny) continue;
-      const impulse = Math.min(300, Math.max(105, amount * .5));
-      if (nx) vx = nx * impulse;
-      else vy = ny * impulse;
-      contactUntil = now + 240;
-      bead.dataset.contactRevision = String(++contacts);
-      bead.dataset.contact = nx ? (nx < 0 ? 'left' : 'right') : (ny < 0 ? 'top' : 'bottom');
-      // Surface identity is useful to the component and QA, without DOM measurements per move.
-      bead.dataset.surface = element.matches('.ws-stage') ? 'work' : element.matches('.h-papers') ? 'hero' : 'custom';
-      return;
-    }
+    active = false;
+    press = drag = false;
+    position = null;
+    mode = '';
+    cancelAnimationFrame(frame);
+    cancelAnimationFrame(refresh);
+    frame = refresh = lastFrame = 0;
+    tilt = angularVelocity = targetTilt = 0;
+    strain = strainVelocity = targetStrain = 0;
+    root.classList.remove('rw-pointer-on');
+    pointer.classList.remove('is-active');
+    pointer.removeAttribute('data-running');
+    pointer.removeAttribute('data-pressed');
+    pointer.removeAttribute('data-mode');
+    mark.style.removeProperty('transform');
   }
 
   function paint() {
-    const speed = Math.hypot(vx, vy);
-    const stretch = Math.min(.14, speed / 4800);
-    bead.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
-    bead.style.setProperty('--rw-pointer-scale-x', String(1 + stretch));
-    bead.style.setProperty('--rw-pointer-scale-y', String(1 - stretch * .62));
-    if (speed > 8) bead.style.setProperty('--rw-pointer-angle', `${Math.atan2(vy, vx)}rad`);
+    // Carry the ink along the motion axis. All linear transforms pivot about the hit point.
+    mark.style.transform = 'rotate(' + direction + 'deg) scale(' + (1 + strain) + ',' +
+      (1 - strain * .65) + ') rotate(' + (tilt - direction) + 'deg)';
   }
 
-  function tick(now) {
+  function animate(now) {
     frame = 0;
-    if (!mousePresent || !allowed() || selectedText()) { hide(); return; }
-    if (geometryDirty) {
-      measure();
-      const currentTarget = document.elementFromPoint(lastMouseX, lastMouseY);
-      updateMode(currentTarget);
-      if (!blocked) bead.classList.add('is-active');
-    }
-    if (blocked) { hide(); return; }
-    const elapsed = lastTime ? Math.min((now - lastTime) / 1000, .034) : 1 / 60;
-    lastTime = now;
-    // Small fixed substeps keep the spring stable after dropped frames.
+    if (!active) return;
+    const elapsed = Math.min(Math.max((now - lastFrame) / 1000, 0), .04);
+    lastFrame = now;
     const steps = Math.max(1, Math.ceil(elapsed / .008));
     const dt = elapsed / steps;
-    for (let step = 0; step < steps; step++) {
-      const previousX = x;
-      const previousY = y;
-      vx += ((targetX - x) * 245 - vx * 23) * dt;
-      vy += ((targetY - y) * 245 - vy * 23) * dt;
-      x += vx * dt;
-      y += vy * dt;
-      contact(previousX, previousY, x, y, now);
+    if (now - lastMotion > 42) targetTilt = targetStrain = 0;
+    for (let i = 0; i < steps; i++) {
+      angularVelocity += ((targetTilt - tilt) * 620 - angularVelocity * 24) * dt;
+      strainVelocity += ((targetStrain - strain) * 620 - strainVelocity * 24) * dt;
+      tilt += angularVelocity * dt;
+      strain += strainVelocity * dt;
+    }
+    if (!targetTilt && !targetStrain && Math.abs(tilt) < .08 && Math.abs(angularVelocity) < 1 &&
+        Math.abs(strain) < .001 && Math.abs(strainVelocity) < .012) {
+      tilt = strain = angularVelocity = strainVelocity = 0;
+      mark.style.removeProperty('transform');
+      pointer.removeAttribute('data-running');
+      return;
     }
     paint();
-    if (Math.hypot(targetX - x, targetY - y) < .07 && Math.hypot(vx, vy) < .5) {
-      x = targetX; y = targetY; vx = vy = 0;
-      paint(); stop(); return;
-    }
-    frame = requestAnimationFrame(tick);
+    frame = requestAnimationFrame(animate);
   }
 
   function wake() {
-    if (frame || (blocked && !geometryDirty) || !mousePresent || !allowed()) return;
-    bead.dataset.running = 'true';
-    frame = requestAnimationFrame(tick);
+    if (frame) return;
+    lastFrame = performance.now();
+    pointer.dataset.running = 'true';
+    frame = requestAnimationFrame(animate);
   }
 
-  function updateMode(target) {
-    if (!(target instanceof Element)) { blocked = true; hide(); return; }
-    lastTarget = target;
-    const interactive = target.closest(interactiveSelector);
-    const overHeroImage = heroImages.some(({ rect }) => lastMouseX >= rect.left && lastMouseX <= rect.right && lastMouseY >= rect.top && lastMouseY <= rect.bottom);
-    const draggable = Boolean(target.closest('.ws-art') || overHeroImage);
-    const text = !interactive && !draggable && target.closest('p, h1, h2, h3, h4, label, li, dt, dd');
-    blocked = Boolean(target.closest(entrySelector) || document.activeElement?.matches(entrySelector) || text || selectedText());
-    bead.dataset.mode = draggable ? 'drag' : interactive ? 'link' : 'free';
-    if (blocked || !allowed()) hide();
+  function classify(target, x, y, buttons = 0) {
+    const selection = getSelection();
+    if (!(target instanceof Element) || target.closest(nativeField + ',dialog[open]') ||
+        document.activeElement?.matches(textField) ||
+        (selection && !selection.isCollapsed && (selection.containsNode(target, true) || (buttons === 1 && !drag))) ||
+        document.hidden || !ready || !capable.matches) {
+      hide();
+      return false;
+    }
+    const control = target.closest(interactive);
+    // The hero's case anchor covers the whole sheet. Distinguish its pictured
+    // interface from its actual link footer, even while the sheet is rotating.
+    const overHeroImage = control?.matches('.h-sheet-foot') && document.elementsFromPoint(x, y)
+      .some(node => node.matches('[data-depth="0"] .h-interfaces'));
+    const nextMode = drag || overHeroImage ? 'drag' : control ? 'link' :
+      target.closest('[data-hero-art], [data-work-slider][data-enhanced] .ws-art') ? 'drag' : 'free';
+    if (nextMode !== mode) {
+      mode = nextMode;
+      pointer.dataset.mode = mode;
+    }
+    return true;
   }
 
   function move(event) {
-    if (event.pointerType !== 'mouse' || !allowed()) { hide(); return; }
-    const now = event.timeStamp;
-    const elapsed = Math.max(8, now - lastMouseTime);
-    const dx = event.clientX - lastMouseX;
-    const dy = event.clientY - lastMouseY;
-    const speed = Math.min(1, Math.hypot(dx, dy) / elapsed / 2.5);
-    lastMouseX = event.clientX; lastMouseY = event.clientY; lastMouseTime = now;
-    // Offset preserves the precise native cursor and keeps the bead off the click point.
-    targetX = event.clientX + 16 + speed * 3;
-    targetY = event.clientY + 19 + speed * 2;
-    if (!mousePresent || !bead.classList.contains('is-active')) {
-      x = targetX; y = targetY; vx = vy = 0;
+    if (event.pointerType !== 'mouse' || event.clientX < 0 || event.clientY < 0 ||
+        event.clientX >= root.clientWidth || event.clientY >= root.clientHeight) {
+      if (active) hide();
+      return;
     }
-    mousePresent = true;
-    if (geometryDirty) measure();
-    updateMode(event.target);
-    if (blocked) return;
-    bead.classList.add('is-active');
-    wake();
+    const x = event.clientX, y = event.clientY, now = performance.now();
+    if (!classify(event.target, x, y, event.buttons)) return;
+    if (position) {
+      const dx = x - position.x, dy = y - position.y;
+      const distance = Math.hypot(dx, dy);
+      if (distance > .1) {
+        const speed = distance / Math.min(64, Math.max(6, now - position.time));
+        const force = Math.min(1, speed / 2.1);
+        direction = Math.atan2(dy, dx) * 180 / Math.PI;
+        targetTilt = 32 * force * (Math.abs(dx) > Math.abs(dy) ? Math.sign(dx) : -Math.sign(dy));
+        targetStrain = .25 * force;
+        lastMotion = now;
+        wake();
+      }
+    }
+    position = { x, y, time: now };
+    pointer.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+    if (!active) {
+      active = true;
+      pointer.classList.add('is-active');
+      root.classList.add('rw-pointer-on');
+    }
+  }
+
+  // Refresh stationary hover after a layout or scroll change, without a permanent animation loop.
+  function recheck() {
+    if (!position || refresh) return;
+    refresh = requestAnimationFrame(() => {
+      refresh = 0;
+      if (position) classify(document.elementFromPoint(position.x, position.y), position.x, position.y);
+    });
+  }
+
+  function down(event) {
+    if (event.pointerType !== 'mouse') { hide(); return; }
+    if (!event.isPrimary || event.button !== 0 || !active) return;
+    if (!classify(event.target, event.clientX, event.clientY)) return;
+    press = true;
+    drag = mode === 'drag';
+    pointer.dataset.pressed = 'true';
+  }
+
+  function release() {
+    if (!press) return;
+    if (drag) {
+      // Opening the grip releases stored tension through the mark, never through its position.
+      strainVelocity += 2.7;
+      angularVelocity += tilt < 0 ? -95 : 95;
+      wake();
+    }
+    press = drag = false;
+    pointer.removeAttribute('data-pressed');
+    recheck();
   }
 
   document.addEventListener('pointermove', move, { passive: true });
-  document.addEventListener('pointerover', event => {
-    if (event.pointerType === 'mouse') updateMode(event.target);
-  }, { passive: true });
-  document.addEventListener('pointerdown', event => {
-    if (event.pointerType !== 'mouse') { hide(); return; }
-    pressed = true;
-    bead.dataset.pressed = 'true';
-    if (event.target.closest(entrySelector)) hide();
-  }, { passive: true });
-  document.addEventListener('pointerup', () => {
-    pressed = false;
-    bead.removeAttribute('data-pressed');
-    if (lastTarget) updateMode(lastTarget);
-  }, { passive: true });
-  document.addEventListener('selectionchange', () => {
-    if (selectedText()) { blocked = true; hide(); }
-    else if (!pressed && lastTarget) updateMode(lastTarget);
-  });
-  document.addEventListener('focusin', event => {
-    if (event.target.closest(entrySelector)) { blocked = true; hide(); }
-  });
-  document.documentElement.addEventListener('pointerleave', () => { mousePresent = false; pressed = false; bead.removeAttribute('data-pressed'); hide(); });
-  window.addEventListener('blur', () => { mousePresent = false; pressed = false; bead.removeAttribute('data-pressed'); hide(); });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) { mousePresent = false; hide(); } });
-  function invalidateGeometry() {
-    geometryDirty = true;
-    if (!allowed()) { mousePresent = false; hide(); return; }
-    wake();
-  }
-  document.addEventListener('scroll', invalidateGeometry, { capture: true, passive: true });
-  window.addEventListener('resize', invalidateGeometry, { passive: true });
-  window.visualViewport?.addEventListener('resize', invalidateGeometry, { passive: true });
-  window.visualViewport?.addEventListener('scroll', invalidateGeometry, { passive: true });
-  document.addEventListener('toggle', invalidateGeometry, true);
-  document.addEventListener('load', invalidateGeometry, true);
-  for (const type of ['transitionrun', 'transitionend', 'transitioncancel']) {
-    document.addEventListener(type, event => {
-      if (bead.contains(event.target)) return;
-      if (/height|width|grid-template|padding|margin|flex-basis|transform/.test(event.propertyName)) invalidateGeometry();
-    }, true);
-  }
-  const mutations = new MutationObserver(invalidateGeometry);
-  mutations.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['open', 'hidden', 'aria-expanded', 'inert'] });
-  document.fonts?.ready.then(invalidateGeometry);
-  for (const query of [fine, reduced]) query.addEventListener('change', () => {
-    geometryDirty = true;
-    if (!allowed()) { mousePresent = false; hide(); }
-  });
-  window.addEventListener('pagehide', () => { mousePresent = false; hide(); });
-  window.addEventListener('pageshow', () => { geometryDirty = true; });
-  if ('ResizeObserver' in window) {
-    const observer = new ResizeObserver(invalidateGeometry);
-    for (const element of document.querySelectorAll(surfaceSelector)) observer.observe(element);
-    observer.observe(document.body);
-    const main = document.querySelector('main');
-    if (main) observer.observe(main);
-  }
+  document.addEventListener('pointerdown', down, { capture: true, passive: true });
+  window.addEventListener('pointerup', release, { capture: true, passive: true });
+  window.addEventListener('pointercancel', hide, { capture: true, passive: true });
+  root.addEventListener('pointerleave', hide, { passive: true });
+  document.addEventListener('selectionchange', () => { if (!getSelection()?.isCollapsed) recheck(); });
+  document.addEventListener('focusin', event => { if (event.target.closest(nativeField + ',dialog[open]')) hide(); });
+  document.addEventListener('keydown', hide, { passive: true });
+  document.addEventListener('scroll', recheck, { capture: true, passive: true });
+  window.addEventListener('resize', recheck, { passive: true });
+  document.addEventListener('toggle', recheck, true);
+  document.addEventListener('transitionend', event => { if (!pointer.contains(event.target)) recheck(); });
+  const observer = new MutationObserver(recheck);
+  observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open','hidden','inert','aria-expanded'] });
+  capable.addEventListener('change', hide);
+  document.addEventListener('visibilitychange', hide);
+  window.addEventListener('blur', hide);
+  window.addEventListener('pagehide', hide);
+  // Never suppress the system cursor until the real brand image and the stylesheet are usable.
+  mark.decode().then(() => {
+    ready = getComputedStyle(pointer).getPropertyValue('--rw-pointer-ready').trim() === '1';
+    pointer.hidden = !ready;
+  }).catch(hide);
 })();
