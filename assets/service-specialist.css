@@ -1,0 +1,287 @@
+/* The annotated AI answer, paired measurement sheets and local-search map
+   share the site's ink and copper palette; the reading surfaces are distinct. */
+.sv-page .sp-heading,
+.sv-page .sp-pf-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(19rem, .65fr);
+  align-items: end;
+  gap: clamp(32px, 6vw, 104px);
+  padding-block: clamp(30px, 4.5vw, 72px) clamp(35px, 4.2vw, 68px);
+}
+.sv-page .sp-heading h1,
+.sv-page .sp-pf-head h1,
+.sv-page .sp-local-title h1 {
+  color: var(--text);
+  font-size: clamp(3.3rem, 6.5vw, 6rem);
+  line-height: .99;
+  letter-spacing: -.055em;
+  font-weight: 500;
+  text-wrap: initial;
+}
+.sp-heading h1 span,
+.sp-pf-head h1 span,
+.sp-local-title h1 span { display: block }
+.sv-page .sp-heading h1 span {
+  margin-top: .25em;
+  font-size: clamp(1.8rem, 3.5vw, 3.4rem);
+  letter-spacing: -.045em;
+  color: #c9b6a5;
+}
+.sv-page .sp-heading > p,
+.sv-page .sp-pf-head > p,
+.sv-page .sp-local-title > p {
+  color: #cecec8;
+  font-size: clamp(1.06rem, 1.4vw, 1.28rem);
+  line-height: 1.48;
+}
+.sp-tabs { display: flex; flex-wrap: wrap; gap: 4px; align-items: stretch }
+.sp-tabs button {
+  background: transparent;
+  border: 1px solid transparent;
+  color: inherit;
+  border-radius: 2px;
+  min-height: 44px;
+  padding: 8px 13px;
+  font-size: .92rem;
+  line-height: 1.25;
+  letter-spacing: -.015em;
+}
+.sp-tabs button:hover { border-color: currentColor }
+.sp-tabs button[aria-selected=true] { background: var(--sp-active-color); color: var(--sp-active-ink) }
+.sp-tabs button:focus-visible { outline: 2px solid currentColor; outline-offset: -5px }
+.sp-label { font-size: .82rem; line-height: 1.4; font-weight: 600 }
+.sp-geo-example {
+  --sp-active-color: #34322d;
+  --sp-active-ink: #fff8ea;
+  padding-bottom: clamp(50px, 6vw, 94px);
+}
+.sp-geo-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px 28px;
+  margin-bottom: 16px;
+}
+.sv-page .sp-geo-head h2 { font-size: clamp(1.35rem, 2.1vw, 1.9rem); letter-spacing: -.04em }
+.sv-page .sp-geo-head p { color: #bebeb7; font-size: .88rem }
+.sp-proof {
+  color: #302c27;
+  background: #e9e3d7;
+  padding: clamp(25px, 4vw, 64px);
+  border-radius: 3px;
+}
+.sp-proof-top { display: flex; align-items: baseline; gap: clamp(16px, 3vw, 50px); padding-bottom: 18px; border-bottom: 1px solid #aaa398 }
+.sp-proof-top > span { color: #695e51; font-size: .9rem; flex: none }
+.sv-page .sp-proof-top > p { color: inherit; font-size: clamp(1.04rem, 1.6vw, 1.5rem); font-weight: 550 }
+.sp-proof .sp-tabs { margin: 21px 0 15px }
+.sp-proof-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(15rem, .72fr);
+  gap: clamp(30px, 7%, 94px);
+  align-items: end;
+  min-height: clamp(215px, 18vw, 268px);
+  padding: 16px 0 2px;
+}
+.sp-proof-page + .sp-proof-page:not([hidden]) { border-top: 1px solid #b7ad9e }
+[data-sv-ready] .sp-proof-page + .sp-proof-page:not([hidden]) { border-top: none }
+.sp-proof-copy .sp-label { color: #695e51 }
+.sv-page .sp-proof-copy > p {
+  color: #25241e;
+  margin-top: 14px;
+  line-height: 1.03;
+  font-size: clamp(2.25rem, 4.3vw, 4.55rem);
+  letter-spacing: -.055em;
+  text-wrap: balance;
+  font-weight: 480;
+}
+.sp-proof-copy em {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -.045em;
+  color: #80432d;
+  text-decoration: underline;
+  text-decoration-thickness: .04em;
+  text-underline-offset: .14em;
+}
+.sp-proof-note { border-top: 1px solid #9e7960; padding-top: 13px }
+.sv-page .sp-proof-note h3 { font-size: 1.02rem; letter-spacing: -.018em; line-height: 1.3; color: #573e30 }
+.sv-page .sp-proof-note p { font-size: .98rem; line-height: 1.47; color: #474139; margin-top: 8px }
+.sp-geo-formats,
+.sp-risk-layout,
+.sp-platform-inner {
+  display: grid;
+  grid-template-columns: minmax(0, .72fr) minmax(0, 1fr);
+  column-gap: clamp(42px, 10vw, 160px);
+}
+.sp-geo-formats { padding-block: 0 clamp(52px, 6vw, 94px) }
+.sv-page :is(.sp-geo-formats,.sp-platform-inner,.sp-risk-layout) h2 {
+  font-size: clamp(2rem, 3.9vw, 3.8rem);
+  line-height: 1.02;
+  letter-spacing: -.05em;
+  font-weight: 500;
+}
+.sv-page .sp-geo-formats > div > p,
+.sv-page .sp-platform-inner > div > p { margin-top: 16px; max-width: 33ch }
+.sp-geo-formats dl { margin: 0 }
+.sp-geo-formats dl > div { border-top: 1px solid #41413e; padding: 16px 0 21px }
+.sp-geo-formats dt { font-size: clamp(1.18rem, 1.65vw, 1.56rem); line-height: 1.16; font-weight: 550; letter-spacing: -.035em }
+.sp-geo-formats dd { margin: 8px 0 0; font-size: 1rem; line-height: 1.5; color: #bcbcb5; max-width: 66ch }
+
+.sv-page .sp-pf-head { align-items: end }
+.sv-page .sp-pf-head h1 span { color: #b2b4af }
+.sp-measures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 10px;
+  margin-bottom: clamp(46px, 6vw, 90px);
+}
+.sp-measure { color: #f1f0e7; background: #282d2b; padding: clamp(20px, 3.1vw, 48px) }
+.sp-measure-ranks { color: #242723; background: #d4d6c8 }
+.sp-measure-top { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; border-bottom: 1px solid currentColor; padding-bottom: 14px }
+.sv-page .sp-measure-top h3,
+.sp-tool { font-size: .89rem; font-weight: 550; line-height: 1.3; color: inherit; letter-spacing: -.012em }
+.sp-tool { display: inline-flex; align-items: center; gap: 7px }
+.sp-tool img { width: 24px; height: 24px; object-fit: contain }
+.sv-page .sp-measure-word { margin: clamp(28px, 4.2vw, 64px) 0 6px; font-size: clamp(2.7rem, 5.2vw, 5.3rem); letter-spacing: -.065em; font-weight: 500; line-height: 1; color: inherit }
+.sv-page .sp-measure-question { color: inherit; font-size: clamp(1.05rem, 1.4vw, 1.3rem); line-height: 1.4; max-width: 33ch }
+.sp-measure .sp-measure-fields { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0; list-style: none; margin: 21px 0 0; font-size: .82rem; line-height: 1.4 }
+.sp-measure-fields li { display: inline-flex; align-items: center; gap: 8px }
+.sp-measure-fields li + li::before { content: ""; width: 16px; height: 7px; background: currentColor; clip-path: polygon(0 43%, 76% 43%, 61% 4%, 71% 4%, 100% 50%, 71% 96%, 61% 96%, 76% 57%, 0 57%) }
+.sp-measure-ranks .sp-measure-fields li + li::before { clip-path: polygon(0 50%, 29% 4%, 39% 4%, 24% 43%, 76% 43%, 61% 4%, 71% 4%, 100% 50%, 71% 96%, 61% 96%, 76% 57%, 24% 57%, 39% 96%, 29% 96%) }
+.sp-measure-detail { border-top: 1px solid #727771; margin-top: clamp(20px, 2.1vw, 35px) }
+.sp-measure-ranks .sp-measure-detail { border-color: #92988c }
+.sp-measure-detail summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+  gap: 15px;
+  padding: 11px 1px;
+  font-size: .98rem;
+  font-weight: 550;
+}
+.sp-measure-detail summary::-webkit-details-marker { display: none }
+.sp-measure-detail summary span {
+  display: block; width: 10px; height: 10px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg); margin-right: 5px;
+  transition: transform .28s var(--ease);
+}
+.sp-measure-detail[open] summary span { transform: translateY(2px) rotate(225deg) }
+.sp-measure-detail-body { padding-block: 4px 6px }
+.sv-page .sp-measure-detail-body p { color: inherit; font-size: .97rem; line-height: 1.5 }
+.sv-page .sp-measure-detail-body p + p { margin-top: 10px }
+.sp-measure-detail-body strong { font-weight: 600 }
+.sp-pf-warning { background: #d2ad91; color: #2c241e }
+.sp-risk-layout { padding-block: clamp(35px, 5.4vw, 82px) }
+.sv-page .sp-risk-layout h2 { color: inherit }
+.sv-page .sp-risk-layout > div:first-child > p { margin-top: 8px; color: #544034 }
+.sv-page .sp-risk-layout h3 { font-size: clamp(1.25rem, 2.2vw, 2rem); line-height: 1.15; letter-spacing: -.04em }
+.sv-page .sp-risk-layout > div + div p { color: #392d24; margin-top: 12px; font-size: 1.04rem; line-height: 1.55 }
+.sv-page .sp-text-link { display: inline-block; color: inherit; margin-top: 12px; font-weight: 600; padding: 4px 0; text-decoration: underline; text-underline-offset: .22em }
+
+.sp-local-hero {
+  --sp-active-color: #e6e5d9;
+  --sp-active-ink: #242921;
+  display: grid;
+  grid-template-columns: minmax(0, .84fr) minmax(0, 1.18fr);
+  grid-template-areas: "heading map" "tasks map";
+  gap: clamp(25px, 3vw, 52px) clamp(30px, 5.8vw, 90px);
+  padding-block: clamp(32px, 4.5vw, 70px) clamp(54px, 6.5vw, 110px);
+}
+.sp-local-title { grid-area: heading }
+.sv-page .sp-local-title h1 { font-size: clamp(3rem, 5.4vw, 5.8rem); }
+.sv-page .sp-local-title h1 span { color: #bec2b4 }
+.sv-page .sp-local-title p { margin-top: 19px; max-width: 41ch }
+.sp-map-sheet { position: relative; margin: 0; grid-area: map; border-radius: 3px; overflow: hidden; background: #d4d6c4; min-height: 365px; align-self: stretch }
+.sp-map-sheet svg { width: 100%; height: 100%; position: absolute; inset: 0 }
+.sp-map-terrain { fill: #cecfbb }
+.sp-map-park { fill: #93a899 }
+.sp-map-road { fill: none; stroke: #f4eeda; stroke-width: 17 }
+.sp-map-lane { fill: none; stroke: #e6e1cd; stroke-width: 7 }
+.sp-map-buildings { fill: #b4b6a7; stroke: #89938a; stroke-width: 1.7; stroke-linejoin: round }
+.sp-map-address { fill: #a59473; stroke: #626c61 }
+.sp-map-mark path { fill: #91502e; stroke: #6b3926; stroke-width: 1.8 }
+.sp-map-mark circle { fill: #faf3df }
+.sp-map-main { translate: 0 0; transition: translate .52s cubic-bezier(.2,.77,.21,1) }
+.sp-map-walk { fill: none; stroke: #924923; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 235; stroke-dashoffset: 235; opacity: 0; transition: stroke-dashoffset .55s ease-out, opacity .22s ease }
+.sp-map-other { opacity: 0; translate: 0 -8px; transition: opacity .22s ease, translate .3s ease-out }
+.sp-local-hero:has([aria-controls="map-entry"][aria-selected=true]) .sp-map-main { translate: 15px -27px }
+.sp-local-hero:has([aria-controls="map-entry"][aria-selected=true]) .sp-map-walk { stroke-dashoffset: 0; opacity: 1 }
+.sp-local-hero:has([aria-controls="map-branch"][aria-selected=true]) .sp-map-other { opacity: 1; translate: 0 0 }
+.sp-map-sheet figcaption { position: absolute; bottom: 0; left: 0; padding: 8px 13px; background: #f1edde; color: #384035; font-size: .8rem }
+.sp-map-task { grid-area: tasks; align-self: end }
+.sp-map-task .sp-tabs { border-block: 1px solid #4c504b; padding-block: 5px; margin-bottom: 19px }
+.sp-map-answer + .sp-map-answer:not([hidden]) { margin-top: 18px }
+[data-sv-ready] .sp-map-answer + .sp-map-answer:not([hidden]) { margin-top: 0 }
+.sv-page .sp-map-answer h2 { font-size: clamp(1.24rem, 1.9vw, 1.7rem); letter-spacing: -.035em; line-height: 1.12 }
+.sv-page .sp-map-answer p { font-size: 1rem; color: #bfc0b8; margin-top: 9px; line-height: 1.49 }
+.sp-platforms { color: #272b26; background: #dce0d4 }
+.sp-platform-inner { padding-block: clamp(36px, 5.9vw, 90px) }
+.sv-page .sp-platform-inner > div > p { color: #445044 }
+.sp-platforms ul { padding: 0; list-style: none }
+.sp-platforms li { display: flex; gap: 20px; padding-block: 17px; align-items: center; border-top: 1px solid #afb6a7 }
+.sp-platforms li:last-child { border-bottom: 1px solid #afb6a7 }
+.sp-platforms img { width: 45px; height: 45px; object-fit: contain; flex-shrink: 0 }
+.sv-page .sp-platforms h3 { color: inherit; font-size: clamp(1.2rem, 1.8vw, 1.65rem); letter-spacing: -.035em }
+.sv-page .sp-platforms li p { color: #445044; font-size: 1rem; line-height: 1.45; margin-top: 4px }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-sv-ready] .sp-proof-page:not([hidden]) .sp-proof-copy em {
+    animation: sp-proof-ink .34s cubic-bezier(.18,.7,.18,1);
+  }
+  .sp-measure-detail[open] .sp-measure-detail-body {
+    animation: sp-read-in .24s ease-out;
+  }
+  @keyframes sp-proof-ink {
+    from { color: #514b40; text-underline-offset: .06em; text-decoration-color: transparent }
+    to { color: #80432d; text-underline-offset: .14em; text-decoration-color: currentColor }
+  }
+  @keyframes sp-read-in { from { opacity: .45; transform: translateY(-3px) } to { opacity: 1; transform: none } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-measure-detail summary span, .sp-map-main, .sp-map-walk, .sp-map-other { transition: none }
+}
+@media (max-width: 1000px) {
+  .sp-local-hero { gap: 23px 28px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) }
+  .sv-page .sp-pf-head { gap: 25px }
+  .sp-proof-page { grid-template-columns: minmax(0, 1.55fr) minmax(13.5rem, .9fr); gap: 28px }
+}
+@media (max-width: 800px) {
+  .sv-page .sp-heading, .sv-page .sp-pf-head { grid-template-columns: minmax(0, 1fr); gap: 14px }
+  .sv-page .sp-heading p, .sv-page .sp-pf-head p { max-width: 55ch }
+  .sp-local-hero { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); grid-template-areas: "heading map" "tasks tasks" }
+  .sp-map-sheet { min-height: 270px }
+  .sp-map-task .sp-tabs { margin-bottom: 14px }
+  .sv-page .sp-local-title h1 { font-size: clamp(2.8rem, 6vw, 4rem) }
+  .sp-geo-formats, .sp-risk-layout, .sp-platform-inner { column-gap: 36px; grid-template-columns: minmax(0, .7fr) minmax(0, 1fr) }
+  .sp-measure-top { align-items: start; flex-direction: column; min-height: 66px }
+}
+@media (max-width: 620px) {
+  .sv-page .sp-heading,.sv-page .sp-pf-head,.sp-local-hero { padding-top: 24px }
+  .sv-page .sp-heading h1, .sv-page .sp-pf-head h1, .sv-page .sp-local-title h1 { font-size: clamp(2.52rem, 9.9vw, 3.65rem) }
+  .sv-page .sp-heading h1 span { font-size: clamp(1.62rem, 5.8vw, 2.2rem) }
+  .sp-geo-head { display: block }
+  .sp-geo-head p { margin-top: 6px }
+  .sp-proof { padding: 18px }
+  .sp-proof-top { display: grid; gap: 5px; padding-bottom: 14px }
+  .sp-proof .sp-tabs { margin: 12px 0 10px; gap: 2px }
+  .sp-tabs button { font-size: .85rem; padding-inline: 8px }
+  .sp-proof-page { grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 10px 0 }
+  .sv-page .sp-proof-copy > p { margin-top: 8px; font-size: clamp(2.1rem, 8.2vw, 3rem) }
+  .sp-proof-note { padding-top: 10px }
+  .sp-geo-formats,.sp-risk-layout,.sp-platform-inner { grid-template-columns: minmax(0, 1fr); row-gap: 25px }
+  .sp-measures { grid-template-columns: minmax(0, 1fr); gap: 9px }
+  .sp-measure-top { flex-direction: row; min-height: auto; align-items: center }
+  .sv-page .sp-measure-word { font-size: clamp(2.7rem, 12vw, 4rem); margin-top: 24px }
+  .sp-measure { padding: 20px 18px 13px }
+  .sp-measure-detail { margin-top: 20px }
+  .sp-local-hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "heading" "map" "tasks"; gap: 20px }
+  .sp-map-sheet { width: 100%; min-width: 0; min-height: 0; aspect-ratio: 1.65 }
+  .sp-map-sheet figcaption { font-size: .72rem; padding: 6px 8px }
+  .sp-local-title h1 span { display: inline }
+  .sv-page .sp-local-title p { margin-top: 12px }
+  .sp-platforms li { gap: 14px }
+}
