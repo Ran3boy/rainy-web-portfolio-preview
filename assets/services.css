@@ -66,105 +66,147 @@
 /* The same grid cell contains all five panels. Every panel contributes its
    intrinsic height, including wrapped copy and actions after browser zoom. */
 .sd-panels {
-  --tools-height: clamp(58px, 11cqw, 76px);
   display: grid;
   min-width: 0;
   container-type: inline-size;
   background: #252728;
   border: 1px solid #424441;
 }
-.sd-panel:is([data-key="development"], [data-key="seo"]) .sd-art { margin-bottom: var(--tools-height); }
-.sd-tool-rack {
-  grid-area: 1 / 1;
+/* Each scene occupies the old media + caption footprint; the selected sheet
+   and the flight layer share one grid cell and never participate in reflow. */
+.sd-media-scene, .sd-tool-rack { height: calc(100cqw / 2.55 + clamp(58px,11cqw,76px)); }
+.sd-media-scene {
   position: relative;
-  align-self: start;
+  flex: none;
   display: grid;
-  height: var(--tools-height);
-  margin-top: calc(100% / 2.55);
-  overflow: clip;
-  isolation: isolate;
-  opacity: 0;
+  place-items: center;
+  background: #303c3d;
+}
+[data-key="seo"] .sd-media-scene { background: #353b36; }
+.sd-media-scene > .sd-art {
+  width: 81%;
+  box-shadow: 0 2px 1px #141b1bd9, 0 14px 16px -9px #101919ba;
+}
+.sd-tool-rack {
+  position: relative;
+  grid-area: 1 / 1;
+  align-self: start;
+  z-index: 1;
   pointer-events: none;
 }
-.sd-stage:has(:is(#svc-trigger-development, #svc-trigger-seo):checked) .sd-tool-rack { opacity: 1; }
-.sd-tools {
-  --tool-face: #c8d9d8;
-  --tool-edge: #819793;
-  grid-area: 1 / 1;
-  display: flex;
-  align-items: center;
-  gap: clamp(14px, 5cqw, 44px);
-  padding: 0 clamp(12px, 3.5cqw, 30px);
-  margin: 0;
-  list-style: none;
-  background: #202323;
-  border-bottom: 1px solid #424542;
-  visibility: hidden;
-}
-.sd-tools[data-tools="seo"] { --tool-face: #c7cead; --tool-edge: #82916e; }
-.sd-tool {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: clamp(7px, 1.8cqw, 12px);
-  --tilt: -6deg;
-  --fold: -20deg;
-  --reach: -13px;
-}
-.sd-tool + .sd-tool { --tilt: 4deg; --fold: 18deg; --reach: 12px; --tool-face: #e2c5a7; --tool-edge: #a98062; }
-.sd-tool-symbol {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: clamp(30px, 5.85cqw, 42px);
-  aspect-ratio: 1;
-  border: 1px solid #eff3e466;
-  border-radius: 3px;
-  background: var(--tool-face);
-  box-shadow: 1px 2px 0 var(--tool-edge), 2px 4px 4px #10110f55;
-  color: #28322e;
-  transform: rotate(var(--tilt));
-}
-.sd-tool-symbol svg { width: 74%; height: 74%; }
-.sd-tool-caption { display: grid; gap: 2px; line-height: 1.16; }
-.sd-tool-caption strong { color: #f2f0e9; font-size: clamp(13px, 2.55cqw, 17px); font-weight: 550; }
-.sd-tool-caption small { color: #c5c4ba; font-size: clamp(11px, 1.95cqw, 13px); }
+.sd-stage:not(:has(#svc-trigger-development:checked, #svc-trigger-seo:checked)) .sd-tool-rack { opacity: 0; }
+.sd-tools, .sd-tool { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.sd-tools { visibility: hidden; }
 .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"],
 .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] { visibility: visible; }
-
+.sd-tool {
+  --size: clamp(47px,14cqw,90px);
+  --x: 7%;
+  --y: 8%;
+  --tilt: -11deg;
+  --run-x: 109%;
+  --run-y: 92%;
+  --bank: 29deg;
+  --lag: 0ms;
+  /* The edge cuts off the flight inside the sheet. A small portion of each
+     resting object hangs over its corner, leaving the evidence legible. */
+  clip-path: polygon(-13% -35%,112% -35%,112% 18%,20% 18%,9% 28%,-13% 28%);
+}
+.sd-tool[data-tool="opencart"] { --size: clamp(48px,16.4cqw,106px); }
+.sd-tool[data-tool="wordpress"] {
+  --size: clamp(44px,12.4cqw,79px);
+  --x: 92%; --y: 88%; --tilt: 10deg; --run-x: -114%; --run-y: -115%; --bank: -41deg; --lag: 115ms;
+  clip-path: polygon(-12% 82%,80% 82%,92% 64%,113% 64%,113% 133%,-12% 133%);
+}
+.sd-tool[data-tool="topvisor"] {
+  --x: 92%; --y: 9%; --tilt: 9deg; --run-x: -113%; --run-y: 118%; --bank: -38deg;
+  clip-path: polygon(-12% -35%,113% -35%,113% 31%,89% 31%,79% 18%,-12% 18%);
+}
+.sd-tool[data-tool="metrica"] {
+  --size: clamp(45px,12.3cqw,80px);
+  --x: 8%; --y: 87%; --tilt: -9deg; --run-x: 118%; --run-y: -110%; --bank: 35deg; --lag: 120ms;
+  clip-path: polygon(-12% 66%,10% 66%,20% 82%,112% 82%,112% 133%,-12% 133%);
+}
+.sd-tool-flight {
+  display: block;
+  position: absolute;
+  top: var(--y); left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2);
+}
+.sd-tool-symbol {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  transform: rotate(var(--tilt));
+  filter: drop-shadow(1px 3px 0 #152020) drop-shadow(3px 8px 4px #0b111375);
+}
+.sd-tool-symbol img { display: block; width: 100%; height: 100%; object-fit: contain; }
+[data-tool="opencart"] img { filter: drop-shadow(1px 2px 0 #448198); }
+[data-tool="wordpress"] img { background: #efece2; border-radius: 50%; padding: 4%; }
+[data-tool="topvisor"] img { background: #ebf0e6; padding: 12%; border-radius: 19%; }
+.sd-tool-caption {
+  position: absolute;
+  top: 3.8%; left: 18%;
+  display: grid;
+  gap: 1px;
+  color: #f4efe9;
+  line-height: 1.18;
+}
+.sd-tool-caption strong { font-size: clamp(13px,2.5cqw,17px); font-weight: 600; }
+.sd-tool-caption small { font-size: clamp(11px,2cqw,14px); color: #d0d8d1; }
+[data-tool="wordpress"] .sd-tool-caption { inset: auto 17% 3.1% auto; text-align: right; }
+[data-tool="topvisor"] .sd-tool-caption { inset: 3.8% 18% auto auto; text-align: right; }
+[data-tool="metrica"] .sd-tool-caption { inset: auto auto 3.1% 18%; }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .sd-tools { background: transparent; border: 0; transition: visibility 0s 160ms; }
-  .sd-tool-rack { background: #202323; border-bottom: 1px solid #424542; }
-  .sd-tool { opacity: 0; transform: translateY(-9px); transition: opacity 100ms ease-in, transform 140ms ease-in; }
-  .sd-tool-symbol {
-    transform: perspective(200px) translate(var(--reach), -18px) rotateX(48deg) rotate(var(--fold)) scale(.84);
-    transition: transform 150ms ease-in;
+  .sd-tool-rack[data-waiting] { opacity: 0; }
+  /* Separate horizontal and vertical easing curves produce a bending path.
+     CSS transitions retarget from the current pose on a rapid reversal. */
+  .sd-tools {
+    visibility: hidden;
+    transition: visibility 0s 360ms;
   }
+  .sd-tool-flight {
+    opacity: 0;
+    transform: translateX(var(--run-x));
+    transition: transform 330ms cubic-bezier(.4,0,.75,.55), opacity 110ms linear 205ms;
+  }
+  .sd-tool-symbol {
+    transform: perspective(380px) translateY(var(--run-y)) rotateX(48deg) rotate(var(--bank)) scale(.68);
+    transition: transform 355ms cubic-bezier(.54,0,.8,.6);
+  }
+  .sd-tool-caption { opacity: 0; transition: opacity 105ms linear; }
   .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"],
   .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] {
-    --arrival: 100ms;
+    visibility: visible;
     transition-delay: 0s;
+    --entry: 80ms;
   }
-  .sd-tools:where([data-tools]) .sd-tool + .sd-tool { --stagger: 55ms; }
-  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"] .sd-tool,
-  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] .sd-tool {
+  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"] .sd-tool-flight,
+  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] .sd-tool-flight {
     opacity: 1;
-    transform: none;
-    transition: opacity 180ms ease-out calc(var(--arrival) + var(--stagger, 0ms)), transform 360ms cubic-bezier(.18,.82,.22,1) calc(var(--arrival) + var(--stagger, 0ms));
+    transform: translateX(0);
+    transition: transform 700ms cubic-bezier(.18,.75,.15,1.12) calc(var(--entry) + var(--lag)), opacity 180ms ease-out calc(var(--entry) + var(--lag));
   }
   .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"] .sd-tool-symbol,
   .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] .sd-tool-symbol {
-    transform: perspective(200px) rotate(var(--tilt));
-    transition: transform 460ms cubic-bezier(.16,1.25,.27,1) calc(var(--arrival) + var(--stagger, 0ms));
+    transform: perspective(380px) rotate(var(--tilt));
+    transition: transform 555ms cubic-bezier(.16,1.1,.22,1) calc(var(--entry) + var(--lag));
   }
-  @keyframes sd-tool-unfold {
-    from { opacity: 0; transform: perspective(200px) translate(var(--reach), -24px) rotateX(48deg) rotate(var(--fold)) scale(.84); }
-    to { opacity: 1; transform: perspective(200px) rotate(var(--tilt)); }
+  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"] .sd-tool-caption,
+  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] .sd-tool-caption {
+    opacity: 1;
+    transition: opacity 180ms ease-out calc(255ms + var(--lag));
   }
+  /* The first pair performs the same flight when its media is first in view. */
+  @keyframes sd-flight-x { from { opacity: 0; transform: translateX(var(--run-x)); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes sd-flight-y { from { transform: perspective(380px) translateY(var(--run-y)) rotateX(48deg) rotate(var(--bank)) scale(.68); } to { transform: perspective(380px) rotate(var(--tilt)); } }
+  .sd-tool-rack[data-intro="development"] [data-tools="development"] .sd-tool-flight,
+  .sd-tool-rack[data-intro="seo"] [data-tools="seo"] .sd-tool-flight { animation: sd-flight-x 700ms cubic-bezier(.18,.75,.15,1.12) var(--lag) backwards; }
   .sd-tool-rack[data-intro="development"] [data-tools="development"] .sd-tool-symbol,
-  .sd-tool-rack[data-intro="seo"] [data-tools="seo"] .sd-tool-symbol {
-    animation: sd-tool-unfold 460ms cubic-bezier(.16,1.25,.27,1) var(--stagger, 0ms) backwards;
-  }
+  .sd-tool-rack[data-intro="seo"] [data-tools="seo"] .sd-tool-symbol { animation: sd-flight-y 555ms cubic-bezier(.16,1.1,.22,1) var(--lag) backwards; }
 }
 .sd-panel {
   grid-area: 1 / 1;

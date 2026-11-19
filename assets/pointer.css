@@ -4,9 +4,9 @@
   position: fixed;
   inset: 0 auto auto 0;
   z-index: 1000;
-  width: 23px;
-  height: 23px;
-  margin: -11.5px 0 0 -11.5px;
+  width: 25px;
+  height: 25px;
+  margin: -12.5px 0 0 -12.5px;
   contain: layout style;
 }
 .rw-pointer, .rw-pointer * { pointer-events: none !important; }
@@ -14,18 +14,33 @@
   html.rw-pointer-on, html.rw-pointer-on * { cursor: none !important; }
   .rw-pointer.is-active { display: block; }
 }
-.rw-pointer-face {
+.rw-pointer-body {
   position: absolute;
-  inset: -36px;
+  inset: 0;
   display: grid;
   place-items: center;
-  /* The sight stays at the native hit point while the ink deforms around it. */
-  mask-image: radial-gradient(circle at center, transparent 1.5px, black 2.3px);
+}
+.rw-pointer-sight {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  left: calc(50% - 3.5px);
+  top: calc(50% - 3.5px);
+  filter: drop-shadow(0 0 1px #302219);
+  opacity: 0;
+}
+.rw-pointer-sight::before {
+  display: block;
+  content: '';
+  width: 100%;
+  height: 100%;
+  background: #f3ddc6;
+  clip-path: polygon(0 39%,39% 39%,39% 0,61% 0,61% 39%,100% 39%,100% 61%,61% 61%,61% 100%,39% 100%,39% 61%,0 61%);
 }
 .rw-pointer-mark, .rw-pointer-wake {
   grid-area: 1 / 1;
-  width: 23px;
-  height: 23px;
+  width: 25px;
+  height: 25px;
   transform-origin: center;
 }
 .rw-pointer-mark {
@@ -33,9 +48,10 @@
   display: block;
   scale: 1;
   filter: drop-shadow(0 1px 1px #171310a6);
+  mask-image: radial-gradient(circle at center, transparent 1.3px, black 2.1px);
 }
 .rw-pointer-wake { background: #e5a071; mask: url(shared/rainy-mark.svg) center / contain no-repeat; opacity: 0; }
-.rw-pointer::after {
+.rw-pointer-body::after {
   content: '';
   position: absolute;
   inset: auto 6px -3px;
@@ -47,7 +63,7 @@
   transform: scaleX(.3);
   transition: transform 135ms ease-out, opacity 110ms ease-out;
 }
-.rw-pointer[data-mode='link']::after { opacity: 1; transform: scaleX(1); }
+.rw-pointer[data-mode='link'] .rw-pointer-body::after { opacity: 1; transform: scaleX(1); }
 .rw-pointer-axis {
   position: absolute;
   inset: 0 -9px;

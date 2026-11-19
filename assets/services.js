@@ -5,13 +5,19 @@
   const choices = [...group.querySelectorAll('input[type="radio"]')];
   const rack = group.closest("[data-services]").querySelector(".sd-tool-rack");
   if (rack && "IntersectionObserver" in window && matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches) {
+    rack.dataset.waiting = "";
     const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
+      if (entry.intersectionRatio < .72) return;
       observer.disconnect();
+      delete rack.dataset.waiting;
       rack.dataset.intro = group.querySelector(":checked").value;
-    }, { threshold: .5 });
+    }, { threshold: .72 });
     observer.observe(rack);
-    group.addEventListener("change", () => { delete rack.dataset.intro; }, { once: true });
+    group.addEventListener("change", () => {
+      observer.disconnect();
+      delete rack.dataset.waiting;
+      delete rack.dataset.intro;
+    }, { once: true });
   }
 
   group.addEventListener("keydown", (event) => {

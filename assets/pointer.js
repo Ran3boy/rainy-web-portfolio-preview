@@ -4,19 +4,21 @@
   pointer.className = 'rw-pointer';
   pointer.hidden = true;
   pointer.setAttribute('aria-hidden', 'true');
-  const mark = new Image(23, 23);
+  const mark = new Image(25, 25);
   mark.className = 'rw-pointer-mark';
   mark.alt = '';
   mark.draggable = false;
   mark.src = new URL('shared/rainy-mark.svg', document.currentScript.src).href;
   const wakeInk = document.createElement('span');
   wakeInk.className = 'rw-pointer-wake';
-  const face = document.createElement('span');
-  face.className = 'rw-pointer-face';
-  face.append(wakeInk, mark);
+  const body = document.createElement('span');
+  body.className = 'rw-pointer-body';
+  const sight = document.createElement('span');
+  sight.className = 'rw-pointer-sight';
   const axis = document.createElement('span');
   axis.className = 'rw-pointer-axis';
-  pointer.append(face, axis);
+  body.append(wakeInk, mark, axis);
+  pointer.append(body, sight);
   document.body.append(pointer);
 
   const root = document.documentElement;
@@ -51,8 +53,15 @@
     shapeY = spring(690, 24, 0.001);
   const twist = spring(610, 22, 0.05),
     pressure = spring(860, 34, 0.001);
-  const bendX = spring(780, 28, 0.025),
-    bendY = spring(780, 28, 0.025);
+  // These coordinates are in viewport space. A new mouse event moves the spring's
+  // destination, never the mass itself, except to bound very large jumps.
+  const bodyX = spring(1020, 23, 0.08), bodyY = spring(1020, 23, 0.08);
+  const materials = {
+    button: { strike: 1370, release: 1590, squash: 0.35 },
+    link:   { strike: 560, release: 470, squash: 0.17 },
+    card:   { strike: 940, release: 1030, squash: 0.26 },
+    drag:   { strike: 700, release: 530, squash: 0.2 }
+  };
   const tailX = spring(570, 25, 0.04),
     tailY = spring(570, 25, 0.04);
   let ready = false,
@@ -70,8 +79,11 @@
     force = 0,
     motionAt = 0,
     near = null;
+  let contact = null, lastImpact = -Infinity, surface = 'free';
 
   function restInk() {
+    body.style.removeProperty('transform');
+    sight.style.removeProperty('opacity');
     mark.style.removeProperty('transform');
     mark.style.removeProperty('scale');
     wakeInk.style.removeProperty('opacity');
@@ -81,7 +93,9 @@
   function hide() {
     active = pressed = dragging = false;
     hit = point = near = null;
-    mode = 'free';
+    mode = surface = 'free';
+    contact = null;
+    lastImpact = -Infinity;
     force = motionAt = 0;
     dx = 1;
     dy = 0;
@@ -91,7 +105,7 @@
     for (const s of springs) s.x = s.v = s.goal = 0;
     pointer.classList.remove('is-active');
     root.classList.remove('rw-pointer-on');
-    for (const key of ['mode', 'running', 'pressed']) delete pointer.dataset[key];
+    for (const key of ['mode', 'surface', 'running', 'pressed']) delete pointer.dataset[key];
     restInk();
   }
 
@@ -109,22 +123,24 @@
     const xx = 1 + shapeX.x,
       yy = 1 - shapeX.x * 0.78,
       xy = shapeY.x * 0.89;
+    const offsetX = bodyX.x - point.x, offsetY = bodyY.x - point.y;
+    body.style.transform = `translate3d(${offsetX}px,${offsetY}px,0)`;
+    sight.style.opacity = String(Math.min(1, Math.max(0, (Math.hypot(offsetX, offsetY) - 5) / 8)));
     const matrix = [
       xx * c + xy * s,
       xy * c + yy * s,
       xy * c - xx * s,
       yy * c - xy * s,
-      limit(bendX.x, 5.5),
-      limit(bendY.x, 5.5)
+      0, 0
     ];
     mark.style.transform = `matrix(${matrix.join(',')})`;
     mark.style.scale = String(1 + pressure.x);
     const length = Math.hypot(tailX.x, tailY.x);
-    wakeInk.style.opacity = String(Math.min(0.64, Math.max(0, (length - 1.1) / 18)));
+    wakeInk.style.opacity = String(Math.min(0.84, Math.max(0, (length - 1.8) / 20)));
     if (length > 1) {
       const angle = Math.atan2(tailY.x, tailX.x);
-      const offset = `translate(${tailX.x * 0.95}px, ${tailY.x * 0.95}px)`;
-      const stretch = `rotate(${angle}rad) scale(${1 + length / 30}, .64) rotate(${-angle}rad)`;
+      const offset = `translate(${tailX.x * 1.08}px, ${tailY.x * 1.08}px)`;
+      const stretch = `rotate(${angle}rad) scale(${1 + length / 28}, .67) rotate(${-angle}rad)`;
       wakeInk.style.transform = `${offset} ${stretch}`;
     }
   }
@@ -141,19 +157,23 @@
     const squeeze = mode === 'card' ? 0.27 : 0.39;
     shapeX.goal = (dx * dx - dy * dy) * drive * squeeze;
     shapeY.goal = 2 * dx * dy * drive * squeeze;
-    bendX.goal = -dx * drive * 2.9;
-    bendY.goal = -dy * drive * 2.9;
+    bodyX.goal = point.x;
+    bodyY.goal = point.y;
     if (near) {
       const push = drive * near.strength;
-      shapeX.goal -= (near.x * near.x - near.y * near.y) * push * 0.24;
-      bendX.goal += near.x * push * 5;
-      bendY.goal += near.y * push * 5;
+      shapeX.goal -= (near.nx * near.nx - near.ny * near.ny) * push * 0.24;
+      bodyX.goal -= near.nx * push * 7;
+      bodyY.goal -= near.ny * push * 7;
     }
     twist.goal = (dx * 0.87 - dy * 0.65) * drive * (mode === 'card' ? 18 : 29);
     pressure.goal = pressed ? -0.26 : 0;
-    const wakeLength = Math.max(0, drive - 0.18) * (mode === 'link' ? 14 : 21);
-    tailX.goal = -dx * wakeLength;
-    tailY.goal = -dy * wakeLength;
+    // The copper silhouette points along the body's real path, including the
+    // instant it is travelling opposite the mouse during a reversal.
+    const speed = Math.hypot(bodyX.v, bodyY.v);
+    const wakeLength = Math.min(34, Math.max(0, (speed - 245) * 0.039));
+    tailX.goal = speed ? -bodyX.v / speed * wakeLength : 0;
+    tailY.goal = speed ? -bodyY.v / speed * wakeLength : 0;
+    if (contact) resolveContact(now);
     const steps = Math.max(1, Math.ceil(elapsed / 0.006)),
       dt = elapsed / steps;
     let moving = drive > 0.001;
@@ -194,27 +214,57 @@
     return { node: art, mode: art ? 'drag' : 'free' };
   }
 
-  // Rectangle normals come from the actual hit surface, including full-card
-  // anchor overlays. The look-ahead hit test is local to the current direction.
-  function edge(node, x, y) {
+  // Each side is a directed plane. For an entry sample that lands deep inside,
+  // intersect the actual input segment with the box instead of picking its
+  // nearest side (which can be the opposite side of a small button).
+  function edge(node, x, y, from = null) {
     const r = node.getBoundingClientRect();
-    const edges = [
-      [x - r.left, -1, 0],
-      [r.right - x, 1, 0],
-      [y - r.top, 0, -1],
-      [r.bottom - y, 0, 1]
+    const faces = [
+      { x:r.left, y:r.top, nx:-1, ny:0 },
+      { x:r.right, y:r.top, nx:1, ny:0 },
+      { x:r.left, y:r.top, nx:0, ny:-1 },
+      { x:r.left, y:r.bottom, nx:0, ny:1 }
     ];
-    const nearest = edges.reduce((a, b) => (a[0] <= b[0] ? a : b));
-    return { x: nearest[1], y: nearest[2], strength: Math.max(0, 1 - Math.abs(nearest[0]) / 16) };
+    const signed = (face, px, py) => (px-face.x)*face.nx + (py-face.y)*face.ny;
+    let nearest = faces[0], distance = -Infinity;
+    for (const face of faces) {
+      const end = signed(face,x,y);
+      if (end > distance) { distance=end; nearest=face; }
+      if (!from) continue;
+      const start = signed(face,from.x,from.y);
+      if (start * end > 0 || start === end) continue;
+      const t = start / (start - end);
+      const ix = from.x + (x-from.x)*t, iy = from.y + (y-from.y)*t;
+      if (ix >= r.left-.1 && ix <= r.right+.1 && iy >= r.top-.1 && iy <= r.bottom+.1) return face;
+    }
+    nearest.strength = Math.max(0, 1 - Math.abs(distance)/24);
+    return nearest;
   }
 
-  function impact(normal, energy) {
-    const { x, y } = normal;
-    bendX.v += x * energy * 14;
-    bendY.v += y * energy * 14;
-    shapeX.v -= (x * x - y * y) * energy * 0.55;
-    twist.v += (x - y) * energy * 3;
-    start();
+  function materialFor(node, mode) {
+    if (mode !== 'link') return mode;
+    return node.matches('button,summary,input,label,[role=button],.btn,.nav-telegram-2,.sd-detail') ? 'button' : 'link';
+  }
+
+  function resolveContact(now) {
+    const { face, profile, entering, at } = contact;
+    const { nx, ny } = face;
+    const gap = (bodyX.x-face.x)*nx + (bodyY.x-face.y)*ny;
+    if (now - at > 170) {
+      contact = null;
+      return;
+    }
+    // An inward-moving mark hits the exterior with its leading shoulder.
+    // A departing mark releases as the body itself crosses the edge.
+    if (entering ? gap > 10 : gap < -7) return;
+    contact = null;
+    lastImpact = now;
+    const normalVelocity = bodyX.v*nx + bodyY.v*ny;
+    const kick = (entering ? profile.strike : profile.release) * (.87 + force*.19);
+    bodyX.v += nx*(kick-normalVelocity);
+    bodyY.v += ny*(kick-normalVelocity);
+    shapeX.x -= (nx*nx - ny*ny)*profile.squash;
+    twist.v += (nx-ny)*90;
   }
 
   function classify(el, x, y, buttons = 0, lookAhead = false) {
@@ -235,16 +285,29 @@
     }
     const next = dragging ? { node: hit, mode: 'drag' } : targetAt(el, x, y);
     if (next.node !== hit) {
-      if (active && hit) impact(edge(hit, x, y), -Math.min(5, 2.9 + force * 2));
+      const previousHit = hit, previousSurface = surface;
       hit = next.node;
-      if (active && hit) impact(edge(hit, x, y), (next.mode === 'card' ? 3.3 : 5.4) + force * 1.7);
+      surface = materialFor(hit, next.mode);
+      contact = null;
+      // Scrolling beneath a resting mouse only changes the affordance. A
+      // physical boundary crossing is required to strike or release the body.
+      if (lookAhead && point && (hit || previousHit)) {
+        const face = edge(hit || previousHit, x, y, point);
+        const at = performance.now();
+        const proximity = Math.hypot(x-point.x,y-point.y);
+        if (at-lastImpact >= 95 && proximity < 110) {
+          contact = { face, at, entering: !!hit, profile: materials[hit ? surface : previousSurface] };
+          start();
+        }
+      }
     }
     mode = next.mode;
     if (pointer.dataset.mode !== mode) pointer.dataset.mode = mode;
+    if (pointer.dataset.surface !== surface) pointer.dataset.surface = surface;
     near = null;
     if (lookAhead && !hit && force > 0.025) {
-      const px = x + dx * 16,
-        py = y + dy * 16;
+      const px = x + dx * 24,
+        py = y + dy * 24;
       const candidate = targetAt(document.elementFromPoint(px, py), px, py).node;
       if (candidate) near = edge(candidate, x, y);
     }
@@ -273,8 +336,9 @@
       const reversal = -(ux * dx + uy * dy);
       if (now - motionAt < 120 && reversal > 0.4) {
         const kick = Math.min(force, nextForce) * reversal;
-        bendX.v += dx * kick * 120;
-        bendY.v += dy * kick * 120;
+        // Preserve momentum in the old direction through a hard turn.
+        bodyX.v = limit(bodyX.v + dx * kick * 420, 1900);
+        bodyY.v = limit(bodyY.v + dy * kick * 420, 1900);
         shapeX.v -= (dx * dx - dy * dy) * kick * 6;
         shapeY.v -= 2 * dx * dy * kick * 6;
         twist.v += (dx - dy) * kick * 165;
@@ -285,7 +349,21 @@
       motionAt = now;
     }
     if (!classify(event.target, x, y, event.buttons, distance > 0.1)) return;
+    if (!active) {
+      bodyX.x = x;
+      bodyY.x = y;
+    } else {
+      // A discontinuity (e.g. re-entering from a second monitor) cannot leave
+      // the mark stranded. Continuous pointer paths retain their own momentum.
+      const ox = bodyX.x-x, oy = bodyY.x-y;
+      const lag = Math.hypot(ox,oy);
+      if (lag > 58) {
+        bodyX.x = x + ox*58/lag;
+        bodyY.x = y + oy*58/lag;
+      }
+    }
     point = { x, y, time: now };
+    if (active && distance > .1) paint();
     pointer.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
     if (!active) {
       active = true;
