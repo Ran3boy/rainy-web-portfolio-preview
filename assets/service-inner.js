@@ -6,6 +6,41 @@ function openLinkedOffer() {
 openLinkedOffer();
 window.addEventListener("hashchange", openLinkedOffer);
 
+// Restore catalogue controls before the browser restores its scroll position on Back.
+const returning = performance.getEntriesByType("navigation")[0]?.type === "back_forward"
+  ? history.state?.rwService
+  : null;
+
+function rememberDeparture(event) {
+  const link = event.target.closest?.("main a[href]");
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (link.target === "_blank" || link.hasAttribute("download") || link.origin !== location.origin || link.pathname === location.pathname) return;
+  const openOffers = [...document.querySelectorAll("main details[open][id]")].map(item => item.id);
+  const details = link.closest("details");
+  const index = [...document.querySelectorAll("main a[href]")].indexOf(link);
+  const state = {
+    index, href: link.getAttribute("href"), openOffers, insideDetails: !!details?.open,
+    filter: document.querySelector("[data-sv-filter][aria-pressed=true]")?.dataset.svFilter,
+    panel: document.querySelector("[data-sv-control][aria-selected=true]")?.getAttribute("aria-controls")
+  };
+  history.replaceState({ ...history.state, rwService: state }, "");
+}
+
+function restoreLink(state) {
+  if (!state) return;
+  const link = document.querySelectorAll("main a[href]")[state.index];
+  if (!link || link.getAttribute("href") !== state.href) return;
+  for (const id of state.openOffers) {
+    const details = document.getElementById(id);
+    if (details instanceof HTMLDetailsElement) details.open = true;
+  }
+  const parent = link.closest("details");
+  if (parent && state.insideDetails) parent.open = true;
+  link.focus({ preventScroll: true });
+}
+
+document.addEventListener("click", rememberDeparture);
+
 // Leave the complete documents available when scripting is disabled.
 for (const group of document.querySelectorAll("[data-sv-switch]")) {
   const list = group.querySelector("[data-sv-controls]");
@@ -46,7 +81,8 @@ for (const group of document.querySelectorAll("[data-sv-switch]")) {
       buttons[next].focus({ preventScroll: true });
     });
   });
-  select(0);
+  const previous = buttons.findIndex(button => button.getAttribute("aria-controls") === returning?.panel);
+  select(previous < 0 ? 0 : previous);
   group.setAttribute("data-sv-ready", "");
   list.hidden = false;
 }
@@ -57,18 +93,24 @@ for (const directory of document.querySelectorAll("[data-sv-directory]")) {
   const entries = [...directory.querySelectorAll("[data-sv-entry]")];
   const status = directory.querySelector("[data-sv-count]");
   filters.hidden = false;
-  for (const button of buttons) {
-    button.addEventListener("click", () => {
-      const value = button.dataset.svFilter;
-      if (button.getAttribute("aria-pressed") === "true") return;
-      for (const other of buttons) other.setAttribute("aria-pressed", String(other === button));
-      let count = 0;
-      for (const entry of entries) {
-        entry.hidden = value !== "all" && entry.dataset.svEntry !== value;
-        if (!entry.hidden) count++;
-      }
-      directory.dataset.svSelection = value;
-      status.textContent = "Найдено направлений: " + count;
-    });
+  function filterBy(button) {
+    const value = button.dataset.svFilter;
+    if (button.getAttribute("aria-pressed") === "true") return;
+    for (const other of buttons) other.setAttribute("aria-pressed", String(other === button));
+    let count = 0;
+    for (const entry of entries) {
+      entry.hidden = value !== "all" && entry.dataset.svEntry !== value;
+      if (!entry.hidden) count++;
+    }
+    directory.dataset.svSelection = value;
+    status.textContent = "Найдено направлений: " + count;
   }
+  for (const button of buttons) button.addEventListener("click", () => filterBy(button));
+  const previous = buttons.find(button => button.dataset.svFilter === returning?.filter);
+  if (previous) filterBy(previous);
 }
+
+restoreLink(returning);
+window.addEventListener("pageshow", event => {
+  if (event.persisted) restoreLink(history.state?.rwService);
+});
