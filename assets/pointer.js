@@ -44,6 +44,7 @@
   const dt = stepMs / 1000;
   const inputFollow = 1 - Math.exp(-dt / 0.017);
   const velocityFollow = 1 - Math.exp(-dt / 0.022);
+  const approachFollow = 1 - Math.exp(-dt / 0.072);
   const bodyX = { x: 0, v: 0 },
     bodyY = { x: 0, v: 0 };
   const recoilX = { x: 0, v: 0 },
@@ -77,6 +78,7 @@
     guideY = 0,
     guideVX = 0,
     guideVY = 0;
+  let approachX = 0, approachY = 0;
   let contact = null,
     lastImpact = -Infinity,
     trailInk = 0;
@@ -93,8 +95,8 @@
 
   function resetPhysics(x, y, now) {
     for (const axis of axes) axis.x = axis.v = 0;
-    bodyX.x = guideX = x;
-    bodyY.x = guideY = y;
+    bodyX.x = guideX = approachX = x;
+    bodyY.x = guideY = approachY = y;
     guideVX = guideVY = 0;
     clock = lastPaint = now;
     samples.length = 0;
@@ -145,10 +147,16 @@
     guideY += sy;
     guideVX += (sx / dt - guideVX) * velocityFollow;
     guideVY += (sy / dt - guideVY) * velocityFollow;
+    approachX += (nextX - approachX) * approachFollow;
+    approachY += (nextY - approachY) * approachFollow;
   }
 
   function integrate(time) {
     advanceGuide(time - 7);
+    // Only filtered hand motion can energise an effect. A recoil cannot
+    // generate new input energy, and alternating corrections cancel out.
+    const handSpeedSquared = guideVX * guideVX + guideVY * guideVY;
+    const activity = handSpeedSquared / (handSpeedSquared + 340 * 340);
     let load = 0,
       pulse = 0,
       nx = 0,
@@ -159,15 +167,13 @@
       nx = face.nx;
       ny = face.ny;
       const gap = (bodyX.x - face.x) * nx + (bodyY.x - face.y) * ny;
-      const normalSpeed = Math.abs(bodyX.v * nx + bodyY.v * ny);
       if (!contact.loaded && time >= contact.at && polarity * gap <= 12) {
         contact.loaded = time;
-        const energy = normalSpeed / (normalSpeed + 560);
         const room = nx < 0 ? face.x : nx > 0 ? innerWidth - face.x : ny < 0 ? face.y : innerHeight - face.y;
         const available = Math.max(0, room - 16);
         const spanGain = Math.min(1, face.span / 65);
-        contact.travel = Math.min(available, contact.profile.excursion * (0.68 + 0.32 * spanGain + 0.53 * energy));
-        contact.squash = contact.profile.compression * (0.76 + 0.35 * energy);
+        contact.travel = Math.min(available, contact.profile.excursion * (0.68 + 0.32 * spanGain) * contact.strength);
+        contact.squash = contact.profile.compression * contact.strength;
         lastImpact = time;
       }
       if (contact.loaded) {
@@ -189,11 +195,15 @@
     const distance = Math.hypot(dx, dy);
     // The pursuit progressively stiffens on a long sweep without teleporting
     // the body. Feed-forward keeps steady travel close to the real pointer.
-    const frequency = 25 + (12 * distance) / (distance + 180);
-    const damping = frequency * 1.32;
+    const travelFrequency = 25 + (12 * distance) / (distance + 180);
+    // A fine correction tracks promptly with critical damping. Sustained
+    // travel progressively restores the original underdamped moving mass.
+    const frequency = 35 + (travelFrequency - 35) * activity;
+    const damping = frequency * (2 - 0.68 * activity);
+    const lead = damping * (0.32 + 0.12 * activity);
     const pull = load * (contact?.entering ? 17 : -22);
-    spring(bodyX, guideX + nx * pull, frequency, damping, damping * 0.44 * guideVX);
-    spring(bodyY, guideY + ny * pull, frequency, damping, damping * 0.44 * guideVY);
+    spring(bodyX, guideX + nx * pull, frequency, damping, lead * guideVX);
+    spring(bodyY, guideY + ny * pull, frequency, damping, lead * guideVY);
     spring(recoilX, 0, 22, 14, nx * pulse);
     spring(recoilY, 0, 22, 14, ny * pulse);
 
@@ -202,7 +212,7 @@
       speed = Math.hypot(vx, vy);
     const ux = speed ? vx / speed : 0,
       uy = speed ? vy / speed : 0;
-    const drive = (speed * speed) / (speed * speed + 590 * 590);
+    const drive = activity * ((speed * speed) / (speed * speed + 590 * 590));
     const stretch = drive * (mode === 'card' ? 0.29 : 0.39);
     spring(shapeX, (ux * ux - uy * uy) * stretch - (nx * nx - ny * ny) * load, 39, 34);
     spring(shapeY, 2 * ux * uy * stretch, 39, 34);
@@ -210,7 +220,7 @@
     spring(pressure, pressed ? -0.26 : 0, 28, 32);
 
     const ink = Math.max(0, speed - 145);
-    const opacity = (0.9 * ink * ink) / (ink * ink + 310 * 310);
+    const opacity = (0.9 * activity * ink * ink) / (ink * ink + 310 * 310);
     trailInk += (opacity - trailInk) * (1 - Math.exp(-dt / (opacity > trailInk ? 0.024 : 0.065)));
     const last = history.at(-1);
     if (!last || time - last.at >= 8) history.push({ x: bodyX.x + recoilX.x, y: bodyY.x + recoilY.x, at: time });
@@ -266,7 +276,8 @@
       const dx = b.x - a.x,
         dy = b.y - a.y,
         norm = Math.hypot(dx, dy) || 1;
-      let width = (3.6 + 3.5 * trailInk) * Math.pow(1 - p.s / length, 0.95);
+      const taper = 1 - p.s / length;
+      let width = (3.6 + 3.5 * trailInk) * taper * taper * (3 - 2 * taper);
       if (fold !== null) {
         width = Math.min(width, 0.35 + Math.abs(p.s - fold) * 0.35);
         if (p.s > fold) width *= Math.exp(-fold / 6);
@@ -411,14 +422,23 @@
       if (moving && point) {
         const node = hit || previousHit;
         const at = performance.now();
-        if (node && at - lastImpact > 67) {
-          contact = {
-            face: edge(node, x, y, point),
-            profile: surfaces[hit ? surface : previousSurface],
-            at,
-            entering: !!hit,
-            loaded: 0
-          };
+        if (node) {
+          const face = edge(node, x, y, point);
+          const sign = hit ? -1 : 1;
+          const crossing = sign * ((x - point.x) * face.nx + (y - point.y) * face.ny);
+          // Project recent hand travel onto the crossed face. Sliding along
+          // an edge contributes no impact. Re-crossing the same edge starts
+          // with the travel earned on its new side, even on a high-DPI mouse.
+          const runUp = Math.max(0, sign * ((x - approachX) * face.nx + (y - approachY) * face.ny));
+          if (face.nx) approachX = x;
+          else approachY = y;
+          const energy = (runUp / 26) ** 4;
+          const strength = energy / (1 + energy);
+          // Skip subpixel work beneath the spring's existing rest tolerance.
+          const profile = surfaces[hit ? surface : previousSurface];
+          if (crossing > 0 && strength * profile.excursion > 0.1 && at - lastImpact > 67) {
+            contact = { face, profile, at, entering: !!hit, strength, loaded: 0 };
+          } else if (contact && !contact.loaded) contact = null;
         }
       } else contact = null;
     }
