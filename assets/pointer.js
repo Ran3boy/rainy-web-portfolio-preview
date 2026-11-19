@@ -105,7 +105,7 @@
     const overHeroImage = control?.matches('.h-sheet-foot') && document.elementsFromPoint(x, y)
       .some(node => node.matches('[data-depth="0"] .h-interfaces'));
     const nextMode = drag || overHeroImage ? 'drag' : control ? 'link' :
-      target.closest('[data-hero-art], [data-work-slider][data-enhanced] .ws-art') ? 'drag' : 'free';
+      target.closest('[data-hero-art]') ? 'drag' : 'free';
     if (nextMode !== mode) {
       mode = nextMode;
       pointer.dataset.mode = mode;

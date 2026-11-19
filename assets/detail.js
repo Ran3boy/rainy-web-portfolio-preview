@@ -42,7 +42,15 @@ function initComposer() {
   const form = document.querySelector("[data-enquiry]");
   if (!form) return;
   const subject = form.elements.service;
-  const service = new URL(location.href).searchParams.get("service");
+  const params = new URL(location.href).searchParams;
+  const formats = {
+    new: ["development", "Хочу обсудить разработку нового сайта."],
+    current: ["development", "Нужна оценка доработки сайта."],
+    seo: ["seo", "Хочу обсудить SEO-сопровождение."],
+  };
+  const format = Object.hasOwn(formats, params.get("format")) ? formats[params.get("format")] : null;
+  const service = params.get("service") || format?.[0];
+  if (format && !params.has("service") && !form.elements.note.value) form.elements.note.value = format[1];
   if ([...subject.options].some((option) => option.value === service))
     subject.value = service;
   const phone = form.elements.phone;

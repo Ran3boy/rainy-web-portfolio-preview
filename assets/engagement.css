@@ -14,7 +14,7 @@
 }
 .eg-heading { align-items: baseline; gap: 12px 22px; flex-wrap: wrap; margin-bottom: clamp(20px, 2.3vw, 36px); }
 .eg-heading h2 { margin: 0; font-size: clamp(35px, 4.1vw, 66px); font-weight: 500; line-height: 1.04; letter-spacing: -.06em; }
-.eg-heading > span { font-size: 14px; color: #c6bdb0; }
+.eg-heading > p { max-width: 39ch; margin: 0; font-size: clamp(15px,1.14vw,18px); line-height:1.46; color: #d2cabe; }
 .eg-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -84,7 +84,7 @@
 .home-engagement .eg-focus-grid button { font-size: clamp(22px, 2.3vw, 36px); font-weight: 500; line-height: 1; }
 .eg-focus-grid button[aria-pressed="true"], .eg-static:first-of-type { color: #28241f; }
 .eg-focus-grid button::after { content: "+"; margin-left: auto; color: #775038; font-size: 18px; font-weight: 400; }
-.eg-focus-grid button[aria-pressed="true"]::after { content: "•"; }
+.eg-focus-grid button[aria-pressed="true"]::after { content: "✓"; }
 .eg-reticle {
   position: absolute; inset: 0 0 auto; height: var(--row); background: #e6dfcf;
   transition: transform 360ms var(--eg-unfold);
