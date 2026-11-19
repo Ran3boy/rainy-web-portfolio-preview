@@ -1,11 +1,11 @@
 // Native history restores the scroll position. Return the keyboard to the case or report it opened.
 (() => {
-  const wall = document.querySelector("#works");
+  const wall = document.querySelector("#works, [data-case-browser]");
   if (!wall) return;
   wall.addEventListener("click", event => {
     if (event.defaultPrevented || event.button || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
     const link = event.target.closest("a[href]");
-    if (link && link.origin === location.origin && !link.target) {
+    if (link && link.origin === location.origin && !link.target && link.pathname !== location.pathname && !link.hasAttribute("data-view-title")) {
       history.replaceState({ ...history.state, workReturn: link.getAttribute("href") }, "");
     }
   });
