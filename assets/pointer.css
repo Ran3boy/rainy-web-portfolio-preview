@@ -1,4 +1,3 @@
-/* Only an initialized, visible mark takes over the native pointer. */
 .rw-pointer {
   --rw-pointer-ready: 1;
   display: none;
@@ -8,40 +7,47 @@
   width: 23px;
   height: 23px;
   margin: -11.5px 0 0 -11.5px;
-  pointer-events: none !important;
   contain: layout style;
 }
+.rw-pointer, .rw-pointer * { pointer-events: none !important; }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
-  html.rw-pointer-on,
-  html.rw-pointer-on * { cursor: none !important; }
+  html.rw-pointer-on, html.rw-pointer-on * { cursor: none !important; }
   .rw-pointer.is-active { display: block; }
 }
-.rw-pointer-mark {
-  display: block;
-  width: 100%;
-  height: 100%;
-  transform-origin: center;
-  scale: 1;
-  transition: scale 120ms cubic-bezier(.2,.8,.3,1);
-  filter: drop-shadow(0 1px 1px #171310a6);
-  /* The tiny transparent sight remains centered as the four lobes twist. */
-  mask-image: radial-gradient(circle at center, transparent 1.6px, black 2.2px);
+.rw-pointer-face {
+  position: absolute;
+  inset: -36px;
+  display: grid;
+  place-items: center;
+  /* The sight stays at the native hit point while the ink deforms around it. */
+  mask-image: radial-gradient(circle at center, transparent 1.5px, black 2.3px);
 }
+.rw-pointer-mark, .rw-pointer-wake {
+  grid-area: 1 / 1;
+  width: 23px;
+  height: 23px;
+  transform-origin: center;
+}
+.rw-pointer-mark {
+  position: relative;
+  display: block;
+  scale: 1;
+  filter: drop-shadow(0 1px 1px #171310a6);
+}
+.rw-pointer-wake { background: #e5a071; mask: url(shared/rainy-mark.svg) center / contain no-repeat; opacity: 0; }
 .rw-pointer::after {
   content: '';
   position: absolute;
-  inset: auto 5px -3px;
+  inset: auto 6px -3px;
   height: 2px;
   border-radius: 1px;
-  background: #f3f3f1;
-  box-shadow: 0 0 0 1px #24211d;
+  background: #e8ae85;
+  box-shadow: 0 0 0 1px #2a221d;
   opacity: 0;
   transform: scaleX(.3);
-  transition: transform 130ms ease-out, opacity 100ms ease-out;
+  transition: transform 135ms ease-out, opacity 110ms ease-out;
 }
 .rw-pointer[data-mode='link']::after { opacity: 1; transform: scaleX(1); }
-.rw-pointer[data-mode='link'] .rw-pointer-mark { scale: 1.08; }
-.rw-pointer[data-pressed] .rw-pointer-mark { scale: .79; }
 .rw-pointer-axis {
   position: absolute;
   inset: 0 -9px;

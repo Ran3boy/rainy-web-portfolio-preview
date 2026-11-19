@@ -3,6 +3,16 @@
   const group = document.querySelector("[data-services] .sd-list");
   if (!group) return;
   const choices = [...group.querySelectorAll('input[type="radio"]')];
+  const rack = group.closest("[data-services]").querySelector(".sd-tool-rack");
+  if (rack && "IntersectionObserver" in window && matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches) {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      rack.dataset.intro = group.querySelector(":checked").value;
+    }, { threshold: .5 });
+    observer.observe(rack);
+    group.addEventListener("change", () => { delete rack.dataset.intro; }, { once: true });
+  }
 
   group.addEventListener("keydown", (event) => {
     const index = choices.indexOf(event.target);

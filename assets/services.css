@@ -66,11 +66,105 @@
 /* The same grid cell contains all five panels. Every panel contributes its
    intrinsic height, including wrapped copy and actions after browser zoom. */
 .sd-panels {
+  --tools-height: clamp(58px, 11cqw, 76px);
   display: grid;
   min-width: 0;
   container-type: inline-size;
   background: #252728;
   border: 1px solid #424441;
+}
+.sd-panel:is([data-key="development"], [data-key="seo"]) .sd-art { margin-bottom: var(--tools-height); }
+.sd-tool-rack {
+  grid-area: 1 / 1;
+  position: relative;
+  align-self: start;
+  display: grid;
+  height: var(--tools-height);
+  margin-top: calc(100% / 2.55);
+  overflow: clip;
+  isolation: isolate;
+  opacity: 0;
+  pointer-events: none;
+}
+.sd-stage:has(:is(#svc-trigger-development, #svc-trigger-seo):checked) .sd-tool-rack { opacity: 1; }
+.sd-tools {
+  --tool-face: #c8d9d8;
+  --tool-edge: #819793;
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 5cqw, 44px);
+  padding: 0 clamp(12px, 3.5cqw, 30px);
+  margin: 0;
+  list-style: none;
+  background: #202323;
+  border-bottom: 1px solid #424542;
+  visibility: hidden;
+}
+.sd-tools[data-tools="seo"] { --tool-face: #c7cead; --tool-edge: #82916e; }
+.sd-tool {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: clamp(7px, 1.8cqw, 12px);
+  --tilt: -6deg;
+  --fold: -20deg;
+  --reach: -13px;
+}
+.sd-tool + .sd-tool { --tilt: 4deg; --fold: 18deg; --reach: 12px; --tool-face: #e2c5a7; --tool-edge: #a98062; }
+.sd-tool-symbol {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: clamp(30px, 5.85cqw, 42px);
+  aspect-ratio: 1;
+  border: 1px solid #eff3e466;
+  border-radius: 3px;
+  background: var(--tool-face);
+  box-shadow: 1px 2px 0 var(--tool-edge), 2px 4px 4px #10110f55;
+  color: #28322e;
+  transform: rotate(var(--tilt));
+}
+.sd-tool-symbol svg { width: 74%; height: 74%; }
+.sd-tool-caption { display: grid; gap: 2px; line-height: 1.16; }
+.sd-tool-caption strong { color: #f2f0e9; font-size: clamp(13px, 2.55cqw, 17px); font-weight: 550; }
+.sd-tool-caption small { color: #c5c4ba; font-size: clamp(11px, 1.95cqw, 13px); }
+.sd-stage:has(#svc-trigger-development:checked) [data-tools="development"],
+.sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] { visibility: visible; }
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .sd-tools { background: transparent; border: 0; transition: visibility 0s 160ms; }
+  .sd-tool-rack { background: #202323; border-bottom: 1px solid #424542; }
+  .sd-tool { opacity: 0; transform: translateY(-9px); transition: opacity 100ms ease-in, transform 140ms ease-in; }
+  .sd-tool-symbol {
+    transform: perspective(200px) translate(var(--reach), -18px) rotateX(48deg) rotate(var(--fold)) scale(.84);
+    transition: transform 150ms ease-in;
+  }
+  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"],
+  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] {
+    --arrival: 100ms;
+    transition-delay: 0s;
+  }
+  .sd-tools:where([data-tools]) .sd-tool + .sd-tool { --stagger: 55ms; }
+  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"] .sd-tool,
+  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] .sd-tool {
+    opacity: 1;
+    transform: none;
+    transition: opacity 180ms ease-out calc(var(--arrival) + var(--stagger, 0ms)), transform 360ms cubic-bezier(.18,.82,.22,1) calc(var(--arrival) + var(--stagger, 0ms));
+  }
+  .sd-stage:has(#svc-trigger-development:checked) [data-tools="development"] .sd-tool-symbol,
+  .sd-stage:has(#svc-trigger-seo:checked) [data-tools="seo"] .sd-tool-symbol {
+    transform: perspective(200px) rotate(var(--tilt));
+    transition: transform 460ms cubic-bezier(.16,1.25,.27,1) calc(var(--arrival) + var(--stagger, 0ms));
+  }
+  @keyframes sd-tool-unfold {
+    from { opacity: 0; transform: perspective(200px) translate(var(--reach), -24px) rotateX(48deg) rotate(var(--fold)) scale(.84); }
+    to { opacity: 1; transform: perspective(200px) rotate(var(--tilt)); }
+  }
+  .sd-tool-rack[data-intro="development"] [data-tools="development"] .sd-tool-symbol,
+  .sd-tool-rack[data-intro="seo"] [data-tools="seo"] .sd-tool-symbol {
+    animation: sd-tool-unfold 460ms cubic-bezier(.16,1.25,.27,1) var(--stagger, 0ms) backwards;
+  }
 }
 .sd-panel {
   grid-area: 1 / 1;
