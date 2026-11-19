@@ -29,7 +29,9 @@
 .sv-index .sd-question { font-size: clamp(1.05rem, 1.4vw,1.27rem); margin: 19px 0 9px; font-weight: 500; line-height: 1.3; max-width: 39ch; color: inherit; }
 .sv-index .sd-outcome { font-size: 1rem; color: #c1c1bb; max-width: 60ch; line-height: 1.48; }
 .sd-action { align-self: start; display: flex; align-items: baseline; gap: 13px; border-bottom: 1px solid currentColor; margin-top: auto; padding: 24px 0 4px; font-size: .94rem; color: var(--sv-copper); }
-.sd-action::after { content: ""; position: absolute; inset: 0; }
+.sd-entry .sd-order-links { display: flex; flex-wrap: wrap; gap: 2px 16px; list-style: none; padding: 0; margin: 20px 0 0; }
+.sd-order-links a { display: inline-block; padding: 4px 0; color: inherit; text-decoration: underline; text-decoration-color: #8e8075; text-underline-offset: .23em; font-size: .93rem; }
+.sd-order-links a:hover { text-decoration-color: currentColor; }
 .sd-action span { transition: transform .24s ease; }
 .sd-development { grid-column: span 12; }
 .sd-development > .sd-surface { flex-direction: row; background: var(--sv-paper); color: var(--sv-ink); }

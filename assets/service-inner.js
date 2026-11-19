@@ -1,3 +1,11 @@
+// A catalogue link can lead directly to the scope and enquiry inside a disclosure.
+function openLinkedOffer() {
+  const offer = document.getElementById(location.hash.slice(1));
+  if (offer?.matches("details.sh-offer")) offer.open = true;
+}
+openLinkedOffer();
+window.addEventListener("hashchange", openLinkedOffer);
+
 // Leave the complete documents available when scripting is disabled.
 for (const group of document.querySelectorAll("[data-sv-switch]")) {
   const list = group.querySelector("[data-sv-controls]");

@@ -285,3 +285,8 @@
   .sv-page .sp-local-title p { margin-top: 12px }
   .sp-platforms li { gap: 14px }
 }
+
+.sp-pf-scope { padding-block: clamp(38px, 5vw, 76px) 0; }
+.sp-pf-scope .sp-measures { margin: 24px 0 15px; }
+.sp-pf-scope .sp-measure-word { font-size: clamp(2rem, 3.6vw, 3.8rem); }
+.sp-local-check { padding-block: clamp(36px, 6vw, 92px); }

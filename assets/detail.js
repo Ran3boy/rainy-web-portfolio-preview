@@ -53,6 +53,19 @@ function initComposer() {
   if (format && !params.has("service") && !form.elements.note.value) form.elements.note.value = format[1];
   if ([...subject.options].some((option) => option.value === service))
     subject.value = service;
+  const task = form.elements.task;
+  const groups = new Map([...task.querySelectorAll("optgroup")].map(group => [group.dataset.service, group]));
+  const general = task.options[0];
+  function showTasks(selected = "") {
+    const group = groups.get(subject.value);
+    task.replaceChildren(general);
+    if (group) task.append(group);
+    task.value = [...task.options].some(option => option.value === selected) ? selected : "";
+    task.hidden = !group;
+    task.labels[0].hidden = !group;
+  }
+  showTasks(params.get("task"));
+  subject.addEventListener("change", () => showTasks());
   const phone = form.elements.phone;
   phone.addEventListener("input", () => phone.setCustomValidity(""));
   form.addEventListener("submit", (event) => {
@@ -74,6 +87,7 @@ function initComposer() {
       subject.value
         ? "Интересует: " + subject.selectedOptions[0].textContent + "."
         : "",
+      task.value ? "Задача: " + task.selectedOptions[0].textContent + "." : "",
       note,
       "Телефон для связи: " + number,
     ]
