@@ -101,6 +101,7 @@ function initMediaViewer() {
       image.src = anchor.href;
       setScale("fit", false, { reset: true });
       status.textContent = "";
+      anchor.focus({ preventScroll: true });
       dialog.showModal();
       document.documentElement.classList.add("rw-media-open");
       close.focus({ preventScroll: true });
@@ -147,8 +148,12 @@ function initMediaViewer() {
     if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
   });
   dialog.addEventListener("close", () => {
+    // A second report can open before the previous native close event is delivered.
+    if (dialog.open) return;
     stopPan();
     document.documentElement.classList.remove("rw-media-open");
+    const active = document.activeElement;
+    if (active !== trigger && active !== document.body && !dialog.contains(active)) return;
     window.scrollTo({ left: pagePosition.x, top: pagePosition.y, behavior: "instant" });
     if (trigger?.isConnected) trigger.focus({ preventScroll: true });
   });

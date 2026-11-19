@@ -1,20 +1,4 @@
 /* Common type and disclosure controls for the pricing enquiry and FAQ. */
-.home-engagement { padding-block: clamp(34px,4.5vw,70px); }
-.home-engagement h2 { margin: 0 0 clamp(20px,2.6vw,42px); font-size: clamp(34px,3.6vw,58px); font-weight: 500; line-height: 1.05; letter-spacing: -.05em; }
-.home-engagement ol { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: clamp(18px,2.6vw,44px); margin: 0; padding: 0; list-style: none; counter-reset: stage; }
-.home-engagement li { counter-increment: stage; border-top: 1px solid var(--line); }
-.home-engagement li::before { content: counter(stage,decimal-leading-zero); display: block; margin-block: 12px 16px; color: var(--copper); font-size: 14px; font-variant-numeric: tabular-nums; }
-.home-engagement h3 { margin: 0 0 9px; font-size: clamp(20px,1.65vw,28px); font-weight: 500; letter-spacing: -.035em; line-height: 1.15; }
-.home-engagement p { margin: 0; max-width: 40ch; color: var(--muted); font-size: clamp(16px,1.12vw,18px); line-height: 1.45; }
-@media (max-width: 900px) {
-  .home-engagement ol { grid-template-columns: repeat(2,minmax(0,1fr)); }
-}
-@media (max-width: 560px) {
-  .home-engagement ol { grid-template-columns: 1fr; gap: 0; }
-  .home-engagement li { display: grid; grid-template-columns: 2ch minmax(0,1fr); column-gap: 15px; padding-block: 14px; }
-  .home-engagement li::before { grid-row: span 2; margin: 3px 0 0; }
-  .home-engagement p { grid-column: 2; }
-}
 .hq-estimate h2,.hq-faq h2 { margin:0; font-weight:500; line-height:1; letter-spacing:-.058em; }
 .hq-questions p a { color:#f2c6a8; text-underline-offset:.23em; text-decoration-thickness:1px; }
 .hq-questions p a:hover { color:white; }
