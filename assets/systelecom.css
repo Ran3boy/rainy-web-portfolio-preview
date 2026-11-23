@@ -121,7 +121,7 @@
 .rw-inner .se-structure > h2,.rw-inner .se-mobile h2 { font-weight:500; font-size:clamp(38px,5.4vw,84px); letter-spacing:-.061em; line-height:1; }
 .se-service,.se-work { display:grid; align-items:center; gap:clamp(26px,6vw,92px); }
 .se-service { grid-template-columns:minmax(0,.65fr) minmax(0,1.45fr); margin-top:clamp(24px,4vw,64px); }
-.se-work { grid-template-columns:minmax(0,1.35fr) minmax(0,.78fr); border-top:1px solid #434945; padding-top:clamp(26px,4vw,64px); margin-top:clamp(28px,4.4vw,72px); }
+.se-work { grid-template-columns:minmax(0,1.35fr) minmax(0,.78fr); padding-top:clamp(26px,4vw,64px); margin-top:clamp(28px,4.4vw,72px); }
 .rw-inner .se-text p { color:#c1c4bd; max-width:43ch; }
 .se-text .se-link { margin-top:12px; color:#e4b697; }
 .se-mobile { background:#25302e; color:#f1f2ed; }

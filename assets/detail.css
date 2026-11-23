@@ -211,7 +211,6 @@
   justify-content: space-between;
   gap: 24px;
   padding-block: 32px 42px;
-  border-top: 1px solid var(--rw-rule);
 }
 .rw-end > span {
   color: var(--muted);
@@ -246,7 +245,6 @@
 }
 .rw-scope-band {
   background: #202223;
-  border-block: 1px solid #363837;
 }
 .rw-scope-band .rw-scope {
   padding-block: clamp(40px, 5.4vw, 84px);
@@ -256,9 +254,6 @@
 .rw-scope-band h2 + .rw-link {
   margin-top: 24px;
   max-width: 34ch;
-}
-.rw-scope-band .rw-scope-item:first-child {
-  border-top-color: var(--copper);
 }
 .rw-scope-band .rw-scope-item h3 { font-size: clamp(21px, 2.1vw, 32px); }
 .rw-catalog-details {
@@ -289,11 +284,7 @@
   font-size: 0.95rem;
 }
 .rw-scope-item {
-  padding: clamp(22px, 2.6vw, 38px) 0;
-  border-top: 1px solid var(--rw-rule);
-}
-.rw-scope-item:last-child {
-  border-bottom: 1px solid var(--rw-rule);
+  padding: clamp(17px, 2vw, 30px) 0;
 }
 .rw-scope-item p,
 .rw-scope-item .rw-link {

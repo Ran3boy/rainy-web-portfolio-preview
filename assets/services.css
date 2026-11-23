@@ -2,7 +2,6 @@
   background: #1a1c1d;
   color: var(--text);
   padding-block: clamp(46px, 5.4vw, 84px);
-  border-block: 1px solid #363839;
   scroll-margin-top: 12px;
 }
 .sd-stage {
@@ -25,13 +24,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px solid #494b4b;
   color: #b1b3af;
   min-block-size: 58px;
   padding-block: clamp(12px, 1.23vw, 20px);
   cursor: pointer;
 }
-.sd-option:last-child { border-bottom: 1px solid #494b4b; }
 .sd-trigger {
   position: absolute;
   inset: 0;

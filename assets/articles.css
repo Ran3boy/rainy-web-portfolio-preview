@@ -1,26 +1,37 @@
 .ed-home.journal-home {
   --journal-ink: #24231e;
   --journal-dim: #4c4a43;
-  --journal-line: #aca79c;
+  --journal-step: clamp(30px, 4.6vw, 68px);
   --journal-accent: #884320;
-  padding-block: clamp(48px, 5.8vw, 84px) clamp(55px, 6.4vw, 96px);
+  position: relative;
+  isolation: isolate;
+  padding-block: 0 clamp(55px, 6.4vw, 96px);
   background: #e7e3d9;
   color: var(--journal-ink);
+}
+/* The journal title sits on the raised edge of its own paper spread. */
+.journal-home::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto max(165px, 29%, calc(50% - 355px));
+  height: var(--journal-step);
+  background: var(--estimate-surface);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, var(--journal-step) 100%);
+  pointer-events: none;
 }
 .ed-directory {
   --journal-ink: var(--text);
   --journal-dim: var(--muted);
-  --journal-line: var(--line);
   --journal-accent: var(--copper);
 }
 .journal-head {
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  align-items: baseline;
-  border-bottom: 1px solid var(--journal-ink);
-  padding-bottom: clamp(17px, 1.6vw, 26px);
-  margin-bottom: clamp(22px, 2.2vw, 36px);
+  align-items: end;
+  padding-top: clamp(20px, 2.1vw, 34px);
+  margin-bottom: clamp(20px, 2.2vw, 36px);
 }
 .journal-head h2 {
   color: inherit;
@@ -31,6 +42,7 @@
   letter-spacing: -.065em;
 }
 .journal-head a {
+  margin-top: max(0px, calc(var(--journal-step) - clamp(20px, 2.1vw, 34px)));
   display: inline-flex;
   gap: .6em;
   align-items: center;
@@ -117,7 +129,6 @@
   grid-template-columns: minmax(100px, .5fr) 2fr;
   align-items: baseline;
   gap: 20px;
-  border-top: 1px solid var(--line);
   margin-top: clamp(28px, 4vw, 64px);
   padding-top: 21px;
 }
@@ -133,7 +144,7 @@
 @media (min-width: 561px) and (max-width: 850px) {
   .journal-grid { grid-template-columns: 1fr; gap: 18px; }
   .journal-story { grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); align-items: center; gap: 23px; }
-  .journal-entry + .journal-entry { border-top: 1px solid var(--journal-line); padding-top: 18px; }
+  .journal-entry + .journal-entry { padding-top: 8px; }
   .journal-copy h3, .journal-copy h2 { font-size: clamp(24px, 3.45vw, 29px); }
 }
 @media (max-width: 560px) {
@@ -185,7 +196,6 @@
 }
 .ed-mast {
   padding-block: clamp(40px, 5.2vw, 82px) clamp(32px, 3.2vw, 54px);
-  border-bottom: 1px solid var(--line);
 }
 .ed-mast h1 {
   max-width: 20ch;
@@ -319,8 +329,7 @@
 }
 .ed-related {
   margin-top: clamp(38px, 4vw, 64px);
-  padding-top: 21px;
-  border-top: 1px solid var(--line);
+  padding-top: 10px;
 }
 .ed-related a {
   display: block;

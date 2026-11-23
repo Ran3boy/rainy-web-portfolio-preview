@@ -1,8 +1,8 @@
 /* Questions expand within their own column. */
-.hq-faq { background:#1b1d1f; border-bottom:0; padding:clamp(38px,3.8vw,60px) 0 clamp(34px,3.2vw,52px); }
+.hq-faq { background:#1b1d1f; padding:clamp(38px,3.8vw,60px) 0 clamp(34px,3.2vw,52px); }
 .hq-faq h2 { font-size:clamp(31px,3.15vw,53px); margin:0 0 clamp(24px,2.9vw,43px); }
-.hq-questions { display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,5vw,75px); border:0; }
-.hq-questions details:last-child { border-bottom:1px solid #484945; }
+.hq-questions { display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,5vw,75px); }
+.hq-questions details[open] summary { color:#ebbb9d; }
 .hq-questions summary { min-height:55px; font-size:clamp(17px,1.42vw,22px); }
 .hq-questions details p { max-width:50ch; }
 .hq-questions summary span { transition:transform .22s var(--ease); }
@@ -10,7 +10,6 @@
 @media(max-width:650px) {
   .hq-faq { padding-block:34px; }
   .hq-questions { grid-template-columns:minmax(0,1fr); gap:0; }
-  .hq-questions>div:first-child details:last-child { border-bottom:0; }
 }
 @media(prefers-reduced-motion:reduce) {
   .hq-questions summary span { transition:none; }

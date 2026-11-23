@@ -274,7 +274,6 @@ a:is(:hover, :focus-visible) > .se-next-arrow { transform: translate(2px,-2px); 
 .ec-evidence .rw-report-link::after { content: ""; position: absolute; inset: 0; }
 .ec-evidence:focus-within .ec-report-window { outline: 2px solid currentColor; outline-offset: 3px; }
 .ec-case .rw-report-link small { color: var(--ec-copper); font-size: .89rem; }
-.ec-primary-sources { border-block: 1px solid var(--ec-rule); }
 .ec-sources-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(18px,7vw,110px); padding-block: clamp(35px,4.4vw,70px); }
 .ec-sources-grid a + p { margin-top: 22px; }
 .ec-sources-grid p { color: var(--ec-muted); }

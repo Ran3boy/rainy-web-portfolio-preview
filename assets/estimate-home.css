@@ -1,10 +1,9 @@
 .hq-estimate {
   --quote-ink: #2a2825;
   --quote-muted: #61574e;
-  --quote-line: #c2b6a8;
   --quote-accent: #e7a87c;
   color: #f0efe9;
-  background: #232322;
+  background: var(--estimate-surface);
   padding-block: clamp(48px, 6.5vw, 104px);
 }
 .quote-form {
@@ -28,14 +27,12 @@
   gap: 8px;
   min-height: 54px;
   padding: .62em 0;
-  border-top: 1px solid #59554f;
   color: #dfdacf;
   font-size: clamp(22px, 2.1vw, 32px);
   letter-spacing: -.045em;
   line-height: 1.14;
   cursor: pointer;
 }
-.quote-format:last-child { border-bottom: 1px solid #59554f; }
 .quote-choice input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
 .quote-choice i { opacity: 0; font: normal .94em/1 Arial, sans-serif; }
 .quote-choice:has(:checked) { color: var(--quote-accent); }
@@ -69,15 +66,13 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(16px, 2.3vw, 36px);
   margin: clamp(24px, 2.55vw, 42px) 0 0;
-  padding: 16px 0 0;
-  border-top: 1px solid var(--quote-line);
+  padding: 0;
 }
 .quote-conditions dt { margin-bottom: 5px; font-size: 15px; font-weight: 700; }
 .quote-conditions dd, .quote-request p { margin: 0; font-size: clamp(15px, 1.1vw, 17px); line-height: 1.44; }
 .quote-foot {
   margin-top: clamp(24px, 2.4vw, 38px);
-  padding-top: 19px;
-  border-top: 1px solid var(--quote-line);
+  padding-top: 5px;
   display: flex;
   align-items: end;
   justify-content: space-between;
@@ -122,7 +117,6 @@
   .quote-picker h2 { max-width: none; }
   .quote-formats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
   .quote-formats legend { margin-bottom: 10px; }
-  .quote-format:last-child { border-bottom: 0; }
   .quote-choice { font-size: 20px; min-height: 50px; }
   .quote-foot { flex-direction: row; align-items: end; }
 }

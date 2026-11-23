@@ -3,16 +3,13 @@
   if (!group) return;
 
   const focusCard = group.querySelector('[data-process-card="discovery"]');
-  const questions = {
-    choice: "По каким характеристикам покупатель выбирает товар?",
-    enquiry: "Какие сведения о товаре должны прийти вместе с заявкой?",
-  };
+  const prompts = focusCard.querySelectorAll("[data-prompt]");
   const choices = [...focusCard.querySelectorAll("[data-focus]")];
   for (const choice of choices) {
     choice.addEventListener("click", () => {
       focusCard.dataset.selected = choice.dataset.focus;
       for (const other of choices) other.setAttribute("aria-pressed", String(other === choice));
-      focusCard.querySelector("[data-question]").textContent = questions[choice.dataset.focus];
+      for (const prompt of prompts) prompt.setAttribute("aria-hidden", String(prompt.dataset.prompt !== choice.dataset.focus));
     });
   }
 
@@ -53,6 +50,40 @@
     transfer.querySelector("[data-handover-label]").textContent = next.action;
   });
 
-  for (const control of group.querySelectorAll("button[hidden], input[hidden]")) control.hidden = false;
+  const tabs = [...group.querySelectorAll("[data-stage-tab]")];
+  const panels = tabs.map(tab => document.getElementById(tab.getAttribute("aria-controls")));
+
+  function selectStage(index) {
+    tabs.forEach((tab, i) => {
+      const selected = i === index;
+      tab.tabIndex = selected ? 0 : -1;
+      tab.setAttribute("aria-selected", String(selected));
+      panels[i].inert = !selected;
+      panels[i].setAttribute("aria-hidden", String(!selected));
+    });
+  }
+
+  tabs.forEach((tab, i) => {
+    const panel = panels[i];
+    panel.setAttribute("role", "tabpanel");
+    panel.setAttribute("aria-labelledby", tab.id);
+    tab.addEventListener("click", () => selectStage(i));
+    tab.addEventListener("keydown", event => {
+      const next = {
+        ArrowRight: (i + 1) % tabs.length,
+        ArrowLeft: (i + tabs.length - 1) % tabs.length,
+        Home: 0,
+        End: tabs.length - 1,
+      }[event.key];
+      if (next === undefined) return;
+      event.preventDefault();
+      selectStage(next);
+      tabs[next].focus({preventScroll:true});
+    });
+  });
+
+  selectStage(0);
+  group.querySelector("[data-stage-nav]").hidden = false;
+  for (const control of group.querySelectorAll("button[hidden], input[hidden], [data-live-label]")) control.hidden = false;
   group.classList.add("eg-ready");
 })();

@@ -29,7 +29,6 @@
   justify-content: space-between;
   gap: 20px;
   padding-block: 20px 19px;
-  border-top: 1px solid var(--rd-rule);
 }
 .rd-case-head h2 { font-size: clamp(1.25rem,1.9vw,1.8rem); letter-spacing: -.025em; line-height: 1.08; }
 .rd-case-head p { display: flex; align-items: center; flex-wrap: wrap; gap: .2em .32em; margin-top: 5px; color: #bebfb8; font-size: .91rem; }

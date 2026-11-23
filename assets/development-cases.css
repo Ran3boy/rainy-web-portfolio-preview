@@ -38,7 +38,7 @@
 }
 .dc-print .dc-expand { white-space: nowrap; text-decoration: underline; text-underline-offset: .2em; }
 .dc-case h2 { font-size: clamp(2.3rem,4.3vw,4.2rem); line-height: 1.02; letter-spacing: -.055em; }
-.dc-case .dc-next { padding-block: clamp(34px,4vw,68px); border-top: 1px solid var(--line); }
+.dc-case .dc-next { padding-block: clamp(34px,4vw,68px); }
 .dc-next p { margin-bottom: 11px; font-size: .88rem; color: var(--muted); }
 .dc-next a { display: flex; gap: 10px 24px; align-items: baseline; }
 .dc-next strong { font-size: clamp(2rem,3.7vw,3.9rem); line-height: 1; letter-spacing: -.055em; font-weight: 520; }
@@ -158,7 +158,7 @@
 .dc-selector:has(#din-dimensions:checked) #dc-stage-dimensions,
 .dc-selector:has(#din-enquiry:checked) #dc-stage-enquiry { display:grid; }
 .dc-stage .dc-print { align-self:start; }
-.dc-din-edit { border-top:1px solid var(--line); padding-block: var(--dc-section); display:grid; grid-template-columns:1fr 1.35fr; gap:var(--dc-gap); }
+.dc-din-edit { padding-block: var(--dc-section); display:grid; grid-template-columns:1fr 1.35fr; gap:var(--dc-gap); }
 .dc-din-edit h2 { max-width:14ch; }
 .dc-din-edit .dc-link { margin:10px 24px 0 0; color:var(--copper); }
 

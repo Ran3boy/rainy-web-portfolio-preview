@@ -1,6 +1,5 @@
 .ww-section {
   padding-block: clamp(58px, 6vw, 100px);
-  border-block: 1px solid var(--line);
   background: #151617;
   color: var(--text);
 }

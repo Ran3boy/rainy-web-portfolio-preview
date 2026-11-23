@@ -7,9 +7,19 @@
   content: ""; position: absolute; width: 7px; height: 1.5px;
   top: 4px; left: 3.5px; background: currentColor;
 }
-.rw-contact-intro { padding-block: clamp(22px,3vw,48px) clamp(20px,3vw,40px); }
+.rw-contact-intro { padding-block: clamp(22px,3vw,48px) 10px; }
 .rw-contact-intro h1 { margin-top: clamp(22px,3vw,46px); }
 .rw-contact-intro h1 + p { margin-top: 14px; }
+@media (min-width: 800px) {
+  .rw-contact-intro {
+    display: grid;
+    grid-template-columns: minmax(0,1.5fr) minmax(265px,.86fr);
+    gap: clamp(28px,4vw,50px) clamp(28px,5vw,80px);
+    align-items: end;
+  }
+  .rw-contact-intro > :first-child { grid-column: 1 / -1; }
+  .rw-contact-intro h1, .rw-contact-intro h1 + p { margin: 0; }
+}
 
 :is(.ww-heading, .journal-head) > a,
 .rw-inner :is(.rw-link, .rw-end-link, .dc-link, .se-link, .sp-text-link, .sh-link, .sh-case-link, .sh-inline, .sh-order),

@@ -85,6 +85,7 @@
   --ink: #252725;
   --surface: #1b1d1f;
   --surface-soft: #242628;
+  --estimate-surface: #232322;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   font-family: Onest, Arial, sans-serif;
   background: var(--bg);
@@ -467,11 +468,10 @@ html:has(#rw-finder[open]) {
   background: #2c2e2f;
 }
 .site-foot-2 {
-  background: var(--bg);
+  background: #0d0e10;
   color: var(--muted);
 }
 .foot-wrap-2 {
-  border-top: 1px solid var(--line);
   display: grid;
   grid-template-columns: 1fr auto auto auto;
   align-items: start;

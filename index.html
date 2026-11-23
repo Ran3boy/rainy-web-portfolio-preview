@@ -189,26 +189,29 @@
     <footer class="ww-sources"><a href="/rainy-web-portfolio-preview/cases/volt-point/#traffic" aria-label="Яндекс Метрика — отчёт по Volt Point"><span class="rw-tool rw-tool-inline"><img class="rw-tool-icon" src="/rainy-web-portfolio-preview/assets/service-tools/metrica.svg" width="24" height="24" alt="" decoding="async"><span>Яндекс Метрика</span></span> <span aria-hidden="true">↗</span></a></footer>
   </article></div></div>
     </div>
-  </section><section class="home-engagement wrap" aria-labelledby="engagement-title">
-    <div class="eg-heading"><h2 id="engagement-title">Как строится работа</h2><p>Так я веду разработку, доработки и SEO. В карточках — пример работы над каталогом с формой запроса.</p></div>
-    <ol class="eg-grid"><li class="eg-card eg-discovery-card" data-process-card="discovery" data-selected="choice">
-    <div class="eg-card-head"><span class="eg-num" aria-hidden="true">01</span><h3>Разбираем задачу</h3></div>
-    <p class="eg-intro">Расскажите, что хотите запустить или улучшить. Посмотрю сайт и доступные данные, уточню задачу.</p>
+  </section><section class="home-engagement wrap" id="process" aria-labelledby="engagement-title">
+    <header class="eg-heading"><h2 id="engagement-title">Как строится работа</h2>
+      <p>Так я веду разработку и SEO. В примере — каталог с заявкой на товар.</p>
+    </header>
+    <div class="eg-picker" hidden data-stage-nav><span id="eg-pick-label">Выберите этап</span><div class="eg-tabs" role="tablist" aria-labelledby="eg-pick-label"><button type="button" id="eg-tab-discovery" role="tab" data-stage-tab="discovery" aria-selected="true" tabindex="0" aria-controls="eg-stage-discovery">Задача</button><button type="button" id="eg-tab-scope" role="tab" data-stage-tab="scope" aria-selected="false" tabindex="-1" aria-controls="eg-stage-scope">Смета</button><button type="button" id="eg-tab-revision" role="tab" data-stage-tab="revision" aria-selected="false" tabindex="-1" aria-controls="eg-stage-revision">Правки</button><button type="button" id="eg-tab-handover" role="tab" data-stage-tab="handover" aria-selected="false" tabindex="-1" aria-controls="eg-stage-handover">Приёмка</button></div></div>
+    <div class="eg-grid"><article class="eg-card eg-discovery-card" id="eg-stage-discovery" data-process-card="discovery" data-selected="choice">
+    <div class="eg-copy"><h3>Что нужно сделать?</h3><p class="eg-intro">Вы рассказываете о задаче. Я смотрю сайт и уточняю, что вы хотите изменить.</p></div>
     <div class="eg-instrument eg-inspection">
     <div class="eg-brief">
-      <div class="eg-form-caption"><span>Бриф</span><span>Каталог</span></div>
-      <div class="eg-focus-grid" role="group" aria-label="Что уточнить в брифе">
-        <span class="eg-reticle" aria-hidden="true"><i></i></span>
+      <div class="eg-brief-title">Бриф на каталог</div>
+      <p class="eg-question" id="eg-question" data-question aria-live="polite" aria-atomic="true">
+        <span data-prompt="choice" aria-hidden="false">Что важно покупателю при выборе товара?</span>
+        <span data-prompt="enquiry" aria-hidden="true">Какие данные нужны в заявке на товар?</span>
+      </p>
+      <div class="eg-focus-grid" role="group" aria-label="Выберите тему брифа">
+        <span class="eg-control-label" hidden data-live-label>Выберите тему</span>
         <button type="button" data-focus="choice" aria-pressed="true" aria-controls="eg-question" hidden>Выбор товара</button>
         <button type="button" data-focus="enquiry" aria-pressed="false" aria-controls="eg-question" hidden>Запрос цены</button>
-        <span class="eg-static">Выбор товара</span><span class="eg-static">Запрос цены</span>
       </div>
-      <div class="eg-question" id="eg-question" aria-live="polite"><span class="eg-question-mark" aria-hidden="true">?</span><span data-question>По каким характеристикам покупатель выбирает товар?</span></div>
     </div>
   </div>
-  </li><li class="eg-card eg-scope-card" data-process-card="scope" data-expanded="false">
-    <div class="eg-card-head"><span class="eg-num" aria-hidden="true">02</span><h3>Согласуем объём</h3></div>
-    <p class="eg-intro">Перечислим работы, материалы и доступы. До старта согласуем стоимость, сроки и то, что вы получите.</p>
+  </article><article class="eg-card eg-scope-card" id="eg-stage-scope" data-process-card="scope" data-expanded="false">
+    <div class="eg-copy"><h3>Что войдёт в смету?</h3><p class="eg-intro">До начала работ согласуем состав, стоимость и сроки. Если понадобится дополнительная функция, оценю её отдельно.</p></div>
     <div class="eg-instrument eg-scope">
     <div class="eg-spec">
       <div class="eg-spec-base" aria-hidden="true"></div>
@@ -220,9 +223,8 @@
     </div>
     <button type="button" class="eg-action eg-scope-action" data-scope-toggle aria-expanded="false" aria-controls="eg-scope-result" hidden><span class="eg-plus" aria-hidden="true"></span><span data-scope-label>Добавить форму</span></button>
   </div>
-  </li><li class="eg-card eg-revision-card" data-process-card="revision" >
-    <div class="eg-card-head"><span class="eg-num" aria-hidden="true">03</span><h3>Обсуждаем правки</h3></div>
-    <p class="eg-intro">Вы смотрите рабочую версию сайта или рекомендации по продвижению. Замечания обсудим до внедрения.</p>
+  </article><article class="eg-card eg-revision-card" id="eg-stage-revision" data-process-card="revision" >
+    <div class="eg-copy"><h3>Где посмотреть правки?</h3><p class="eg-intro">Вы смотрите рабочую версию сайта или рекомендации по SEO. Обсуждаем изменения до публикации.</p></div>
     <div class="eg-instrument eg-revision">
     <div class="eg-compare-key"><span>До правки</span><span>После правки</span></div>
     <div class="eg-compare-stage" style="--split: 47%">
@@ -231,17 +233,17 @@
       <div class="eg-divider" aria-hidden="true"><span>‹ ›</span></div>
       <input type="range" min="0" max="100" value="47" data-compare aria-label="Сравнить форму до и после правки" aria-describedby="eg-compare-description" aria-valuetext="До правки: 47%, после: 53%" hidden>
     </div>
+    <p class="eg-slider-hint" hidden data-live-label>Передвиньте ползунок, чтобы сравнить формы.</p>
     <span id="eg-compare-description" class="eg-sr">До правки: «Контакты» и «Отправить». После: «Ваш телефон» и «Запросить цену». Сдвиньте границу, чтобы сравнить варианты.</span>
   </div>
-  </li><li class="eg-card eg-handover-card" data-process-card="handover" data-phase="initial">
-    <div class="eg-card-head"><span class="eg-num" aria-hidden="true">04</span><h3>Проверяем результат</h3></div>
-    <p class="eg-intro">Сайт сверяем с заданием, а результаты SEO — с исходными замерами. Передаю материалы и поясняю, как ими пользоваться.</p>
+  </article><article class="eg-card eg-handover-card" id="eg-stage-handover" data-process-card="handover" data-phase="initial">
+    <div class="eg-copy"><h3>Как принять работу?</h3><p class="eg-intro">Сайт сверяем с заданием, результаты SEO — с исходными замерами. Я передаю материалы и доступы.</p></div>
     <div class="eg-instrument eg-handover">
     <div class="eg-wallet" aria-hidden="true">
       <div class="eg-wallet-back"></div>
       <div class="eg-wallet-sheet eg-sheet-rear"><span>Страница</span></div>
       <div class="eg-wallet-sheet eg-sheet-front"><span data-wallet-tab>Форма запроса</span></div>
-      <div class="eg-wallet-pocket"><div class="eg-pocket-rule"><span data-pocket-label>К проверке</span><i></i></div>
+      <div class="eg-wallet-pocket"><div class="eg-pocket-rule"><span data-pocket-label>К проверке</span></div>
         <b data-pocket-title>Комплект</b>
       </div>
     </div>
@@ -249,7 +251,7 @@
       <button type="button" class="eg-action eg-transfer-action" data-handover aria-controls="eg-handover-status" hidden><span data-handover-label>Сверить комплект</span><span class="eg-transfer-arrow" aria-hidden="true">→</span></button>
     </div>
   </div>
-  </li></ol>
+  </article></div>
   </section><section class="hq-estimate" id="estimate" aria-labelledby="estimate-title"><div class="wrap">
     <form class="quote-form" data-contact-trigger-form action="/rainy-web-portfolio-preview/contacts/#rw-enquiry" method="get">
       <div class="quote-picker"><h2 id="estimate-title">Оценка стоимости и сроков</h2>

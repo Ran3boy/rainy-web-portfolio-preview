@@ -4,7 +4,6 @@
   --ct-field-line: #616369;
   --ct-accent-surface: color-mix(in srgb, var(--copper) 12%, var(--surface));
   --ct-column-gap: clamp(28px, 5vw, 80px);
-  --ct-channel-inset: clamp(22px, 2.8vw, 44px);
   background: var(--bg);
   color: var(--text);
   color-scheme: dark;
@@ -12,7 +11,6 @@
 }
 
 .ct-section {
-  border-top: 1px solid var(--line);
   padding-block: clamp(44px, 6.3vw, 96px);
   scroll-margin-top: 22px;
 }
@@ -29,8 +27,7 @@
 .ct-head {
   align-items: end;
   row-gap: 16px;
-  padding-bottom: clamp(24px, 2.7vw, 40px);
-  border-bottom: 1px solid var(--line);
+  padding-bottom: 0;
 }
 
 .ct-head h2 {
@@ -149,9 +146,8 @@
   grid-area: channels;
   align-self: start;
   margin: 0;
-  padding: 0 0 0 var(--ct-channel-inset);
+  padding: 0;
   border: 0;
-  border-inline-start: 1px solid var(--line);
 }
 
 .ct-methods legend {
@@ -164,18 +160,17 @@
   letter-spacing: -.04em;
   line-height: 1.12;
 }
-.ct-channel-list { clear: both; }
+.ct-channel-list { clear: both; display: grid; gap: 2px; }
 .ct-method-row {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 44px;
   align-items: stretch;
-  border-bottom: 1px solid var(--line);
+  border-radius: 7px;
 }
 
 .ct-method-row:has(input:checked) {
   background: var(--ct-accent-surface);
-  box-shadow: inset 2px 0 var(--copper);
 }
 .ct-channel-direct {
   display: grid;
@@ -258,7 +253,6 @@
   overflow: auto;
   overscroll-behavior: contain;
   --ct-column-gap: clamp(22px, 2.6vw, 36px);
-  --ct-channel-inset: 22px;
 }
 
 .ct-dialog:not([open]) { display: none; }
@@ -267,7 +261,7 @@
 .ct-close { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 6px 8px; background: transparent; color: var(--text); }
 .ct-close span:last-child { color: var(--copper); font-size: 26px; font-weight: 400; }
 .ct-dialog-slot { padding: clamp(12px, 2.4vw, 34px) clamp(22px, 3.4vw, 50px) max(30px, env(safe-area-inset-bottom)); }
-.ct-dialog .ct-head { display: block; padding-bottom: 24px; }
+.ct-dialog .ct-head { display: block; }
 .ct-dialog .ct-head h2 { font-size: clamp(40px, 4.5vw, 63px); }
 .ct-dialog .ct-head p { margin-top: 14px; max-width: 58ch; }
 .ct-dialog .ct-form { grid-template-columns: minmax(0, 1.5fr) minmax(220px, .86fr); }
@@ -275,8 +269,9 @@
 .ct-dialog .ct-pair { column-gap: 12px; }
 html.ct-locked { overflow: hidden; scrollbar-gutter: stable; }
 
-.ct-section[data-contact-page] { padding-top: clamp(28px, 3vw, 44px); }
-.ct-section[data-contact-page] .ct-head h2 { font-size: clamp(32px, 3.5vw, 52px); letter-spacing: -.044em; }
+.ct-section[data-contact-page] { padding-top: 0; }
+/* The Contacts page already introduces this form. Its heading returns in the dialog. */
+.ct-section[data-contact-page] .ct-head { display: none; }
 
 @media (max-width: 880px) {
   .ct-fields .ct-pair { grid-template-columns: 1fr; }
@@ -284,7 +279,7 @@ html.ct-locked { overflow: hidden; scrollbar-gutter: stable; }
 }
 @media (max-width: 670px) {
   .ct-section { padding-block: 40px; }
-  .ct-head { display: block; padding-bottom: 21px; }
+  .ct-head { display: block; }
   .ct-head h2 { font-size: clamp(38px, 8.8vw, 55px); }
   .ct-head p { margin-top: 13px; }
   .ct-form, .ct-dialog .ct-form { grid-template-columns: minmax(0, 1fr); grid-template-areas: "fields" "channels" "submit"; gap: 22px; }
@@ -294,7 +289,7 @@ html.ct-locked { overflow: hidden; scrollbar-gutter: stable; }
   .ct-channel { min-height: 50px; }
   .ct-channel-text, .ct-dialog .ct-channel-text { display: flex; }
   .ct-dialog { inset: var(--ct-visual-top, 0px) 0 auto; height: var(--ct-visual-height, 100dvh); width: 100%; border: 0; }
-  .ct-dialog-bar { padding-top: max(5px, env(safe-area-inset-top)); border-bottom: 1px solid var(--line); }
+  .ct-dialog-bar { padding-top: max(5px, env(safe-area-inset-top)); }
   .ct-dialog-slot { padding: 20px 18px max(24px, env(safe-area-inset-bottom)); }
   .ct-dialog .ct-head h2 { font-size: clamp(36px, 8vw, 49px); }
 }
