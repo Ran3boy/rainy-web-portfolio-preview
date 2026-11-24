@@ -88,21 +88,21 @@
   }
 
   function draftText() {
-    const parts = ["Николай, здравствуйте!"];
+    const name = form.elements.namedItem("name").value.trim();
+    const phone = form.elements.phone.value.trim();
+    const parts = ["Николай, здравствуйте! Хочу обсудить проект.", "Меня зовут " + name + ".", "Телефон: " + phone];
     if (service.value) parts.push("Услуга: " + service.selectedOptions[0].textContent);
     if (task.value) parts.push("Задача: " + task.selectedOptions[0].textContent);
     if (currentContext) parts.push("По материалу: " + currentContext);
     const note = form.elements.note.value.trim();
     const website = form.elements.site.value.trim();
-    const name = form.elements.namedItem("name").value.trim();
     if (note) parts.push(note);
     if (website) parts.push("Сайт: " + website);
-    if (name) parts.push("Меня зовут " + name + ".");
-    if (parts.length === 1) parts.push("Хочу обсудить проект.");
     return parts.join("\n");
   }
 
   async function copyDraft() {
+    if (!form.reportValidity()) return;
     const text = draftText();
     try {
       await navigator.clipboard.writeText(text);

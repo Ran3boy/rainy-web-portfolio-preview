@@ -67,7 +67,16 @@
   color: var(--text);
 }
 
-.ct-fields > label { margin-top: clamp(20px, 2vw, 30px); }
+.ct-required { color: var(--copper); }
+.ct-details {
+  min-inline-size: 0;
+  margin: clamp(24px, 2vw, 32px) 0 0;
+  padding: 0;
+  border: 0;
+}
+.ct-details legend { padding: 0; margin-bottom: 14px; font-weight: 550; }
+.ct-details legend small { margin-left: .4em; font-size: .85rem; font-weight: 400; color: var(--muted); }
+.ct-details > label { margin-top: 16px; }
 
 .ct-fields :is(select, input, textarea), .ct-select > span, .ct-manual textarea {
   width: 100%;
@@ -124,23 +133,6 @@
 }
 
 .ct-context, .ct-status { margin: 8px 0 0; color: var(--muted); font-size: .92rem; }
-.ct-optional { margin-top: 6px; }
-.ct-optional summary {
-  display: flex;
-  align-items: center;
-  gap: .55em;
-  width: fit-content;
-  min-height: 44px;
-  list-style: none;
-  cursor: pointer;
-  color: var(--text);
-  font-size: .94rem;
-}
-
-.ct-optional summary::-webkit-details-marker { display: none; }
-.ct-optional summary span { font-size: 1.18em; color: var(--copper); }
-.ct-optional[open] summary span { transform: rotate(45deg); }
-.ct-optional .ct-pair { padding-block: 4px 8px; }
 
 .ct-methods {
   grid-area: channels;
@@ -283,7 +275,6 @@ html.ct-locked { overflow: hidden; scrollbar-gutter: stable; }
   .ct-head h2 { font-size: clamp(38px, 8.8vw, 55px); }
   .ct-head p { margin-top: 13px; }
   .ct-form, .ct-dialog .ct-form { grid-template-columns: minmax(0, 1fr); grid-template-areas: "fields" "channels" "submit"; gap: 22px; }
-  .ct-fields > label { margin-top: 18px; }
   .ct-methods { padding: 0; border: 0; }
   .ct-methods legend { margin-bottom: 12px; }
   .ct-channel { min-height: 50px; }
@@ -296,7 +287,7 @@ html.ct-locked { overflow: hidden; scrollbar-gutter: stable; }
 @media (hover: hover) and (pointer: fine) {
   .ct-primary:hover { background: color-mix(in srgb, var(--copper) 80%, var(--text)); }
   .ct-channel-direct:hover, .ct-channel:not(:has(input:checked)):hover { background: var(--surface); color: var(--text); }
-  .ct-copy:hover, .ct-close:hover, .ct-optional summary:hover { color: var(--copper); }
+  .ct-copy:hover, .ct-close:hover { color: var(--copper); }
   .ct-fields :is(textarea, input):hover, .ct-select:has(select:enabled:hover) > span { border-color: var(--muted); }
 }
 
@@ -308,7 +299,7 @@ html.ct-locked { overflow: hidden; scrollbar-gutter: stable; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .ct-primary, .ct-channel-direct, .ct-optional summary, .ct-method-row, .ct-fields :is(input, textarea), .ct-select > span {
+  .ct-primary, .ct-channel-direct, .ct-method-row, .ct-fields :is(input, textarea), .ct-select > span {
     transition: color .16s var(--ease), border-color .16s var(--ease), background-color .16s var(--ease);
   }
   .ct-dialog[open] { animation: ct-in .22s var(--ease); }
