@@ -69,33 +69,29 @@
 .ww-site-caption .ww-kind { color: #d4ac90; }
 .ww-site-caption .ww-description { color: #c7c6c0; }
 .ww-reports { display: grid; grid-template-columns: 1.08fr 1fr; gap: clamp(18px,2.1vw,34px); }
-.ww-report { display: flex; flex-direction: column; padding: clamp(22px,2.2vw,36px); }
-.ww-north { color: #242c29; background: #dbe0d4; }
-.ww-volt { color: #f8eee1; background: #42342d; }
+.ww-report { display: flex; flex-direction: column; padding: clamp(22px,2.2vw,36px); color: var(--text); background: var(--surface); }
 .ww-report .ww-description { margin: 12px 0 clamp(20px,2.2vw,32px); }
-.ww-north .ww-kind, .ww-north .ww-description { color: #455148; }
-.ww-volt .ww-kind, .ww-volt .ww-description { color: #e5d4c4; }
+.ww-report .ww-kind, .ww-report .ww-description { color: var(--muted); }
 .ws-rank { margin-top: auto; }
 .ws-rank table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 .ws-rank th { text-align: left; font-weight: 500; }
 .ws-rank thead { font-size: 14px; }
 .ws-rank thead th { padding-bottom: 6px; }
 .ws-rank th:not(:first-child), .ws-rank td { text-align: right; }
-.ws-rank tbody tr { border-block: 1px solid #8e9b8e; }
 .ws-rank tbody th { font-size: clamp(18px,1.6vw,26px); letter-spacing: -.045em; }
 .ws-rank tbody th small { font-size: .7em; letter-spacing: 0; }
 .ws-rank td { font-size: clamp(34px,3.1vw,52px); line-height: 1.18; padding-block: 2px; letter-spacing: -.055em; }
-.ws-rank td:last-child { color: #435c45; font-weight: 650; }
+.ws-rank td:last-child { font-weight: 650; }
 .ww-sources { display: flex; flex-wrap: wrap; gap: 0 18px; justify-content: space-between; align-items: center; margin-top: 8px; font-size: clamp(12px,1vw,15px); }
 .ww-sources a { position: relative; z-index: 2; display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 3px; }
 .ws-traffic { margin-top: auto; }
-.ws-traffic figcaption { border-bottom: 1px solid #9d8879; margin-bottom: 12px; padding-bottom: 6px; font-size: 14px; }
+.ws-traffic figcaption { margin-bottom: 12px; font-size: 14px; }
 .ws-readings { display: grid; gap: 9px; }
 .ws-readings > div { display: grid; grid-template-columns: .95fr 1.05fr; align-items: baseline; gap: 2px 12px; }
 .ws-readings strong { font-size: clamp(30px,2.8vw,48px); font-weight: 550; line-height: 1.08; letter-spacing: -.055em; }
 .ws-readings time { font-size: clamp(13px,1.1vw,17px); justify-self: end; }
-.ww-bar { grid-column: 1/-1; display: block; border-block-end: 1px solid #8e7769; height: 6px; }
-.ww-bar::before { content: ""; display: block; width: var(--share); height: 5px; background: #dbb292; }
+.ww-bar { grid-column: 1/-1; display: block; background: var(--line); height: 5px; }
+.ww-bar::before { content: ""; display: block; width: var(--share); height: 100%; background: var(--muted); }
 .ww-volt .ww-sources { justify-content: flex-end; }
 .ww-project:focus-within .ww-arrow { transform: translate(1px,-2px); }
 @media (hover: hover) and (pointer: fine) {
