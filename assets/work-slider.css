@@ -60,11 +60,11 @@
 .ww-sites { display: grid; grid-template-columns: 1fr 1.12fr; gap: clamp(18px,2.1vw,34px); }
 .ww-site-media { display: grid; position: relative; align-items: center; overflow: hidden; height: clamp(210px,24vw,370px); }
 .ww-site-media img { display: block; height: auto; box-shadow: 0 6px 18px #19202126; transition: transform 420ms var(--ease); }
-.ww-din-media { background: #c9c1ad; justify-items: center; }
+.ww-din-media { background: var(--surface-soft); justify-items: center; }
 .ww-din-media img { width: min(90%, calc(clamp(210px,24vw,370px) * 1.63)); }
-.ww-systems-media { background: #36534d; }
+.ww-systems-media { background: var(--surface); }
 .ww-systems-desktop { width: 77%; margin-inline-start: 5%; }
-.ww-systems-media .ww-systems-phone { position: absolute; width: auto; height: 73%; right: 4.2%; bottom: 5%; border: 2px solid #253c36; }
+.ww-systems-media .ww-systems-phone { position: absolute; width: auto; height: 73%; right: 4.2%; bottom: 5%; border: 2px solid var(--line); }
 .ww-site-caption { padding-block: clamp(16px,1.6vw,24px) 2px; max-width: 57ch; }
 .ww-site-caption .ww-kind { color: #d4ac90; }
 .ww-site-caption .ww-description { color: #c7c6c0; }

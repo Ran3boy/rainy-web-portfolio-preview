@@ -48,7 +48,10 @@
 .quote-prices dd { margin: 0; white-space: nowrap; font-family: Onest, system-ui, sans-serif; font-variant-numeric: tabular-nums; }
 .quote-highlights .quote-prices > div + div { margin-top: clamp(18px, 1.8vw, 27px); }
 .quote-highlights .quote-prices > div { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: baseline; column-gap: clamp(16px,2vw,32px); }
-.quote-service-name { display: block; font-size: clamp(20px,1.65vw,27px); font-weight: 500; letter-spacing: -.04em; line-height: 1.14; }
+.quote-service-name { display: block; width: fit-content; max-width: 100%; font-size: clamp(20px,1.65vw,27px); font-weight: 500; letter-spacing: -.04em; line-height: 1.14; text-decoration: none; }
+.quote-service-name svg { width: .7em; height: .7em; color: var(--copper); }
+.quote-name-end { white-space: nowrap; }
+.quote-service-name:focus-visible { outline: 2px solid var(--copper); outline-offset: 4px; }
 .quote-example { display: block; margin-top: 5px; max-width: 52ch; color: var(--muted); font-size: clamp(15px,1.1vw,17px); line-height: 1.4; }
 .quote-highlights dd { color: var(--copper); font-size: clamp(24px,2.1vw,34px); font-weight: 500; letter-spacing: -.045em; line-height: 1.05; }
 .quote-prices dd small { font-size: .7em; font-weight: 400; }
@@ -63,6 +66,7 @@
 .quote-form:has([value="seo"]:checked) .quote-more [data-prices-for="seo"] { display: grid; gap: 8px; }
 .quote-more .quote-prices div { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 16px; align-items: baseline; }
 .quote-more .quote-prices dd { font-weight: 550; }
+.quote-more .quote-service-name { font-size: inherit; font-weight: 400; letter-spacing: normal; line-height: 1.3; }
 .quote-request { max-width: 60ch; }
 .quote-request p { margin: 0; line-height: 1.46; font-size: 16px; }
 .quote-references { margin-top: 6px; }
@@ -91,6 +95,7 @@
 @media (hover: hover) {
   .quote-choice:hover { color: var(--copper); }
   .quote-contact:hover { border-color: var(--text); }
+  .quote-service-name:hover { color: var(--copper); text-decoration: underline; text-underline-offset: .16em; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .quote-choice, .quote-contact { transition: color 150ms, background-color 150ms; }
@@ -112,8 +117,11 @@
   .quote-highlights .quote-prices > div { grid-template-columns: 1fr; }
   .quote-highlights :is(dt,dd) { grid-area: 1 / 1; }
   .quote-highlights dd { justify-self: end; align-self: start; font-size: 22px; }
-  .quote-service-name { padding-right: 7rem; font-size: 19px; }
+  .quote-highlights .quote-service-name { max-width: calc(100% - 7rem); font-size: 19px; }
   .quote-example { margin-top: 6px; }
+}
+@media (pointer: coarse) {
+  .quote-service-name { min-height: 44px; }
 }
 @media (forced-colors: active) {
   .quote-choice:has(:checked) { color: Highlight; }

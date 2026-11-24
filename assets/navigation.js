@@ -22,7 +22,7 @@
 
   const dialog = document.getElementById("rw-finder");
   const trigger = document.querySelector(".finder-open-2");
-  if (!dialog || typeof dialog.showModal !== "function") return;
+  if (!dialog || !trigger || typeof dialog.showModal !== "function") return;
   document.documentElement.classList.add("has-nav-js");
   const input = dialog.querySelector("input");
   const status = dialog.querySelector("[role=status]");
@@ -48,7 +48,8 @@
       : "Совпадений нет. Попробуйте другое название.";
   }
   let opener;
-  function open() {
+  let waitingForHistory = false;
+  function show(resetQuery) {
     if (dialog.open || document.querySelector("dialog[open]")) return;
     opener = document.activeElement;
     if (
@@ -58,17 +59,35 @@
     )
       opener = trigger;
     disclosures.forEach((el) => (el.open = false));
-    input.value = "";
+    if (resetQuery) input.value = "";
     filter();
     dialog.showModal();
     input.focus();
+  }
+  function open() {
+    if (waitingForHistory || document.querySelector("dialog[open]")) return;
+    // Keep the source fragment and scroll position when opening or leaving search.
+    history.pushState({ ...history.state, rwFinder: true }, "", location.href);
+    show(true);
+  }
+  function requestClose() {
+    if (!dialog.open || waitingForHistory) return;
+    if (history.state?.rwFinder) {
+      waitingForHistory = true;
+      history.back();
+    } else dialog.close();
   }
   trigger.addEventListener("click", open);
   input.addEventListener("input", filter);
   dialog
     .querySelector("button")
-    .addEventListener("click", () => dialog.close());
+    .addEventListener("click", requestClose);
+  dialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    requestClose();
+  });
   dialog.addEventListener("close", () => {
+    if (dialog.open) return;
     if (opener?.isConnected) opener.focus({ preventScroll: true });
   });
   dialog.addEventListener("click", (e) => {
@@ -80,14 +99,14 @@
       e.clientY < r.top ||
       e.clientY > r.bottom
     )
-      dialog.close();
+      requestClose();
   });
   document.addEventListener("keydown", (e) => {
     if (!dialog.open && document.querySelector("dialog[open]")) return;
     if (e.key === "Escape") {
       if (dialog.open) {
         e.preventDefault();
-        dialog.close();
+        requestClose();
         return;
       }
       for (const el of disclosures)
@@ -100,8 +119,17 @@
     }
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k" && !e.altKey) {
       e.preventDefault();
-      if (dialog.open) dialog.close();
+      if (dialog.open) requestClose();
       else open();
     }
   });
+  window.addEventListener("popstate", () => {
+    waitingForHistory = false;
+    if (history.state?.rwFinder) show(false);
+    else setTimeout(() => {
+      // Restore the opener after the browser restores entry focus.
+      if (!history.state?.rwFinder && dialog.open) dialog.close();
+    }, 0);
+  });
+  if (history.state?.rwFinder) show(false);
 })();
