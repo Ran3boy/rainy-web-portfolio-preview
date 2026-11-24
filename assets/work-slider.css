@@ -23,6 +23,7 @@
 .ww-arrow { display: inline-block; font-size: .52em; vertical-align: .27em; letter-spacing: normal; transition: transform 200ms var(--ease); }
 .ww-heading .ww-arrow { font-size: 1em; vertical-align: baseline; }
 .ww-kind { margin: 0 0 9px; font-size: clamp(12px,.95vw,15px); line-height: 1.35; }
+.ww-kind:has(> .rw-tool) { display: flex; flex-wrap: wrap; align-items: center; gap: .2em .34em; }
 .ww-description { max-width: 49ch; margin-top: 12px; line-height: 1.46; font-size: clamp(15px,1.13vw,18px); }
 .ww-pirr {
   display: grid;

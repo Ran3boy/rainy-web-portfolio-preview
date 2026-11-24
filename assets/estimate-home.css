@@ -6,15 +6,15 @@
 .quote-form {
   display: grid;
   grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr);
-  gap: clamp(32px, 6.2vw, 94px);
+  gap: clamp(24px, 2.4vw, 38px) clamp(32px, 6.2vw, 94px);
   align-items: start;
 }
 .quote-picker h2 {
-  max-width: 11ch;
+  max-width: 14ch;
   text-wrap: balance;
-  font-size: clamp(40px, 4.9vw, 75px);
+  font-size: clamp(38px, 4vw, 62px);
 }
-.quote-formats { min-inline-size: 0; margin: clamp(35px, 5vw, 76px) 0 0; padding: 0; border: 0; }
+.quote-formats { min-inline-size: 0; margin: clamp(26px, 3vw, 44px) 0 0; padding: 0; border: 0; }
 .quote-formats legend { padding: 0; margin-bottom: 14px; color: var(--muted); font-size: 15px; }
 .quote-choice {
   position: relative;
@@ -25,7 +25,7 @@
   min-height: 54px;
   padding: .62em 0;
   color: var(--text);
-  font-size: clamp(22px, 2.1vw, 32px);
+  font-size: clamp(21px, 1.85vw, 28px);
   letter-spacing: -.045em;
   line-height: 1.14;
   cursor: pointer;
@@ -38,17 +38,35 @@
 .quote-sheet {
   min-width: 0;
 }
-.quote-briefs, .quote-request > div { display: grid; }
-.quote-brief, .quote-request p { grid-area: 1 / 1; visibility: hidden; }
+.quote-briefs, .quote-request > div, .quote-highlights { display: grid; }
+.quote-brief, .quote-request p, .quote-highlights .quote-prices { grid-area: 1 / 1; visibility: hidden; }
 .quote-brief { align-self: start; }
-.quote-form:has([value="new"]:checked) :is([data-format="new"], [data-request-for="new"]),
-.quote-form:has([value="current"]:checked) :is([data-format="current"], [data-request-for="current"]),
-.quote-form:has([value="seo"]:checked) :is([data-format="seo"], [data-request-for="seo"]) { visibility: visible; }
+.quote-form:has([value="new"]:checked) :is([data-format="new"], [data-prices-for="new"], [data-request-for="new"]),
+.quote-form:has([value="current"]:checked) :is([data-format="current"], [data-prices-for="current"], [data-request-for="current"]),
+.quote-form:has([value="seo"]:checked) :is([data-format="seo"], [data-prices-for="seo"], [data-request-for="seo"]) { visibility: visible; }
+.quote-prices { margin: 0; }
+.quote-prices dt { line-height: 1.3; }
+.quote-prices dd { margin: 0; white-space: nowrap; font-family: Onest, system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.quote-highlights .quote-prices { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+.quote-highlights .quote-prices > div { display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
+.quote-highlights dt { font-size: clamp(14px,1.08vw,17px); }
+.quote-highlights dd { color: var(--copper); font-size: clamp(23px,2.1vw,33px); font-weight: 500; letter-spacing: -.045em; }
+.quote-more { margin: 6px 0 clamp(16px,1.8vw,26px); }
+.quote-more summary { display: inline-flex; gap: 9px; align-items: center; min-height: 44px; font-size: 15px; cursor: pointer; list-style: none; }
+.quote-more summary::-webkit-details-marker { display: none; }
+.quote-more summary::after { content: "+"; color: var(--copper); font-size: 1.2em; }
+.quote-more[open] summary::after { content: "−"; }
+.quote-more .quote-prices { display: none; }
+.quote-form:has([value="new"]:checked) .quote-more [data-prices-for="new"],
+.quote-form:has([value="current"]:checked) .quote-more [data-prices-for="current"],
+.quote-form:has([value="seo"]:checked) .quote-more [data-prices-for="seo"] { display: grid; gap: 8px; }
+.quote-more .quote-prices div { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 16px; align-items: baseline; }
+.quote-more .quote-prices dd { font-weight: 550; }
 .quote-caption, .quote-request b { color: var(--muted); font-size: 14px; font-weight: 500; }
 .quote-deliverable {
-  margin: 12px 0 16px;
+  margin: 5px 0 9px;
   max-width: 23ch;
-  font-size: clamp(34px, 3.65vw, 60px);
+  font-size: clamp(25px, 2.4vw, 36px);
   font-weight: 500;
   letter-spacing: -.057em;
   line-height: 1.02;
@@ -64,24 +82,18 @@
 }
 .quote-conditions dt { margin-bottom: 5px; font-size: 15px; font-weight: 700; }
 .quote-conditions dd, .quote-request p { margin: 0; font-size: clamp(15px, 1.1vw, 17px); line-height: 1.44; }
-.quote-foot {
-  margin-top: clamp(24px, 2.4vw, 38px);
-  padding-top: 5px;
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 18px 28px;
-}
-.quote-request { max-width: 42ch; }
+.quote-conditions a { color: var(--text); text-decoration: underline; text-underline-offset: .18em; }
+.quote-request { margin-top: clamp(20px, 2vw, 32px); max-width: 60ch; }
 .quote-request b { display: block; margin-bottom: 5px; }
 .quote-contact {
-  flex: none;
+  grid-column: 1 / -1;
+  justify-self: center;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
-  padding: 12px 16px;
-  min-height: 48px;
+  gap: 10px;
+  padding: 8px 16px;
+  min-height: 44px;
   border: 1px solid color-mix(in srgb, var(--text) 40%, var(--surface-soft));
   border-radius: 2px;
   background: var(--surface-soft);
@@ -90,7 +102,7 @@
   font-weight: 500;
   line-height: 1.3;
 }
-.quote-sheet .quote-contact:focus-visible { outline: 3px solid var(--copper); outline-offset: 3px; }
+.quote-contact:focus-visible { outline: 3px solid var(--copper); outline-offset: 3px; }
 @media (hover: hover) {
   .quote-choice:hover { color: var(--copper); }
   .quote-contact:hover { border-color: var(--text); }
@@ -101,7 +113,6 @@
 }
 @media (max-width: 1020px) {
   .quote-form { grid-template-columns: minmax(0, .64fr) minmax(0, 1.36fr); gap: 30px; }
-  .quote-foot { align-items: start; flex-direction: column; }
 }
 @media (max-width: 900px) {
   .quote-choice i { transform: rotate(90deg); }
@@ -112,7 +123,6 @@
   .quote-formats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
   .quote-formats legend { margin-bottom: 10px; }
   .quote-choice { font-size: 20px; min-height: 50px; }
-  .quote-foot { flex-direction: row; align-items: end; }
 }
 @media (max-width: 730px) {
   .quote-form { grid-template-columns: 1fr; gap: 20px; }
@@ -124,9 +134,13 @@
 }
 @media (max-width: 520px) {
   .quote-conditions { grid-template-columns: 1fr; }
+  .quote-highlights .quote-prices { grid-template-columns: 1fr; align-content: start; gap: 10px; }
+  .quote-highlights .quote-prices > div { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 14px; align-items: baseline; }
+  .quote-highlights dt { font-size: 16px; }
+  .quote-highlights dd { font-size: 22px; }
 }
 @media (forced-colors: active) {
   .quote-choice:has(:checked) { color: Highlight; }
-  .quote-choice:has(:focus-visible), .quote-sheet .quote-contact:focus-visible { outline-color: Highlight; }
+  .quote-choice:has(:focus-visible), .quote-contact:focus-visible { outline-color: Highlight; }
   .quote-sheet { border: 1px solid CanvasText; }
 }

@@ -11,6 +11,8 @@
   const title = content.querySelector("#ct-title");
   const service = form.elements.service;
   const task = form.elements.task;
+  const detailsToggle = form.querySelector("[data-details-toggle]");
+  const detailsCurrent = form.querySelector(".ct-details-current");
   const groups = new Map([...task.querySelectorAll("optgroup")].map(group => [group.dataset.service, group]));
   const general = task.options[0];
   const contextLabel = form.querySelector("[data-contact-context]");
@@ -25,7 +27,7 @@
     seo: { service:"seo", task:"promotion" },
   };
   const hints = {
-    draft: "Черновик откроется в выбранном мессенджере. Вы сможете проверить текст и отправить его сами.",
+    draft: "Проверьте черновик в мессенджере и отправьте его сами.",
     profile: "Скопируйте текст заявки и вставьте его в сообщение после перехода в профиль.",
     phone: "Откроется приложение для звонка. При желании можно сохранить текст задачи в буфер обмена.",
   };
@@ -39,6 +41,8 @@
   // The native controls remain interactive. Their visible captions can wrap long offer names.
   function syncSelectCaptions() {
     for (const select of [service, task]) select.nextElementSibling.textContent = select.selectedOptions[0]?.textContent || "";
+    const selected = [service, task].filter(select => select.value).map(select => select.selectedOptions[0].textContent);
+    detailsCurrent.textContent = selected.join(" · ") || "По желанию";
   }
 
   function populateTasks(selected = "") {
@@ -160,6 +164,7 @@
     }
     if (applyPreset) changeContext(preset);
     if (dialog.open) return;
+    detailsToggle.setAttribute("aria-expanded", "false");
     // Keep the section's place while its form is in the modal top layer.
     slot.style.minHeight = slot.getBoundingClientRect().height + "px";
     document.documentElement.classList.add("ct-locked");
@@ -223,6 +228,9 @@
     manual.hidden = true;
   });
   form.addEventListener("submit", handoff);
+  detailsToggle.addEventListener("click", () => {
+    detailsToggle.setAttribute("aria-expanded", String(detailsToggle.getAttribute("aria-expanded") !== "true"));
+  });
   copyButton.addEventListener("click", copyDraft);
   form.hidden = false;
   content.querySelector("[data-contact-direct]").hidden = true;
