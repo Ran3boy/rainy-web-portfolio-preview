@@ -17,6 +17,9 @@
   line-height: .96;
   letter-spacing: -.065em;
 }
+.sd-index-head { display:flex; align-items:baseline; justify-content:space-between; gap:18px; }
+.sd-all-directions { display:inline-flex; align-items:center; gap:10px; min-height:44px; flex-shrink:0; color:var(--copper); font-size:14px; text-decoration:none; }
+.sd-all-directions:focus-visible { outline:2px solid var(--copper); outline-offset:4px; }
 .sd-list { margin: 0; padding: 0; min-inline-size: 0; border: 0; }
 .sd-option {
   position: relative;
