@@ -60,6 +60,8 @@ for (const group of document.querySelectorAll("[data-sv-switch]")) {
     });
   }
   list.setAttribute("role", "tablist");
+  const vertical = list.classList.contains("ms-controls");
+  if (vertical) list.setAttribute("aria-orientation", "vertical");
   buttons.forEach((button, i) => {
     if (!button.id) button.id = panels[i].id + "-tab";
     button.setAttribute("role", "tab");
@@ -69,6 +71,9 @@ for (const group of document.querySelectorAll("[data-sv-switch]")) {
     button.addEventListener("click", () => select(i));
     button.addEventListener("keydown", event => {
       let next;
+      if (vertical && event.key === "ArrowDown") next = (i + 1) % buttons.length;
+      else if (vertical && event.key === "ArrowUp") next = (i + buttons.length - 1) % buttons.length;
+      else
       switch (event.key) {
         case "ArrowRight": next = (i + 1) % buttons.length; break;
         case "ArrowLeft": next = (i + buttons.length - 1) % buttons.length; break;

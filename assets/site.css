@@ -280,6 +280,9 @@ img {
 }
 .services-list-2 {
   left: -4px;
+  max-height: min(70vh, 590px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .services-list-2 a,
 .mobile-panel-2 a {
