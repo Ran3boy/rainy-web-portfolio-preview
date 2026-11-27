@@ -1,0 +1,72 @@
+.av-page :is(h1,h2,h3,p) { margin:0; }
+.av-page :is(h1,h2,h3) { font-weight:500; letter-spacing:-.049em; line-height:1.05; text-wrap:balance; }
+.av-page h2 { font-size:clamp(30px,3.15vw,52px); }
+.av-page p { line-height:1.54; text-wrap:pretty; }
+.av-page a { text-decoration:none; }
+.av-head { display:grid; grid-template-columns:minmax(0,1.26fr) minmax(0,.74fr); align-items:end; gap:clamp(24px,5vw,80px); padding-block:clamp(32px,4.8vw,80px) clamp(32px,4.25vw,65px); }
+.av-head h1 { font-size:clamp(52px,6.5vw,104px); max-width:12ch; letter-spacing:-.066em; }
+.av-head p { font-size:clamp(17px,1.35vw,21px); max-width:39ch; color:var(--muted); }
+.av-page .av-choice { display:grid; background:transparent; grid-template-columns:minmax(0,.66fr) minmax(0,1.34fr); gap:clamp(24px,4.6vw,74px); align-items:start; padding-block:0; scroll-margin-top:100px; }
+.av-menu { padding-top:clamp(6px,1.3vw,22px); }
+.av-menu h2 { font-size:clamp(28px,2.5vw,39px); }
+.av-tabs { margin-top:clamp(16px,2vw,28px); }
+.av-tabs:not([hidden]) { display:grid; gap:4px; }
+.av-page .av-tabs button { display:flex; align-items:center; justify-content:space-between; gap:12px; background:transparent; border:0; border-radius:0; color:var(--muted); text-align:left; font:inherit; font-size:clamp(16px,1.3vw,20px); line-height:1.3; padding:13px 12px; min-height:48px; cursor:pointer; }
+.av-page .av-tabs button[aria-selected=true] { background:var(--surface-soft); color:var(--copper); }
+.av-tabs button svg { flex:0 0 auto; opacity:0; }
+.av-tabs button[aria-selected=true] svg { opacity:1; }
+.av-panels { min-width:0; display:grid; gap:16px; }
+.av-page .av-panel { position:relative; display:flex; flex-flow:column; align-items:flex-start; gap:clamp(20px,2.35vw,36px); padding:clamp(24px,3.4vw,54px); margin:0; background:var(--copper); color:var(--bg); }
+.av-choice[data-sv-ready] .av-panel { grid-area:1 / 1; }
+.av-choice[data-sv-ready] .av-panel[hidden] { display:flex !important; visibility:hidden; pointer-events:none; }
+.av-panel-header { display:flex; width:100%; justify-content:space-between; gap:16px; align-items:flex-start; }
+.av-page .av-panel h3 { color:inherit; margin:0; font-size:clamp(27px,2.55vw,41px); max-width:11ch; line-height:1.06; }
+.av-page .av-price { margin:0; text-align:right; white-space:nowrap; line-height:1.02; font-weight:600; font-size:clamp(33px,3.7vw,59px); letter-spacing:-.06em; }
+.av-price span { font-size:.41em; font-weight:500; letter-spacing:-.03em; }
+.av-price small { display:block; font-size:14px; font-weight:500; line-height:1.5; letter-spacing:0; }
+.av-button { display:inline-flex; align-items:center; gap:12px; min-height:44px; margin-top:auto; padding:10px 16px; background:var(--bg); color:var(--text); border-radius:3px; font-weight:500; text-decoration:none; }
+.av-button:focus-visible,.av-panel:focus-visible { outline:3px solid var(--text); outline-offset:3px; }
+.av-button:hover { text-decoration:underline; text-underline-offset:.22em; }
+.av-page .av-panel p { color:inherit; }
+.av-panel-body { font-size:clamp(16px,1.17vw,18px); max-width:58ch; display:grid; gap:10px; }
+.av-page .av-button { margin-top:auto; display:inline-flex; align-items:center; gap:14px; color:var(--text); background:var(--bg); padding:13px 17px; font-size:16px; font-weight:500; line-height:1.25; min-height:46px; border-radius:3px; }
+.av-page .av-button:hover { background:var(--surface-soft); }
+.av-page .av-button:focus-visible,.av-panel:focus-visible { outline:3px solid var(--text); outline-offset:-5px; }
+.av-page .av-expenses,.av-brief,.av-faq { display:grid; grid-template-columns:minmax(0,.66fr) minmax(0,1.34fr); gap:clamp(24px,4.6vw,74px); align-items:start; }
+.av-page .av-expenses { padding-top:clamp(48px,6.3vw,98px); padding-bottom:0; }
+.av-page .av-expenses h2,.av-brief h2,.av-faq h2 { font-size:clamp(27px,2.55vw,39px); margin:0; }
+.av-expense-copy { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto 1fr; gap:8px 28px; grid-auto-flow:column; }
+.av-expense-copy h3 { font-size:20px; letter-spacing:-.03em; }
+.av-brief,.av-faq { padding-top:clamp(40px,5vw,76px); }
+.av-expense-copy p,.av-brief p,.av-faq details p { font-size:clamp(16px,1.15vw,18px); color:var(--muted); max-width:57ch; }
+.av-faq details + details { margin-top:4px; }
+.av-faq summary { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:48px; padding:9px 0; list-style:none; font-weight:500; font-size:clamp(16px,1.35vw,20px); }
+.av-faq summary::-webkit-details-marker { display:none; }
+.av-faq summary svg,.av-related svg { flex-shrink:0; color:var(--copper); }
+.av-faq details[open] summary svg { transform:rotate(180deg); }
+.av-faq details p { padding-block:4px 16px; }
+.av-related { display:flex; gap:8px 24px; flex-wrap:wrap; padding-block:clamp(32px,4vw,64px); }
+.av-related a { display:inline-flex; align-items:center; gap:8px; min-height:44px; }
+.av-related a:hover,.av-faq summary:hover,.av-tabs button:hover { text-decoration:underline; text-underline-offset:.2em; }
+
+@media (max-width:920px) {
+  .av-page .av-choice,.av-page .av-expenses,.av-brief,.av-faq { grid-template-columns:minmax(0,.67fr) minmax(0,1.33fr); gap:24px; }
+  .av-head { grid-template-columns:1fr 1fr; }
+  .av-page .av-panel { padding:24px; }
+  .av-panel-header { align-items:flex-start; flex-direction:column; gap:14px; }
+  .av-page .av-panel h3 { max-width:none; }
+  .av-page .av-price { text-align:left; }
+  .av-expense-copy { gap:8px 18px; }
+}
+@media (max-width:700px) {
+  .av-head,.av-page .av-choice,.av-page .av-expenses,.av-brief,.av-faq { grid-template-columns:1fr; gap:18px; }
+  .av-head { align-items:start; padding-block:28px 32px; }
+  .av-head h1 { font-size:clamp(42px,10.5vw,62px); }
+  .av-head p { max-width:48ch; }
+  .av-menu { padding-top:0; }
+  .av-tabs { margin-top:12px; }
+  .av-page .av-tabs button { padding:9px 12px; min-height:44px; }
+  .av-panel-header { gap:12px; }
+  .av-expense-copy { grid-template-columns:1fr; grid-template-rows:auto; grid-auto-flow:row; }
+  .av-expense-copy h3:not(:first-child) { margin-top:12px; }
+}

@@ -40,3 +40,20 @@
 @media (hover:hover) and (pointer:fine) { .lc-footer a:hover { text-decoration:underline; } }
 @media(max-width:800px){.lc-header,.lc-reading,.lc-context{grid-template-columns:1fr}.lc-header{gap:22px}.lc-header .lc-kicker{grid-column:auto}.lc-graphic-head{grid-template-columns:1fr}.lc-reading dl>div{grid-template-columns:1fr}.lc-reading dd{justify-content:flex-start;text-align:left}.lc-context{gap:22px}}
 @media(max-width:480px){.lc-case .rw-crumb{padding-bottom:14px}.lc-header{padding:33px 0 50px}.rw-inner .lc-header h1{font-size:clamp(45px,13vw,66px)}.lc-graphic{padding:25px 17px;margin-inline:-3px}.lc-row{grid-template-columns:1fr;gap:0}.lc-row dt{padding-bottom:0}.lc-row dd{text-align:left;font-size:clamp(64px,18vw,96px);padding:11px 0 16px}.lc-bar{height:9px}.lc-reading,.lc-context{padding-block:70px}.lc-footer{flex-direction:column-reverse;align-items:stretch}.lc-footer a{justify-content:center}}
+
+.rw-inner .lc-header a { color:var(--copper); text-decoration:underline; text-underline-offset:.2em; }
+.lc-paid { scroll-margin-top:100px; display:grid; grid-template-columns:minmax(0, .85fr) minmax(0, 1.15fr); gap:26px 6%; padding:clamp(20px, 3vw, 44px); margin-bottom:clamp(40px, 6vw, 90px); background:var(--surface); }
+.lc-paid .lc-kicker { margin:0 0 12px; }
+.rw-inner .lc-paid h2 { font-size:clamp(26px,3vw,45px); font-weight:500; line-height:1.08; letter-spacing:-.045em; margin:0; }
+.lc-paid header p:last-child, .lc-paid-note { line-height:1.5; color:var(--muted); margin:14px 0 0; }
+.lc-paid table { width:100%; border-collapse:collapse; text-align:left; }
+.lc-paid th { font-weight:500; }
+.lc-paid thead { color:var(--muted); font-size:.86rem; }
+.lc-paid th,.lc-paid td { padding:10px 4px; }
+.lc-paid tbody tr { border-top:1px solid var(--line); }
+.lc-paid :is(th,td):nth-child(n+2) { text-align:right; }
+.lc-paid td { font-size:clamp(20px,2.1vw,34px); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.lc-paid tbody tr:last-child td { color:var(--copper); }
+.lc-paid-note { font-size:.88rem; }
+@media(max-width:800px){.lc-paid{grid-template-columns:1fr}}
+@media(max-width:480px){.lc-paid{padding:18px 14px}.lc-paid th{font-size:.83rem}}

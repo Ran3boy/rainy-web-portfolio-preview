@@ -1,0 +1,28 @@
+.paid-case-teaser {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+.paid-case-cover {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+  align-items: center;
+  background: #1e2022;
+  padding: clamp(20px, 2.4vw, 38px);
+  column-gap: 12px;
+}
+.paid-case-identity { display: grid; gap: 9px; }
+.paid-case-identity span, .paid-case-months span, .paid-case-source { font-size: .88rem; line-height: 1.4; color: var(--muted); }
+.paid-case-identity strong { font-size: clamp(29px, 3.3vw, 52px); line-height: 1; letter-spacing: -.05em; font-weight: 500; }
+.paid-case-cover img { display: block; width: 100%; max-width: 180px; height: auto; justify-self: end; }
+.paid-case-sheet { display: grid; gap: 16px; padding: clamp(20px, 2.4vw, 38px); }
+.paid-case-measure { font-size: clamp(16px, 1.4vw, 22px); line-height: 1.25; font-weight: 500; }
+.paid-case-months { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.paid-case-months > div { display: flex; flex-direction: column; gap: 4px; }
+.paid-case-months strong { font-size: clamp(46px, 4.6vw, 72px); line-height: 1; letter-spacing: -.06em; font-weight: 500; font-variant-numeric: tabular-nums; }
+.paid-case-months > div:last-child strong, .paid-case-link { color: var(--copper); }
+.paid-case-link { display: inline-flex; align-items: center; gap: .65em; font-weight: 500; }
+.paid-case-teaser:is(:hover,:focus-visible) .paid-case-link { text-decoration: underline; text-underline-offset: .25em; }
