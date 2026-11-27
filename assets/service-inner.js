@@ -86,10 +86,25 @@ for (const group of document.querySelectorAll("[data-sv-switch]")) {
       buttons[next].focus({ preventScroll: true });
     });
   });
-  const previous = buttons.findIndex(button => button.getAttribute("aria-controls") === returning?.panel);
-  select(previous < 0 ? 0 : previous);
+  const linkedPanel = () => panels.findIndex(panel => "#" + panel.id === location.hash);
+  const previous = panels.findIndex(panel => panel.id === returning?.panel);
+  const initial = previous >= 0 ? previous : linkedPanel();
+  select(initial < 0 ? 0 : initial);
   group.setAttribute("data-sv-ready", "");
   list.hidden = false;
+  window.addEventListener("hashchange", () => {
+    const index = linkedPanel();
+    if (index < 0 || !panels[index].hidden) return;
+    select(index);
+    panels[index].scrollIntoView({block: "start", behavior: "instant"});
+  });
+  // A repeated visit to the same fragment does not fire hashchange.
+  document.addEventListener("click", event => {
+    const link = event.target.closest?.("a[href]");
+    if (!link || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    const index = linkedPanel();
+    if (index >= 0 && link.href === location.href && panels[index].hidden) select(index);
+  });
 }
 
 for (const directory of document.querySelectorAll("[data-sv-directory]")) {

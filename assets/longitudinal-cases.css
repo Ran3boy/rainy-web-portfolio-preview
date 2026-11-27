@@ -34,6 +34,10 @@
 .rw-inner .lc-context>div:last-child p{font-size:clamp(18px,1.5vw,23px);line-height:1.5;margin:0}
 .rw-inner .lc-context>div:last-child p+p{font-size:clamp(15px,1.15vw,17px);color:var(--muted);margin-top:34px}
 .lc-footer{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.lc-service { margin-block:0 clamp(35px,5vw,72px); }
+.lc-service p { margin:0 0 8px; color:var(--muted); font-size:.93rem; }
+.lc-service a { display:inline-flex; align-items:baseline; gap:.65em; padding-block:5px; color:var(--copper); font-size:clamp(21px,2.2vw,32px); line-height:1.2; text-decoration:none; }
+.lc-service a:hover { text-decoration:underline; text-underline-offset:.18em; }
 .lc-footer a{min-height:48px;display:inline-flex;align-items:center;gap:14px;color:var(--text);text-decoration:none}
 .lc-footer a:last-child{background:var(--copper);color:var(--bg);padding:12px 20px;border-radius:4px}
 .lc-case a:focus-visible { outline:3px solid var(--copper); outline-offset:5px; }
