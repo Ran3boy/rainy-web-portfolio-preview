@@ -19,6 +19,7 @@
 .paid-case-identity strong { font-size: clamp(29px, 3.3vw, 52px); line-height: 1; letter-spacing: -.05em; font-weight: 500; }
 .paid-case-cover img { display: block; width: 100%; max-width: 180px; height: auto; justify-self: end; }
 .paid-case-sheet { display: grid; gap: 16px; padding: clamp(20px, 2.4vw, 38px); }
+.paid-case-channel { color: var(--copper); font-size: .9rem; line-height: 1.4; }
 .paid-case-measure { font-size: clamp(16px, 1.4vw, 22px); line-height: 1.25; font-weight: 500; }
 .paid-case-months { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .paid-case-months > div { display: flex; flex-direction: column; gap: 4px; }

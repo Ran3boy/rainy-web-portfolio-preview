@@ -47,6 +47,10 @@
 .rw-inner .lc-paid h2 { font-size:clamp(26px,3vw,45px); font-weight:500; line-height:1.08; letter-spacing:-.045em; margin:0; }
 .lc-paid header p:last-child, .lc-paid-note { line-height:1.5; color:var(--muted); margin:14px 0 0; }
 .lc-paid table { width:100%; border-collapse:collapse; text-align:left; }
+.lc-paid table + table { margin-top:32px; }
+.lc-paid caption { margin-bottom:9px; text-align:left; font-size:1.08rem; font-weight:500; }
+.lc-paid-total { margin:22px 0 0; line-height:1.5; }
+.lc-paid-total strong { display:block; margin-bottom:5px; font-weight:500; }
 .lc-paid th { font-weight:500; }
 .lc-paid thead { color:var(--muted); font-size:.86rem; }
 .lc-paid th,.lc-paid td { padding:10px 4px; }
