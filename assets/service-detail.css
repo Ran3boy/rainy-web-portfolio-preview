@@ -14,6 +14,7 @@
 .sl-prices { display: grid; gap: 22px; }
 .sl-prices dt { color: var(--muted); font-size: 13px; line-height: 1.4; margin-bottom: 4px; }
 .sl-prices dd { color: var(--copper); font-size: clamp(32px,3.2vw,48px); font-variant-numeric: tabular-nums; line-height: 1.15; letter-spacing: -.05em; white-space: nowrap; }
+.sl-prices dd small { display: block; margin-top: .2em; color: var(--muted); font-size: 14px; font-weight: 400; letter-spacing: normal; white-space: normal; }
 .sl-prices dd span { font-size: .55em; letter-spacing: -.02em; }
 .sl-page .sl-individual { color: var(--copper); font-size: 24px; line-height: 1.25; }
 .sl-page .sl-price-note { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 14px; max-width: 34ch; }

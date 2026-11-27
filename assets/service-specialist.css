@@ -215,7 +215,10 @@
 .sp-map-task { grid-area: tasks; align-self: end }
 .sp-map-task .sp-tabs { border-block: 1px solid #4c504b; padding-block: 5px; margin-bottom: 19px }
 .sp-map-answer + .sp-map-answer:not([hidden]) { margin-top: 18px }
+[data-sv-ready] .sp-map-answers { display: grid; }
+[data-sv-ready] .sp-map-answer { grid-area: 1 / 1; }
 [data-sv-ready] .sp-map-answer + .sp-map-answer:not([hidden]) { margin-top: 0 }
+[data-sv-ready] .sp-map-answer[hidden] { display: block !important; visibility: hidden; pointer-events: none; }
 .sv-page .sp-map-answer h2 { font-size: clamp(1.24rem, 1.9vw, 1.7rem); letter-spacing: -.035em; line-height: 1.12 }
 .sv-page .sp-map-answer p { font-size: 1rem; color: #bfc0b8; margin-top: 9px; line-height: 1.49 }
 .sp-platforms { color: #272b26; background: #dce0d4 }
@@ -290,3 +293,18 @@
 .sp-pf-scope .sp-measures { margin: 24px 0 15px; }
 .sp-pf-scope .sp-measure-word { font-size: clamp(2rem, 3.6vw, 3.8rem); }
 .sp-local-check { padding-block: clamp(36px, 6vw, 92px); }
+.sp-local-check, .sp-map-evidence { scroll-margin-top: 5rem; }
+.sv-page .sp-branch-link, .sp-map-report a { color: var(--copper); display: inline-flex; gap: 9px; align-items: center; padding: 4px 0; min-height: 44px; margin-top: 12px; }
+.sp-map-evidence { background: var(--surface); }
+.sp-map-evidence-inner { padding-block: clamp(32px, 5vw, 76px); display: grid; grid-template-columns: minmax(0,.83fr) minmax(0,1.17fr); gap: clamp(24px, 6vw, 92px); }
+.sv-page .sp-map-evidence h2, .sv-page .sp-map-evidence h3 { margin: 0; font-weight: 500; letter-spacing: -.045em; line-height: 1.12; }
+.sv-page .sp-map-evidence h2 { font-size: clamp(32px, 3.8vw, 56px); }
+.sv-page .sp-map-evidence h3 { font-size: clamp(23px, 2.3vw, 36px); }
+.sv-page .sp-map-evidence p { margin: 14px 0 0; max-width: 48ch; color: var(--muted); font-size: clamp(16px, 1.2vw, 19px); line-height: 1.5; }
+.sp-map-report dl { margin: 23px 0 0; display: flex; gap: clamp(20px, 4vw, 66px); }
+.sp-map-report dt { color: var(--muted); font-size: 14px; }
+.sp-map-report dd { margin: 5px 0 0; font-size: clamp(38px, 5vw, 72px); letter-spacing: -.055em; line-height: 1; font-variant-numeric: tabular-nums; }
+.sp-map-report dl div:last-child dd { color: var(--copper); }
+@media (max-width: 700px) {
+  .sp-map-evidence-inner { grid-template-columns: 1fr; }
+}
