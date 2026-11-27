@@ -1,0 +1,51 @@
+.rw-inner .seoa-group > header h2 {
+  font-size: clamp(30px, 3.5vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -.045em;
+}
+.rw-inner .seoa-group > header p {
+  max-width: 55ch;
+  margin-top: 14px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.seoa-group > header + .seoa-spread { margin-block-start: clamp(24px, 3vw, 44px); }
+.seoa-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(52px, 5.4vw, 76px);
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: #eeff52;
+}
+.seoa-mark img { display: block; width: 86%; height: auto; }
+.seoa-sevzap .seoa-mark { background: #f0f3f7; }
+.seoa-sevzap .seoa-mark img { width: 73%; height: 70%; object-fit: cover; object-position: left; }
+.seoa-ranking { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.seoa-ranking caption { margin-bottom: 13px; text-align: left; color: var(--text); font-size: clamp(16px, 1.45vw, 22px); }
+.seoa-ranking th, .seoa-ranking td { padding: 0; font-weight: 400; text-align: end; }
+.seoa-ranking th:first-child { text-align: start; }
+.seoa-ranking thead th { color: var(--muted); font-size: clamp(12px, 1.05vw, 16px); line-height: 1.3; vertical-align: bottom; }
+.seoa-ranking tbody th { font-size: clamp(13px, 1.24vw, 18px); }
+.seoa-ranking td { padding-top: 6px; font-size: clamp(29px, 3.1vw, 55px); letter-spacing: -.055em; line-height: 1.14; }
+.seoa-ranking td:last-child { color: var(--copper); }
+.rw-inner .seoa-source {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: .6em;
+  min-height: 44px;
+  margin-block: 3px -7px;
+  color: var(--text);
+  font-size: .875rem;
+  text-decoration: underline;
+  text-underline-offset: .22em;
+}
+.seoa-cover { text-decoration: none; }
+.seoa-cover .lc-relief { max-height: 400px; }
+.seoa-cover:focus-visible, .seoa-source:focus-visible { outline: 3px solid var(--copper); outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .seoa-spread:hover .lc-open { color: #fff; background: #151617; }
+  .seoa-spread .seoa-group .seoa-cover:is(:hover, :focus-visible) .lc-open { border-color: var(--copper); background: var(--copper); color: var(--bg); }
+}
