@@ -28,27 +28,26 @@
 .do-panel dl { margin:20px 0; max-width:45ch }
 .do-panel dt { color:var(--muted); font-size:14px; margin-bottom:4px }
 .do-panel dd { font-size:17px }
-.do-panel a,.do-related a,.do-rates a { display:inline-flex; align-items:center; gap:10px; min-height:44px; color:var(--copper) }
+.do-panel a,.do-related a { display:inline-flex; align-items:center; gap:10px; min-height:44px; color:var(--copper) }
 .do-panel a { margin-top:auto }
-.do-page :is(.do-panel,.do-related,.do-rates) a:hover { text-decoration:underline; text-underline-offset:4px }
+.do-page :is(.do-panel,.do-related) a:hover { text-decoration:underline; text-underline-offset:4px }
 .do-price { padding-block:clamp(48px,6vw,94px) }
 .do-price-head { display:grid; grid-template-columns:minmax(0,.92fr) minmax(0,1.15fr); align-items:start; gap:clamp(24px,3.5vw,58px) }
 .do-price-head h2 { font-size:clamp(34px,4.1vw,60px) }
 .do-price-head p,.do-handoff p { color:var(--muted); max-width:56ch }
 .do-price-head { margin-bottom:24px }
-.do-rates { background:var(--surface); padding:18px clamp(18px,3vw,48px) }
-.do-rates > div { display:grid; grid-template-columns:minmax(94px,.72fr) minmax(0,3fr); align-items:baseline; gap:24px; padding:12px 0 }
-.do-rates dd { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(65px,.55fr) minmax(0,1.5fr); align-items:baseline; gap:14px; line-height:1.4 }
-.do-rates strong { font-size:clamp(22px,2.1vw,32px); font-weight:500; letter-spacing:-.045em }
-.do-rates dd > span,.do-date { color:var(--muted); font-size:14px }
-.do-date { margin-top:14px !important }
+.do-rate { background:var(--surface); padding:clamp(20px,3vw,42px) }
+.do-rate > div { display:flex; flex-wrap:wrap; gap:12px 30px; justify-content:space-between; align-items:baseline }
+.do-rate dt { font-size:clamp(19px,1.65vw,26px); font-weight:500; letter-spacing:-.035em }
+.do-rate dd { display:flex; flex-wrap:wrap; align-items:baseline; gap:5px 12px }
+.do-rate strong { font-size:clamp(26px,2.6vw,40px); font-weight:500; letter-spacing:-.04em; color:var(--copper) }
+.do-rate span,.do-page .do-included { font-size:15px; color:var(--muted) }
+.do-page .do-included { margin-top:14px; max-width:75ch }
 .do-handoff { display:grid; grid-template-columns:1fr 1fr; gap:clamp(24px,5vw,76px) }
 .do-handoff h2 { font-size:clamp(26px,2.4vw,36px); margin-bottom:10px }
 .do-related { display:flex; flex-wrap:wrap; gap:8px 32px; padding-block:28px 48px }
 @media(max-width:800px) {
   .do-hero > div { align-items:start; flex-wrap:wrap; gap:18px }
-  .do-rates dd { grid-template-columns:auto 1fr }
-  .do-rates dd p { grid-column:1/-1 }
   .do-choices { grid-template-columns:.82fr 1fr }
 }
 @media(max-width:650px) {
@@ -57,9 +56,7 @@
   .do-fold { gap:20px }
   .do-fold h2 { max-width:18ch }
   .do-price-head { gap:12px }
-  .do-rates > div { grid-template-columns:1fr; gap:0 }
-  .do-tabs button { padding-inline:11px }
-  .do-rates dd { column-gap:12px; row-gap:4px }
+  .do-tabs button { padding-inline:8px }
   .do-sheet,.do-fold { padding:22px }
   .do-related { gap:0 20px }
 }

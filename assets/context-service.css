@@ -166,3 +166,15 @@
 }
 .ca-page .ca-format-link { display:inline-flex; align-items:center; gap:10px; min-height:44px; margin-top:8px; text-decoration:underline; text-underline-offset:4px; color:var(--bg); }
 .ca-page .ca-format-link:focus-visible { outline-color:var(--bg) }
+
+.ca-budget .ca-format-rates { display:grid; gap:10px; padding:16px 20px; margin:0 }
+.ca-format-rates > div { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:0 20px }
+.ca-budget .ca-format-rates :is(dt,dd) { margin:0; font:inherit; color:var(--text) }
+.ca-format-rates a { display:inline-flex; align-items:center; gap:8px; padding-block:10px; color:var(--copper) }
+.ca-format-rates a:hover { text-decoration:underline; text-underline-offset:4px }
+.ca-format-rates dd span { color:var(--muted); font-size:14px }
+@media (max-width:540px) {
+  .ca-format-rates > div { display:grid; gap:0 }
+  .ca-format-rates a { min-height:44px; padding-block:8px }
+  .ca-format-rates dd { padding-bottom:6px }
+}
