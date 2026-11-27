@@ -2,15 +2,11 @@ function initFilters() {
   const controls = document.querySelector(".rw-filters");
   if (!controls) return;
   const buttons = [...controls.querySelectorAll("[data-case-filter]")];
-  const groups = document.querySelectorAll("[data-case-group]");
+  const groups = [...document.querySelectorAll("[data-case-group]")];
   const status = document.querySelector("[data-filter-status]");
-  const labels = {
-    all: "Показаны все пять работ.",
-    development: "Показаны три проекта по разработке.",
-    seo: "Показаны два SEO-кейса.",
-  };
+  const filters = new Set(buttons.map(button => button.dataset.caseFilter));
   function apply(requested, announce) {
-    const selected = Object.hasOwn(labels, requested) ? requested : "all";
+    const selected = filters.has(requested) ? requested : "all";
     for (const button of buttons)
       button.setAttribute(
         "aria-pressed",
@@ -18,7 +14,11 @@ function initFilters() {
       );
     for (const group of groups)
       group.hidden = selected !== "all" && group.dataset.caseGroup !== selected;
-    if (announce) status.textContent = labels[selected];
+    if (announce && status) {
+      const count = groups.filter(group => !group.hidden).reduce((total, group) => total + group.querySelectorAll("[data-case-entry]").length, 0);
+      const label = buttons.find(button => button.dataset.caseFilter === selected)?.textContent.trim();
+      status.textContent = `${label}. Показано проектов: ${count}.`;
+    }
   }
   function read() {
     return new URL(location.href).searchParams.get("filter");
