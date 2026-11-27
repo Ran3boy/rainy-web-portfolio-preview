@@ -44,7 +44,7 @@
       group.hidden = items.every((a) => a.hidden);
     }
     status.textContent = total
-      ? "Найдено страниц: " + total
+      ? "Найдено совпадений: " + total
       : "Совпадений нет. Попробуйте другое название.";
   }
   let opener;
@@ -91,6 +91,21 @@
     if (opener?.isConnected) opener.focus({ preventScroll: true });
   });
   dialog.addEventListener("click", (e) => {
+    // Following the current fragment again does not produce a navigation event.
+    const result = e.target.closest("a[href]");
+    if (result?.hash && result.href === location.href && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+      const section = document.getElementById(result.hash.slice(1));
+      if (section) {
+        e.preventDefault();
+        dialog.addEventListener("close", () => {
+          section.setAttribute("tabindex", "-1");
+          section.focus({ preventScroll: true });
+          section.scrollIntoView({ block: "start" });
+        }, { once: true });
+        requestClose();
+        return;
+      }
+    }
     if (e.target !== dialog) return;
     const r = dialog.getBoundingClientRect();
     if (

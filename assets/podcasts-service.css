@@ -47,6 +47,19 @@
 .pc-order strong { font-size:clamp(25px,2.4vw,37px); font-weight:500; line-height:1.15; letter-spacing:-.04em; }
 .pc-order small { margin-top:3px; color:var(--muted); font-size:14px; }
 .pc-offer .pc-button { border:1px solid var(--copper); color:var(--copper); }
+.pc-video { padding-block:clamp(46px,6.5vw,95px) 0; scroll-margin-top:6rem; }
+.pc-video header { display:grid; grid-template-columns:minmax(0,.83fr) minmax(0,1.2fr); align-items:start; gap:clamp(28px,6vw,92px); }
+.pc-video header > p { max-width:51ch; color:var(--muted); }
+.pc-video-brief { display:grid; grid-template-columns:1fr 1fr; gap:clamp(22px,3.5vw,56px); margin-top:clamp(20px,2.3vw,36px); padding:clamp(19px,2.6vw,38px); background:var(--surface); }
+.pc-video-brief section { display:flex; flex-direction:column; align-items:start; }
+.pc-video-brief h3 { font-size:clamp(23px,2.3vw,34px); }
+.pc-video-brief p { margin-block:10px; max-width:47ch; }
+.pc-video-brief a { display:inline-flex; align-items:center; gap:8px; min-height:44px; margin-top:auto; color:var(--copper); }
+.pc-faq details p a { text-decoration:underline; text-underline-offset:3px; }
+@media(max-width:650px) {
+  .pc-video header,.pc-video-brief { grid-template-columns:1fr; gap:16px; }
+  .pc-video-brief { gap:24px; }
+}
 .pc-page .pc-estimate,.pc-faq { display:grid; grid-template-columns:minmax(0,.83fr) minmax(0,1.2fr); gap:clamp(28px,6vw,92px); padding-block:clamp(46px,6.5vw,95px) 0; }
 .pc-estimate p,.pc-faq p { max-width:57ch; }
 .pc-estimate p+p,.pc-faq h2+p { margin-top:14px; }
