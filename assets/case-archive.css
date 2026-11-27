@@ -103,9 +103,10 @@
   color: var(--text);
 }
 .lc-identity { display: flex; gap: clamp(12px, 1.25vw, 23px); align-items: center; }
-.lc-brand { flex: none; width: clamp(42px, 4.4vw, 68px); height: auto; border-radius: 7px; }
-.lc-spread-morefish .lc-brand { width: clamp(95px, 8.7vw, 148px); border-radius: 5px; }
-.rw-inner .lc-identity h3 { margin-top: 4px; font-size: clamp(24px, 2.6vw, 45px); line-height: 1.05; }
+.lc-brand { flex: none; width: clamp(49px, 5.4vw, 80px); height: auto; }
+.lc-spread-morefish .lc-brand { padding: 6px; background: #eeeff2; border-radius: 8px; }
+.rw-inner .lc-identity .lc-category { margin-top: 6px; }
+.rw-inner .lc-identity h3 { margin: 0; font-size: clamp(24px, 2.6vw, 45px); line-height: 1.05; }
 .rw-inner .lc-category, .lc-attribution { color: #bcbdbb; font-size: .82rem; line-height: 1.4; }
 .lc-facts { display: flex; flex-direction: column; flex: 1; }
 .lc-readout { margin-block: auto; padding-block: clamp(25px, 3vw, 50px); }
@@ -122,13 +123,13 @@
 .lc-attribution { margin-top: 12px; }
 .lc-poster {
   position: relative;
-  display: flex;
+  display: grid;
   isolation: isolate;
   overflow: hidden;
-  flex-direction: column;
-  gap: 34px;
-  align-items: flex-start;
-  justify-content: space-between;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(18px, 1.8vw, 30px) 10px;
+  align-items: start;
   min-height: clamp(370px, 31vw, 540px);
   padding: clamp(23px, 2.7vw, 48px);
   color: white;
@@ -138,9 +139,9 @@
 .lc-poster-image { z-index: -2; object-fit: cover; }
 .lc-poster::before { z-index: -1; content: ""; background: linear-gradient(120deg, rgb(4 7 9 / .64), transparent 62%); }
 .rw-inner .lc-poster-head { color: #fff; line-height: 1.08; }
-.lc-poster-head strong { display: block; font-size: clamp(44px, 5.4vw, 96px); font-weight: 550; letter-spacing: -.065em; line-height: .98; }
+.lc-poster-head strong { color: var(--copper); display: block; font-size: clamp(44px, 5.4vw, 96px); font-weight: 550; letter-spacing: -.065em; line-height: .98; }
 .lc-poster-head > span { display: block; max-width: 21ch; margin-top: 8px; font-size: clamp(19px, 2vw, 34px); letter-spacing: -.035em; text-wrap: balance; }
-.lc-open { display: inline-flex; align-items: center; gap: 14px; min-height: 44px; padding: 10px 18px; border-radius: 99px; background: #151617; color: #fff; border: 1px solid #777b7d; font-size: .93rem; }
+.lc-open { grid-area: 3 / 1; align-self: end; justify-self: start; white-space: nowrap; display: inline-flex; align-items: center; gap: 14px; min-height: 44px; padding: 10px 18px; border-radius: 99px; background: #151617; color: #fff; border: 1px solid #777b7d; font-size: .93rem; }
 .lc-open > span:last-child { display: inline-flex; }
 .rw-inner .lc-spread:focus-visible { outline: 3px solid var(--copper); outline-offset: 3px; }
 @media (hover:hover) and (pointer:fine) {
@@ -152,12 +153,61 @@
 }
 @media (max-width: 720px) {
   .lc-spread { display: flex; flex-direction: column; gap: 0; margin-top: 30px; }
-  .lc-poster { min-height: 0; aspect-ratio: 3/2; border-radius: 0; padding: 20px; gap: 12px; }
+  .lc-poster { min-height: clamp(240px, 64vw, 430px); border-radius: 0; padding: 20px; gap: 12px 9px; }
   .lc-poster-head strong { font-size: clamp(36px, 8.5vw, 56px); }
   .lc-poster-head > span { font-size: clamp(17px, 4.1vw, 25px); }
-  .lc-open { min-height: 44px; padding: 8px 14px; }
+  .lc-open { min-height: 44px; padding: 7px 10px; gap: 6px; font-size: .84rem; }
   .lc-data { display: contents; }
   .lc-identity { order: -1; padding: 18px 20px; background: #222426; border-radius: 12px 12px 0 0; }
   .lc-facts { order: 1; padding: 20px; background: #222426; border-radius: 0 0 12px 12px; }
   .lc-readout { padding-block: 0 18px; }
+}
+
+/* Every cover carries the same Rainy Web imprint and live copper result. */
+.lc-edition {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px .6em;
+  color: var(--text);
+  font-size: clamp(14px, 1.45vw, 24px);
+  line-height: 1.25;
+  font-weight: 500;
+}
+.lc-publisher { display: inline-flex; align-items: center; gap: .35em; font-weight: 600; letter-spacing: -.045em; }
+.lc-publisher img { width: 1.38em; height: 1.38em; }
+.lc-edition-divider { color: var(--copper); }
+.lc-client { font-weight: 450; }
+.lc-poster-head { grid-area: 2 / 1; }
+.lc-spread-shapkin-glamping .lc-poster-head > span { max-inline-size: 14ch; }
+.lc-poster-mark {
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  background: radial-gradient(ellipse at 78% 67%, #332c28 0%, var(--surface) 51%, var(--bg) 100%);
+}
+.lc-poster-mark::before { content: none; }
+.lc-relief {
+  grid-area: 2 / 2 / 4 / 3;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  align-self: center;
+  filter: drop-shadow(0 8px 9px rgb(0 0 0 / .35));
+}
+.lc-poster-mark .lc-poster-head strong { font-size: clamp(35px, 4.5vw, 87px); }
+@media (min-width: 721px) and (max-width: 960px) {
+  .lc-poster-mark {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr auto;
+    gap: 12px;
+  }
+  .lc-relief { grid-area: 3 / 1; width: min(72%, 208px); height: auto; justify-self: end; }
+  .lc-poster-mark .lc-open { grid-row: 4; }
+}
+@media (max-width: 720px) {
+  .lc-poster-mark { padding: 17px; grid-template-columns: minmax(8.25rem, 1fr) minmax(0, 1fr); }
+  .lc-poster-mark .lc-poster-head strong { font-size: clamp(29px, 7vw, 50px); }
+  .lc-poster-mark .lc-poster-head > span { font-size: clamp(16px, 3.5vw, 22px); }
 }
