@@ -1,5 +1,5 @@
 /* Long-window project readings: graphite, copper, measured comparisons. */
-.lc-case{padding-bottom:clamp(54px,7vw,110px)}
+.lc-case{padding-bottom:clamp(20px,2.5vw,40px)}
 .lc-case .rw-crumb{padding-block:22px 30px}
 .lc-case .lc-kicker{color:var(--copper);font-size:.85rem;letter-spacing:.03em;line-height:1.45}
 .lc-header{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:end;gap:18px 6%;padding:clamp(35px,5vw,78px) 0 clamp(50px,7vw,100px)}

@@ -51,7 +51,7 @@
 .journal-story .journal-topic { display: flex; align-items: center; justify-content: space-between; gap: .7em; }
 .journal-read-arrow { color: inherit; font-size: 1rem; line-height: 1; }
 .journal-story:is(:hover,:active,:focus-visible) :is(h2,h3),
-.ca-entry:hover h3, .ca-record:hover h3, .dc-next a:hover strong { text-decoration: none; }
+.ca-entry:hover h3, .ca-record:hover h3 { text-decoration: none; }
 .dc-print .dc-expand, .se-exhibit:is(:hover,:focus-within) figcaption { text-decoration: none; }
 .sv-page .sh-proof .sh-source, .ww-sources a {
   display: inline-flex; align-items: center; gap: .5em; max-width: 100%;

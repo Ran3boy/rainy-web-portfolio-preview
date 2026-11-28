@@ -38,12 +38,6 @@
 }
 .dc-print .dc-expand { white-space: nowrap; text-decoration: underline; text-underline-offset: .2em; }
 .dc-case h2 { font-size: clamp(2.3rem,4.3vw,4.2rem); line-height: 1.02; letter-spacing: -.055em; }
-.dc-case .dc-next { padding-block: clamp(34px,4vw,68px); }
-.dc-next p { margin-bottom: 11px; font-size: .88rem; color: var(--muted); }
-.dc-next a { display: flex; gap: 10px 24px; align-items: baseline; }
-.dc-next strong { font-size: clamp(2rem,3.7vw,3.9rem); line-height: 1; letter-spacing: -.055em; font-weight: 520; }
-.dc-next a span:last-child { margin-left: auto; color: var(--copper); font-size: 1.75rem; }
-.dc-next a:hover strong { text-decoration: underline; text-underline-offset: .14em; text-decoration-thickness: 1px; }
 
 .dc-pirr-cover {
   background: #ded6c4;
@@ -209,6 +203,4 @@
   .dc-stage, .dc-din-edit { gap:18px; }
   .dc-stage-copy p { margin-top:9px; }
   .dc-din-edit .dc-link { margin-bottom:-5px; }
-  .dc-next a { flex-wrap:wrap; gap:5px 12px; }
-  .dc-next a span:nth-child(2) { order:3; width:100%; }
 }
